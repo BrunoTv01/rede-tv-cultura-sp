@@ -10,6 +10,10 @@ O visual segue a linha de um console de satélites (estilo Satbeams). A página 
 - "mancha de cobertura" ligando as cidades atendidas por cada estação;
 - aba Tabela.
 
+**Abrir o mapa como site:** https://raw.githack.com/BrunoTv01/rede-tv-cultura-sp/main/index.html
+
+Quando o GitHub Pages estiver ligado (*Settings → Pages → Deploy from a branch → main / root*), o endereço oficial passa a ser https://brunotv01.github.io/rede-tv-cultura-sp/
+
 ## Conteúdo
 
 | Caminho | O que é |
