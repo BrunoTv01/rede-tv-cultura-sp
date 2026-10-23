@@ -1,0 +1,8718 @@
+{
+ "adamantina": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Adamantina",
+    35068
+   ],
+   [
+    "Lucélia",
+    21747
+   ],
+   [
+    "Marinópolis",
+    2112
+   ],
+   [
+    "Mariápolis",
+    4084
+   ],
+   [
+    "Pracinha",
+    4093
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.5763,
+  "ll": [
+   "Adamantina",
+   "cn 38D",
+   "(VT04)"
+  ],
+  "lon": -51.0562,
+  "lx": 4553.69,
+  "ly": 601.88,
+  "m": "full",
+  "mu": "Adamantina",
+  "n": "Adamantina",
+  "ob": "",
+  "pm": 0,
+  "pop": 35068,
+  "pot": "100 W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4570.69,
+  "y": 604.32
+ },
+ "aguas-da-prata": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Águas da Prata",
+    8180
+   ]
+  ],
+  "cv": "39.1",
+  "en": "FPA",
+  "lat": -21.9138,
+  "ll": [
+   "Águas da Prata",
+   "cn 36D (VT39)"
+  ],
+  "lon": -46.6913,
+  "lx": 4942.96,
+  "ly": 570.08,
+  "m": "full",
+  "mu": "Águas da Prata",
+  "n": "Águas da Prata",
+  "ob": "",
+  "pm": 0,
+  "pop": 8180,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT39",
+  "x": 4944.49,
+  "y": 572.23
+ },
+ "aguas-de-lindoia": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Águas de Lindóia",
+    18705
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.4741,
+  "ll": [
+   "Águas de Lindóia cn 38D(VT10)"
+  ],
+  "lon": -46.603,
+  "lx": 4958.02,
+  "ly": 524.25,
+  "m": "full",
+  "mu": "Águas de Lindóia",
+  "n": "Águas de Lindóia",
+  "ob": "",
+  "pm": 0,
+  "pop": 18705,
+  "pot": "50 W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4954.94,
+  "y": 515.32
+ },
+ "aguas-de-santa-barbara": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Águas de Santa Bárbara",
+    6075
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -22.8585,
+  "ll": [
+   "Águas de",
+   "Santa Bárbara",
+   "cn 3OD",
+   "(VT03)"
+  ],
+  "lon": -49.2604,
+  "lx": 4706.38,
+  "ly": 492.97,
+  "m": "full",
+  "mu": "Águas de Santa Bárbara",
+  "n": "Águas de Santa Bárbara",
+  "ob": "",
+  "pm": 0,
+  "pop": 6075,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4721.08,
+  "y": 494.79
+ },
+ "altinopolis": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Altinópolis",
+    16184
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.0177,
+  "ll": [
+   "Altinópolis",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.386,
+  "lx": 4887.28,
+  "ly": 653.97,
+  "m": "full",
+  "mu": "Altinópolis",
+  "n": "Altinópolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 16184,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4892.82,
+  "y": 656.31
+ },
+ "aluminio": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "41",
+  "ch": "41D",
+  "cov": [
+   [
+    "Alumínio",
+    18628
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -23.5325,
+  "ll": [
+   "Alumínio",
+   "cn 41D",
+   "(VT41)"
+  ],
+  "lon": -47.281,
+  "lx": 4887.27,
+  "ly": 418.48,
+  "m": "half",
+  "mu": "Alumínio",
+  "n": "Alumínio",
+  "ob": "",
+  "pm": 0,
+  "pop": 18628,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4890.58,
+  "y": 420.71
+ },
+ "amparo": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Amparo",
+    72195
+   ],
+   [
+    "Santo Antônio de Posse",
+    23310
+   ]
+  ],
+  "cv": "10.1",
+  "en": "FPA",
+  "lat": -22.6986,
+  "ll": [
+   "Amparo",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -46.7983,
+  "lx": 4921.18,
+  "ly": 499.1,
+  "m": "full",
+  "mu": "Amparo",
+  "n": "Amparo",
+  "ob": "",
+  "pm": 0,
+  "pop": 72195,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4935.56,
+  "y": 498.35
+ },
+ "andradina": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Andradina",
+    57157
+   ],
+   [
+    "Murutinga do Sul",
+    4486
+   ],
+   [
+    "Nova Independência",
+    3969
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -20.835,
+  "ll": [
+   "Andradina",
+   "cn 38D",
+   "(VT05)"
+  ],
+  "lon": -51.3293,
+  "lx": 4533.22,
+  "ly": 670.72,
+  "m": "full",
+  "mu": "Andradina",
+  "n": "Andradina",
+  "ob": "",
+  "pm": 0,
+  "pop": 57157,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4542.84,
+  "y": 673.22
+ },
+ "angatuba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "42",
+  "ch": "41D",
+  "cov": [
+   [
+    "Angatuba",
+    25228
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -23.4364,
+  "ll": [
+   "Angatuba",
+   "(Bom Retiro)",
+   "cn 41D",
+   "(VT19)"
+  ],
+  "lon": -48.4589,
+  "lx": 4784.32,
+  "ly": 444.29,
+  "m": "full",
+  "mu": "Angatuba",
+  "n": "Angatuba",
+  "ob": "",
+  "pm": 0,
+  "pop": 25228,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4793.19,
+  "y": 446.41
+ },
+ "apiai": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Apiaí",
+    24374
+   ]
+  ],
+  "cv": "3.1 ",
+  "en": "",
+  "lat": -24.421,
+  "ll": [
+   "Apiaí",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -48.8165,
+  "lx": 4749.78,
+  "ly": 341.28,
+  "m": "full",
+  "mu": "Apiaí",
+  "n": "Apiaí",
+  "ob": "",
+  "pm": 0,
+  "pop": 24374,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4752.85,
+  "y": 343.74
+ },
+ "aracatuba": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Araçatuba",
+    197016
+   ],
+   [
+    "Bilac",
+    8034
+   ],
+   [
+    "Birigui",
+    123638
+   ],
+   [
+    "Brejo Alegre",
+    2865
+   ],
+   [
+    "Coroados",
+    6058
+   ],
+   [
+    "Glicério",
+    4815
+   ],
+   [
+    "Guararapes",
+    32939
+   ],
+   [
+    "Santo Antônio do Aracanguá",
+    8420
+   ],
+   [
+    "Zacarias",
+    2718
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -21.1136,
+  "ll": [
+   "Araçatuba",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.5737,
+  "lx": 4616.17,
+  "ly": 643.4,
+  "m": "full",
+  "mu": "Araçatuba",
+  "n": "Araçatuba",
+  "ob": "",
+  "pm": 0,
+  "pop": 197016,
+  "pot": "350W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4623.95,
+  "y": 645.15
+ },
+ "araraquara": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "34D",
+  "cov": [
+   [
+    "Araraquara",
+    236072
+   ],
+   [
+    "Américo Brasiliense",
+    40504
+   ],
+   [
+    "Boa Esperança do Sul",
+    14923
+   ],
+   [
+    "Bocaina",
+    12329
+   ],
+   [
+    "Gavião Peixoto",
+    4789
+   ],
+   [
+    "Santa Lúcia",
+    8817
+   ]
+  ],
+  "cv": "11.1",
+  "en": "FPA",
+  "lat": -21.7909,
+  "ll": [
+   "Araraquara",
+   "cn 34D",
+   "(VT11)"
+  ],
+  "lon": -48.1808,
+  "lx": 4824.3,
+  "ly": 593.42,
+  "m": "full",
+  "mu": "Araraquara",
+  "n": "Araraquara",
+  "ob": "",
+  "pm": 0,
+  "pop": 236072,
+  "pot": "500W",
+  "r": "R",
+  "vt": "VT11",
+  "x": 4820.52,
+  "y": 581.98
+ },
+ "araras": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Araras",
+    134236
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.3458,
+  "ll": [
+   "Araras",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -47.3232,
+  "lx": 4887.6,
+  "ly": 531.08,
+  "m": "full",
+  "mu": "Araras",
+  "n": "Araras",
+  "ob": "",
+  "pm": 0,
+  "pop": 134236,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4893.25,
+  "y": 533.09
+ },
+ "arealva": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Arealva",
+    8560
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -22.0757,
+  "ll": [
+   "Arealva",
+   "cn 30D",
+   "(VT05)"
+  ],
+  "lon": -48.9816,
+  "lx": 4750.1,
+  "ly": 559.19,
+  "m": "full",
+  "mu": "Arealva",
+  "n": "Arealva",
+  "ob": "",
+  "pm": 0,
+  "pop": 8560,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4755.86,
+  "y": 561.31
+ },
+ "areias": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Areias",
+    3886
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.6726,
+  "ll": [
+   "Areias",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -44.7119,
+  "lx": 5109.11,
+  "ly": 494.23,
+  "m": "full",
+  "mu": "Areias",
+  "n": "Areias",
+  "ob": "",
+  "pm": 0,
+  "pop": 3886,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5114.03,
+  "y": 496.51
+ },
+ "assis": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Assis",
+    104386
+   ],
+   [
+    "Cândido Mota",
+    31280
+   ],
+   [
+    "Maracaí",
+    14002
+   ],
+   [
+    "Palmital",
+    22221
+   ],
+   [
+    "Paraguaçu Paulista",
+    45703
+   ],
+   [
+    "Platina",
+    3550
+   ]
+  ],
+  "cv": "13.1",
+  "en": "FPA",
+  "lat": -22.601,
+  "ll": [
+   "Assís",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -50.4203,
+  "lx": 4617.07,
+  "ly": 514.44,
+  "m": "full",
+  "mu": "Assis",
+  "n": "Assis",
+  "ob": "",
+  "pm": 0,
+  "pop": 104386,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4622.56,
+  "y": 516.79
+ },
+ "atibaia": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Atibaia",
+    142761
+   ],
+   [
+    "Bom Jesus dos Perdões",
+    25448
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.1229,
+  "ll": [
+   "Atibaia",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.5865,
+  "lx": 4955.99,
+  "ly": 462.05,
+  "m": "cross",
+  "mu": "Atibaia",
+  "n": "Atibaia",
+  "ob": "",
+  "pm": 1,
+  "pop": 142761,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT02",
+  "x": 4951.96,
+  "y": 458.71
+ },
+ "avare": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "54D",
+  "cov": [
+   [
+    "Avaré",
+    90655
+   ],
+   [
+    "Arandu",
+    6357
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.0746,
+  "ll": [
+   "Avaré",
+   "cn 54D",
+   "(VT03)"
+  ],
+  "lon": -48.8936,
+  "lx": 4747.38,
+  "ly": 466.44,
+  "m": "full",
+  "mu": "Avaré",
+  "n": "Avaré",
+  "ob": "",
+  "pm": 0,
+  "pop": 90655,
+  "pot": "350W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4753.19,
+  "y": 468.25
+ },
+ "bananal": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Bananal",
+    10945
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.7331,
+  "ll": [
+   "Bananal",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -44.3341,
+  "lx": 5134.26,
+  "ly": 483.72,
+  "m": "full",
+  "mu": "Bananal",
+  "n": "Bananal",
+  "ob": "",
+  "pm": 0,
+  "pop": 10945,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5144.5,
+  "y": 485.51
+ },
+ "barao-de-antonina": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Barão de Antonina",
+    3469
+   ]
+  ],
+  "cv": "3.1",
+  "en": "FPA",
+  "lat": -23.5823,
+  "ll": [
+   "Barão de",
+   "Antonina",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.5716,
+  "lx": 4698.16,
+  "ly": 432.07,
+  "m": "full",
+  "mu": "Barão de Antonina",
+  "n": "Barão de Antonina",
+  "ob": "",
+  "pm": 0,
+  "pop": 3469,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4693.71,
+  "y": 425.36
+ },
+ "bariri": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Bariri",
+    35264
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -22.0663,
+  "ll": [
+   "Barirí",
+   "cn 44D",
+   "(VT04)"
+  ],
+  "lon": -48.7182,
+  "lx": 4767.81,
+  "ly": 562.75,
+  "m": "full",
+  "mu": "Bariri",
+  "n": "Bariri",
+  "ob": "",
+  "pm": 0,
+  "pop": 35264,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4771.48,
+  "y": 564.97
+ },
+ "barra-bonita": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Barra Bonita",
+    36126
+   ],
+   [
+    "Igaraçu do Tietê",
+    24674
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.4789,
+  "ll": [
+   "Barra Bonita",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -48.5408,
+  "lx": 4781.64,
+  "ly": 522.06,
+  "m": "full",
+  "mu": "Barra Bonita",
+  "n": "Barra Bonita",
+  "ob": "",
+  "pm": 0,
+  "pop": 36126,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4777.34,
+  "y": 520.54
+ },
+ "barra-do-turvo": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Barra do Turvo",
+    7659
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.8877,
+  "ll": [
+   "Barra do Turvo",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -48.4264,
+  "lx": 4780.21,
+  "ly": 311.19,
+  "m": "full",
+  "mu": "Barra do Turvo",
+  "n": "Barra do Turvo",
+  "ob": "",
+  "pm": 0,
+  "pop": 7659,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4776.7,
+  "y": 304.03
+ },
+ "barretos": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "34D",
+  "cov": [
+   [
+    "Barretos",
+    122098
+   ],
+   [
+    "Colina",
+    18468
+   ],
+   [
+    "Jaborandi",
+    6929
+   ]
+  ],
+  "cv": "12.1",
+  "en": "FPA",
+  "lat": -20.5138,
+  "ll": [
+   "Barretos",
+   "cn 34D",
+   "(VT12)"
+  ],
+  "lon": -48.6516,
+  "lx": 4779.33,
+  "ly": 703.52,
+  "m": "full",
+  "mu": "Barretos",
+  "n": "Barretos",
+  "ob": "",
+  "pm": 0,
+  "pop": 122098,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT12",
+  "x": 4785.42,
+  "y": 705.44
+ },
+ "bastos": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Bastos",
+    20953
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.9502,
+  "ll": [
+   "Bastos",
+   "cn 38D (VT04)"
+  ],
+  "lon": -50.7435,
+  "lx": 4586.21,
+  "ly": 573.43,
+  "m": "half",
+  "mu": "Bastos",
+  "n": "Bastos",
+  "ob": "",
+  "pm": 0,
+  "pop": 20953,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4592.29,
+  "y": 575.9
+ },
+ "batatais": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Batatais",
+    62508
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.8672,
+  "ll": [
+   "Batatais",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.5744,
+  "lx": 4869.82,
+  "ly": 670.01,
+  "m": "full",
+  "mu": "Batatais",
+  "n": "Batatais",
+  "ob": "",
+  "pm": 0,
+  "pop": 62508,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4876.82,
+  "y": 672.24
+ },
+ "bauru": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Bauru",
+    376818
+   ],
+   [
+    "Agudos",
+    37214
+   ],
+   [
+    "Alvinlândia",
+    3222
+   ],
+   [
+    "Cabrália Paulista",
+    4264
+   ],
+   [
+    "Piratininga",
+    13636
+   ]
+  ],
+  "cv": "5.1",
+  "en": "FPA",
+  "lat": -22.2536,
+  "ll": [
+   "Bauru",
+   "cn 30D",
+   "(VT05)"
+  ],
+  "lon": -49.1258,
+  "lx": 4732.05,
+  "ly": 542.54,
+  "m": "full",
+  "mu": "Bauru",
+  "n": "Bauru",
+  "ob": "",
+  "pm": 0,
+  "pop": 376818,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4737.85,
+  "y": 544.66
+ },
+ "bebedouro": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "34D",
+  "cov": [
+   [
+    "Bebedouro",
+    77496
+   ],
+   [
+    "Monte Azul Paulista",
+    19008
+   ]
+  ],
+  "cv": "12.1",
+  "en": "",
+  "lat": -20.9399,
+  "ll": [
+   "Bebedouro",
+   "cn 34D(VT12)"
+  ],
+  "lon": -48.5102,
+  "lx": 4793.44,
+  "ly": 664.48,
+  "m": "full",
+  "mu": "Bebedouro",
+  "n": "Bebedouro",
+  "ob": "",
+  "pm": 0,
+  "pop": 77496,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT12",
+  "x": 4798.76,
+  "y": 666.71
+ },
+ "borborema": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Borborema",
+    16046
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.6102,
+  "ll": [
+   "Borborema",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.0717,
+  "lx": 4730.24,
+  "ly": 601.45,
+  "m": "full",
+  "mu": "Borborema",
+  "n": "Borborema",
+  "ob": "",
+  "pm": 0,
+  "pop": 16046,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4739.85,
+  "y": 603.47
+ },
+ "botucatu": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Botucatu",
+    146497
+   ]
+  ],
+  "cv": "19.1",
+  "en": "FPA",
+  "lat": -22.8629,
+  "ll": [
+   "Botucatu",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -48.468,
+  "lx": 4783.63,
+  "ly": 481.59,
+  "m": "full",
+  "mu": "Botucatu",
+  "n": "Botucatu",
+  "ob": "",
+  "pm": 0,
+  "pop": 146497,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4790.63,
+  "y": 483.92
+ },
+ "braganca-paulista": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Bragança Paulista",
+    168668
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -22.9381,
+  "ll": [
+   "Bragança",
+   "Paulista",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.5554,
+  "lx": 4955.75,
+  "ly": 484.43,
+  "m": "line",
+  "mu": "Bragança Paulista",
+  "n": "Bragança Paulista",
+  "ob": "",
+  "pm": 1,
+  "pop": 168668,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT02",
+  "x": 4952.62,
+  "y": 476.02
+ },
+ "brotas": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Brotas",
+    24403
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.2726,
+  "ll": [
+   "Brotas",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -48.0808,
+  "lx": 4822.03,
+  "ly": 541.48,
+  "m": "full",
+  "mu": "Brotas",
+  "n": "Brotas",
+  "ob": "",
+  "pm": 0,
+  "pop": 24403,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4825.08,
+  "y": 543.91
+ },
+ "buritizal": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Buritizal",
+    4481
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.2093,
+  "ll": [
+   "Buritizal",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.6925,
+  "lx": 4864.5,
+  "ly": 722.14,
+  "m": "full",
+  "mu": "Buritizal",
+  "n": "Buritizal",
+  "ob": "",
+  "pm": 0,
+  "pop": 4481,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4867.47,
+  "y": 724.72
+ },
+ "caconde": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Caconde",
+    18985
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.5393,
+  "ll": [
+   "Caconde",
+   "cn 30D (VT04)"
+  ],
+  "lon": -46.6166,
+  "lx": 4947.66,
+  "ly": 604.01,
+  "m": "full",
+  "mu": "Caconde",
+  "n": "Caconde",
+  "ob": "",
+  "pm": 0,
+  "pop": 18985,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4953.82,
+  "y": 605.69
+ },
+ "cafelandia": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Cafelândia",
+    17767
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -21.7307,
+  "ll": [
+   "Cafelândia",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.5483,
+  "lx": 4685.07,
+  "ly": 584.76,
+  "m": "full",
+  "mu": "Cafelândia",
+  "n": "Cafelândia",
+  "ob": "",
+  "pm": 0,
+  "pop": 17767,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4694.05,
+  "y": 587.26
+ },
+ "cajati": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Cajati",
+    28549
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.7715,
+  "ll": [
+   "Cajatí",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -48.1945,
+  "lx": 4806.06,
+  "ly": 299.41,
+  "m": "full",
+  "mu": "Cajati",
+  "n": "Cajati",
+  "ob": "",
+  "pm": 0,
+  "pop": 28549,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4811.76,
+  "y": 301.66
+ },
+ "campinas": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Campinas",
+    1204073
+   ],
+   [
+    "Americana",
+    239597
+   ],
+   [
+    "Cosmópolis",
+    72252
+   ],
+   [
+    "Holambra",
+    14930
+   ],
+   [
+    "Hortolândia",
+    230851
+   ],
+   [
+    "Indaiatuba",
+    251627
+   ],
+   [
+    "Jaguariúna",
+    57488
+   ],
+   [
+    "Louveira",
+    48885
+   ],
+   [
+    "Monte Mor",
+    59772
+   ],
+   [
+    "Nova Odessa",
+    60174
+   ],
+   [
+    "Paulínia",
+    109424
+   ],
+   [
+    "Sumaré",
+    282441
+   ],
+   [
+    "Valinhos",
+    129193
+   ],
+   [
+    "Vinhedo",
+    78728
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.8836,
+  "ll": [
+   "Campinas",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -47.0434,
+  "lx": 4900.4,
+  "ly": 478.63,
+  "m": "full",
+  "mu": "Campinas",
+  "n": "Campinas",
+  "ob": "",
+  "pm": 0,
+  "pop": 1204073,
+  "pot": "3.000W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4909.85,
+  "y": 481.89
+ },
+ "campos-do-jordao": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Campos do Jordão",
+    52088
+   ]
+  ],
+  "cv": "8.1",
+  "en": "",
+  "lat": -22.7013,
+  "ll": [
+   "Campos do",
+   "Jordão",
+   "cn 24D (VT08)"
+  ],
+  "lon": -45.5326,
+  "lx": 5038.42,
+  "ly": 488.87,
+  "m": "full",
+  "mu": "Campos do Jordão",
+  "n": "Campos do Jordão",
+  "ob": "",
+  "pm": 0,
+  "pop": 52088,
+  "pot": "50W",
+  "r": "N",
+  "vt": "VT08",
+  "x": 5045.3,
+  "y": 490.63
+ },
+ "cananeia": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Cananéia",
+    12540
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -25.2473,
+  "ll": [
+   "Cananéia",
+   "cn 21D (VT03)"
+  ],
+  "lon": -48.0012,
+  "lx": 4832.87,
+  "ly": 285.49,
+  "m": "full",
+  "mu": "Cananéia",
+  "n": "Cananéia",
+  "ob": "",
+  "pm": 0,
+  "pop": 12540,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4834.24,
+  "y": 289.09
+ },
+ "capao-bonito": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Capão Bonito",
+    47138
+   ],
+   [
+    "Ribeirão Grande",
+    7673
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.0387,
+  "ll": [
+   "Capão",
+   "Bonito",
+   "cn 30D (VT03)"
+  ],
+  "lon": -48.2894,
+  "lx": 4790.39,
+  "ly": 381.1,
+  "m": "full",
+  "mu": "Capão Bonito",
+  "n": "Capão Bonito",
+  "ob": "",
+  "pm": 0,
+  "pop": 47138,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4796.14,
+  "y": 383.39
+ },
+ "capivari": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Capivari",
+    55768
+   ],
+   [
+    "Rafard",
+    9076
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.9805,
+  "ll": [
+   "Capivari",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -47.4776,
+  "lx": 4879.8,
+  "ly": 478.54,
+  "m": "half",
+  "mu": "Capivari",
+  "n": "Capivari",
+  "ob": "",
+  "pm": 0,
+  "pop": 55768,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4876.23,
+  "y": 471.89
+ },
+ "caraguatatuba": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Caraguatatuba",
+    121532
+   ],
+   [
+    "Ilhabela",
+    34970
+   ],
+   [
+    "São Sebastião",
+    88980
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.5975,
+  "ll": [
+   "Caraguatatuba",
+   "cn 21D /(VT03)"
+  ],
+  "lon": -45.288,
+  "lx": 5047.28,
+  "ly": 406.92,
+  "m": "full",
+  "mu": "Caraguatatuba",
+  "n": "Caraguatatuba",
+  "ob": "",
+  "pm": 0,
+  "pop": 121532,
+  "pot": "50W",
+  "r": "N",
+  "vt": "VT03",
+  "x": 5043.03,
+  "y": 409.28
+ },
+ "cardoso": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Cardoso",
+    12326
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.0671,
+  "ll": [
+   "Cardoso",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.9471,
+  "lx": 4662.29,
+  "ly": 750.96,
+  "m": "full",
+  "mu": "Cardoso",
+  "n": "Cardoso",
+  "ob": "",
+  "pm": 0,
+  "pop": 12326,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4668.93,
+  "y": 753.06
+ },
+ "cassia-dos-coqueiros": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Cássia dos Coqueiros",
+    2523
+   ],
+   [
+    "Cajuru",
+    26167
+   ],
+   [
+    "Santa Rosa de Viterbo",
+    26540
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.2627,
+  "ll": [
+   "Cássia dos",
+   "Coqueiros",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.1439,
+  "lx": 4894.19,
+  "ly": 629.37,
+  "m": "full",
+  "mu": "Cássia dos Coqueiros",
+  "n": "Cássia dos Coqueiros",
+  "ob": "",
+  "pm": 0,
+  "pop": 2523,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4909.62,
+  "y": 631.76
+ },
+ "catanduva": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Catanduva",
+    121862
+   ],
+   [
+    "Catiguá",
+    7804
+   ],
+   [
+    "Elisiário",
+    3651
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.1334,
+  "ll": [
+   "Catanduva",
+   "cn 30D(VT04)"
+  ],
+  "lon": -48.9631,
+  "lx": 4739.88,
+  "ly": 649.55,
+  "m": "full",
+  "mu": "Catanduva",
+  "n": "Catanduva",
+  "ob": "",
+  "pm": 0,
+  "pop": 121862,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4749.46,
+  "y": 651.55
+ },
+ "cerqueira-cesar": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Cerqueira César",
+    19985
+   ],
+   [
+    "Manduri",
+    9846
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.0595,
+  "ll": [
+   "Cerqueira",
+   "César",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.143,
+  "lx": 4729.45,
+  "ly": 477.37,
+  "m": "half",
+  "mu": "Cerqueira César",
+  "n": "Cerqueira César",
+  "ob": "",
+  "pm": 0,
+  "pop": 19985,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4737.58,
+  "y": 479.14
+ },
+ "clementina": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Clementina",
+    8617
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.5702,
+  "ll": [
+   "Clementina",
+   "cn 30D (VT04)"
+  ],
+  "lon": -50.46,
+  "lx": 4628.27,
+  "ly": 615.5,
+  "m": "full",
+  "mu": "Clementina",
+  "n": "Clementina",
+  "ob": "",
+  "pm": 0,
+  "pop": 8617,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4624.61,
+  "y": 613.11
+ },
+ "descalvado": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Descalvado",
+    33718
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.8809,
+  "ll": [
+   "Descalvado",
+   "cn 30D(VT04)"
+  ],
+  "lon": -47.6542,
+  "lx": 4855.41,
+  "ly": 575.09,
+  "m": "full",
+  "mu": "Descalvado",
+  "n": "Descalvado",
+  "ob": "",
+  "pm": 0,
+  "pop": 33718,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4865.25,
+  "y": 577.07
+ },
+ "dois-corregos": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Dois Córregos",
+    27315
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.3954,
+  "ll": [
+   "Dois",
+   "Córregos",
+   "cn 36D(VT19)"
+  ],
+  "lon": -48.3401,
+  "lx": 4784.71,
+  "ly": 536.9,
+  "m": "full",
+  "mu": "Dois Córregos",
+  "n": "Dois Córregos",
+  "ob": "",
+  "pm": 0,
+  "pop": 27315,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4797.99,
+  "y": 533.39
+ },
+ "dracena": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Dracena",
+    46793
+   ],
+   [
+    "Ouro Verde",
+    8562
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -21.5566,
+  "ll": [
+   "Dracena",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -51.5836,
+  "lx": 4517.4,
+  "ly": 619.7,
+  "m": "full",
+  "mu": "Dracena",
+  "n": "Dracena",
+  "ob": "",
+  "pm": 0,
+  "pop": 46793,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4527.03,
+  "y": 621.69
+ },
+ "duartina": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Duartina",
+    12445
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -22.3928,
+  "ll": [
+   "Duartina",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.4129,
+  "lx": 4706.02,
+  "ly": 531.61,
+  "m": "full",
+  "mu": "Duartina",
+  "n": "Duartina",
+  "ob": "",
+  "pm": 0,
+  "pop": 12445,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4712.34,
+  "y": 533.9
+ },
+ "eldorado": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Eldorado",
+    15494
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.4946,
+  "ll": [
+   "Eldorado",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -48.2331,
+  "lx": 4800.84,
+  "ly": 326.84,
+  "m": "full",
+  "mu": "Eldorado",
+  "n": "Eldorado",
+  "ob": "",
+  "pm": 0,
+  "pop": 15494,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4806.54,
+  "y": 329.53
+ },
+ "espirito-santo-do-pinhal": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Espírito Santo do Pinhal",
+    44330
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.1922,
+  "ll": [
+   "Espírito Santo do Pinhal",
+   "cn 38D(VT10)"
+  ],
+  "lon": -46.7932,
+  "lx": 4938.41,
+  "ly": 543.89,
+  "m": "half",
+  "mu": "Espírito Santo do Pinhal",
+  "n": "Espírito Santo do Pinhal",
+  "ob": "",
+  "pm": 0,
+  "pop": 44330,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4942.99,
+  "y": 546.24
+ },
+ "estrela-d-oeste": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Estrela d'Oeste",
+    8419
+   ],
+   [
+    "Pontalinda",
+    4628
+   ],
+   [
+    "São João das Duas Pontes",
+    2568
+   ]
+  ],
+  "cv": "4.1",
+  "en": "-",
+  "lat": -20.2654,
+  "ll": [
+   "Estrela D'Oeste",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.4109,
+  "lx": 4630.22,
+  "ly": 719.84,
+  "m": "full",
+  "mu": "Estrela d'Oeste",
+  "n": "Estrela d'Oeste",
+  "ob": "",
+  "pm": 0,
+  "pop": 8419,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4635.2,
+  "y": 722.23
+ },
+ "fernandopolis": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Fernandópolis",
+    69116
+   ],
+   [
+    "Guarani d'Oeste",
+    2000
+   ],
+   [
+    "Macedônia",
+    3698
+   ],
+   [
+    "Meridiano",
+    3836
+   ],
+   [
+    "Pedranópolis",
+    2494
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.2715,
+  "ll": [
+   "Fernandópolis",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.2826,
+  "lx": 4634.04,
+  "ly": 734.86,
+  "m": "full",
+  "mu": "Fernandópolis",
+  "n": "Fernandópolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 69116,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4641.07,
+  "y": 736.78
+ },
+ "franca": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Franca",
+    353187
+   ],
+   [
+    "Cristais Paulista",
+    8631
+   ],
+   [
+    "Itirapuã",
+    6499
+   ],
+   [
+    "Jeriquara",
+    3159
+   ],
+   [
+    "Nuporanga",
+    7432
+   ],
+   [
+    "Restinga",
+    7593
+   ],
+   [
+    "Ribeirão Corrente",
+    4718
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.5548,
+  "ll": [
+   "Franca",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.3806,
+  "lx": 4884.27,
+  "ly": 697.06,
+  "m": "full",
+  "mu": "Franca",
+  "n": "Franca",
+  "ob": "",
+  "pm": 0,
+  "pop": 353187,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4891.49,
+  "y": 698.82
+ },
+ "garca": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Garça",
+    44390
+   ],
+   [
+    "Fernão",
+    1716
+   ],
+   [
+    "Gália",
+    6548
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -22.2305,
+  "ll": [
+   "Garça",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.6893,
+  "lx": 4680.73,
+  "ly": 551.49,
+  "m": "full",
+  "mu": "Garça",
+  "n": "Garça",
+  "ob": "",
+  "pm": 0,
+  "pop": 44390,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4685.05,
+  "y": 554
+ },
+ "general-salgado": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "General Salgado",
+    10869
+   ],
+   [
+    "Magda",
+    3119
+   ],
+   [
+    "Nova Castilho",
+    1267
+   ],
+   [
+    "Nova Luzitânia",
+    4101
+   ],
+   [
+    "São João de Iracema",
+    1922
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.6383,
+  "ll": [
+   "General",
+   "Salgado",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.4152,
+  "lx": 4623.52,
+  "ly": 695.14,
+  "m": "full",
+  "mu": "General Salgado",
+  "n": "General Salgado",
+  "ob": "",
+  "pm": 0,
+  "pop": 10869,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4630.88,
+  "y": 697.16
+ },
+ "guaira": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Guaíra",
+    40790
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.3135,
+  "ll": [
+   "Guaíra",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.3636,
+  "lx": 4800.21,
+  "ly": 721.26,
+  "m": "half",
+  "mu": "Guaíra",
+  "n": "Guaíra",
+  "ob": "",
+  "pm": 0,
+  "pop": 40790,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4807.08,
+  "y": 723.59
+ },
+ "guapiara": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Guapiara",
+    17157
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.2121,
+  "ll": [
+   "Guapiara",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -48.5551,
+  "lx": 4777.14,
+  "ly": 363.57,
+  "m": "full",
+  "mu": "Guapiara",
+  "n": "Guapiara",
+  "ob": "",
+  "pm": 0,
+  "pop": 17157,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4780.07,
+  "y": 366.08
+ },
+ "guararema": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Guararema",
+    29798
+   ]
+  ],
+  "cv": "55.1",
+  "en": "",
+  "lat": -23.427,
+  "ll": [
+   "Guararema",
+   "cn 50D",
+   "(VT55)"
+  ],
+  "lon": -46.058,
+  "lx": 4997.48,
+  "ly": 426.1,
+  "m": "half",
+  "mu": "Guararema",
+  "n": "Guararema",
+  "ob": "",
+  "pm": 0,
+  "pop": 29798,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT55",
+  "x": 4999.29,
+  "y": 428.02
+ },
+ "guaratingueta": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Guaratinguetá",
+    121798
+   ],
+   [
+    "Cachoeira Paulista",
+    33327
+   ],
+   [
+    "Canas",
+    5138
+   ],
+   [
+    "Lorena",
+    88706
+   ],
+   [
+    "Pindamonhangaba",
+    168328
+   ],
+   [
+    "Piquete",
+    13657
+   ],
+   [
+    "Potim",
+    24643
+   ],
+   [
+    "Roseira",
+    10712
+   ]
+  ],
+  "cv": "38",
+  "en": "",
+  "lat": -22.7931,
+  "ll": [
+   "Guaratinguetá",
+   "(Morro do Ataque)",
+   "cn 50D (VT38)"
+  ],
+  "lon": -45.2325,
+  "lx": 5060.93,
+  "ly": 504.12,
+  "m": "full",
+  "mu": "Guaratinguetá",
+  "n": "Guaratinguetá",
+  "ob": "",
+  "pm": 0,
+  "pop": 121798,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT38",
+  "x": 5077.91,
+  "y": 506.23
+ },
+ "guariba": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Guariba",
+    40105
+   ],
+   [
+    "Dumont",
+    9868
+   ],
+   [
+    "Pradópolis",
+    21496
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.3956,
+  "ll": [
+   "Guariba",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.2259,
+  "lx": 4807.64,
+  "ly": 617.55,
+  "m": "full",
+  "mu": "Guariba",
+  "n": "Guariba",
+  "ob": "",
+  "pm": 0,
+  "pop": 40105,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4810.82,
+  "y": 620.2
+ },
+ "iacanga": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Iacanga",
+    11710
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -21.8906,
+  "ll": null,
+  "lon": -49.0392,
+  "lx": null,
+  "ly": null,
+  "m": "",
+  "mu": "Iacanga",
+  "n": "Iacanga",
+  "ob": "Consta na planilha Projeto 100%, mas não no desenho DWG · posição aproximada",
+  "pm": 0,
+  "pop": 11710,
+  "pot": "50W",
+  "r": "R",
+  "vt": "",
+  "x": 4743.83,
+  "y": 578.82
+ },
+ "ibitinga": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Ibitinga",
+    60033
+   ],
+   [
+    "Tabatinga",
+    16496
+   ],
+   [
+    "Uru",
+    1165
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.7926,
+  "ll": [
+   "Ibitinga",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.8476,
+  "lx": 4751.31,
+  "ly": 590.08,
+  "m": "full",
+  "mu": "Ibitinga",
+  "n": "Ibitinga",
+  "ob": "",
+  "pm": 0,
+  "pop": 60033,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4756.95,
+  "y": 592.6
+ },
+ "ibiuna": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Ibiúna",
+    78878
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.8021,
+  "ll": null,
+  "lon": -47.2149,
+  "lx": null,
+  "ly": null,
+  "m": "",
+  "mu": "Ibiúna",
+  "n": "Ibiúna",
+  "ob": "Consta na planilha Projeto 100%, mas não no desenho DWG · posição aproximada",
+  "pm": 0,
+  "pop": 78878,
+  "pot": "-",
+  "r": "R",
+  "vt": "",
+  "x": 4893.84,
+  "y": 398.97
+ },
+ "icem": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Icém",
+    8243
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.3668,
+  "ll": [
+   "Icém",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.185,
+  "lx": 4739.57,
+  "ly": 717.01,
+  "m": "full",
+  "mu": "Icém",
+  "n": "Icém",
+  "ob": "",
+  "pm": 0,
+  "pop": 8243,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4744.05,
+  "y": 719.55
+ },
+ "iepe": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Iepê",
+    8159
+   ],
+   [
+    "Nantes",
+    3141
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -22.6479,
+  "ll": [
+   "Iepê",
+   "cn 39D(VT22)"
+  ],
+  "lon": -51.0567,
+  "lx": 4569.12,
+  "ly": 515,
+  "m": "half",
+  "mu": "Iepê",
+  "n": "Iepê",
+  "ob": "",
+  "pm": 0,
+  "pop": 8159,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4564.99,
+  "y": 513.14
+ },
+ "igarapava": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Igarapava",
+    30432
+   ],
+   [
+    "Aramina",
+    5620
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.0634,
+  "ll": [
+   "Igarapava",
+   "cn 30D (VT04)"
+  ],
+  "lon": -47.6817,
+  "lx": 4854.98,
+  "ly": 740.22,
+  "m": "full",
+  "mu": "Igarapava",
+  "n": "Igarapava",
+  "ob": "",
+  "pm": 0,
+  "pop": 30432,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4863.78,
+  "y": 741.96
+ },
+ "iguape-ilha-comprida": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Iguape",
+    30857
+   ],
+   [
+    "Ilha Comprida",
+    11166
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.5491,
+  "ll": [
+   "Iguape / Ilha Comprida",
+   "cn 21D (VT03)"
+  ],
+  "lon": -47.4743,
+  "lx": 4857.29,
+  "ly": 306.08,
+  "m": "full",
+  "mu": "Iguape",
+  "n": "Iguape / Ilha Comprida",
+  "ob": "",
+  "pm": 0,
+  "pop": 30857,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4857.66,
+  "y": 308.56
+ },
+ "ilha-solteira": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Ilha Solteira",
+    26686
+   ],
+   [
+    "Castilho",
+    21006
+   ],
+   [
+    "Itapura",
+    4906
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -20.431,
+  "ll": [
+   "Ilha Solteira",
+   "cn 38D",
+   "(VT05)"
+  ],
+  "lon": -51.2578,
+  "lx": 4537.48,
+  "ly": 713.54,
+  "m": "full",
+  "mu": "Ilha Solteira",
+  "n": "Ilha Solteira",
+  "ob": "",
+  "pm": 0,
+  "pop": 26686,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4547.16,
+  "y": 716.04
+ },
+ "ipero": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Iperó",
+    37133
+   ],
+   [
+    "Araçoiaba da Serra",
+    34146
+   ],
+   [
+    "Boituva",
+    60997
+   ]
+  ],
+  "cv": "14.1",
+  "en": "",
+  "lat": -23.404,
+  "ll": [
+   "Iperó",
+   "(Faz.Ipanema)",
+   "cn36D(VT14)"
+  ],
+  "lon": -47.6289,
+  "lx": 4840.94,
+  "ly": 438.47,
+  "m": "full",
+  "mu": "Iperó",
+  "n": "Iperó",
+  "ob": "",
+  "pm": 0,
+  "pop": 37133,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT14",
+  "x": 4860.89,
+  "y": 441.21
+ },
+ "iporanga": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Iporanga",
+    4218
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.5124,
+  "ll": [
+   "Iporanga",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -48.5461,
+  "lx": 4771.58,
+  "ly": 331.09,
+  "m": "full",
+  "mu": "Iporanga",
+  "n": "Iporanga",
+  "ob": "",
+  "pm": 0,
+  "pop": 4218,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4774.54,
+  "y": 333.65
+ },
+ "itabera": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itaberá",
+    17556
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.8735,
+  "ll": [
+   "Itaberá",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.143,
+  "lx": 4730.14,
+  "ly": 403.42,
+  "m": "full",
+  "mu": "Itaberá",
+  "n": "Itaberá",
+  "ob": "",
+  "pm": 0,
+  "pop": 17556,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4734.77,
+  "y": 405.77
+ },
+ "itai": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itaí",
+    27125
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.4749,
+  "ll": [
+   "Itaí",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.0542,
+  "lx": 4729.35,
+  "ly": 444.36,
+  "m": "cross",
+  "mu": "Itaí",
+  "n": "Itaí",
+  "ob": "",
+  "pm": 1,
+  "pop": 27125,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4731.6,
+  "y": 446.62
+ },
+ "itajobi": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itajobi",
+    15262
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.3554,
+  "ll": [
+   "Itajobí",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.0529,
+  "lx": 4736.27,
+  "ly": 627.23,
+  "m": "full",
+  "mu": "Itajobi",
+  "n": "Itajobi",
+  "ob": "",
+  "pm": 0,
+  "pop": 15262,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4742.71,
+  "y": 629.45
+ },
+ "itanhaem": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "43",
+  "ch": "43D",
+  "cov": [
+   [
+    "Itanhaém",
+    101816
+   ]
+  ],
+  "cv": "44.1",
+  "en": "FPA",
+  "lat": -24.0918,
+  "ll": [
+   "Itanhaém",
+   "cn 43D (VT44)"
+  ],
+  "lon": -46.8346,
+  "lx": 4920.65,
+  "ly": 359.42,
+  "m": "full",
+  "mu": "Itanhaém",
+  "n": "Itanhaém",
+  "ob": "",
+  "pm": 0,
+  "pop": 101816,
+  "pot": "50W",
+  "r": "N",
+  "vt": "VT44",
+  "x": 4922.06,
+  "y": 364.31
+ },
+ "itapetininga": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "42",
+  "ch": "42D",
+  "cov": [
+   [
+    "Itapetininga",
+    163901
+   ],
+   [
+    "Sarapuí",
+    10285
+   ]
+  ],
+  "cv": "20.1",
+  "en": "",
+  "lat": -23.645,
+  "ll": [
+   "Itapetininga",
+   "cn 42D (VT20)"
+  ],
+  "lon": -48.1228,
+  "lx": 4813.63,
+  "ly": 422.92,
+  "m": "full",
+  "mu": "Itapetininga",
+  "n": "Itapetininga",
+  "ob": "",
+  "pm": 0,
+  "pop": 163901,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT20",
+  "x": 4822.93,
+  "y": 425.17
+ },
+ "itapeva": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itapeva",
+    94354
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.9135,
+  "ll": [
+   "Itapeva",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -48.8712,
+  "lx": 4747.24,
+  "ly": 386.8,
+  "m": "full",
+  "mu": "Itapeva",
+  "n": "Itapeva",
+  "ob": "",
+  "pm": 0,
+  "pop": 94354,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4753.34,
+  "y": 388.99
+ },
+ "itapira": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Itapira",
+    74773
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.4314,
+  "ll": [
+   "Itapira",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -46.7717,
+  "lx": 4907.27,
+  "ly": 527.1,
+  "m": "half",
+  "mu": "Itapira",
+  "n": "Itapira",
+  "ob": "",
+  "pm": 0,
+  "pop": 74773,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4921.31,
+  "y": 529.27
+ },
+ "itapolis": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itápolis",
+    43120
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.5478,
+  "ll": [
+   "Itápolis",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.815,
+  "lx": 4759.3,
+  "ly": 611.05,
+  "m": "full",
+  "mu": "Itápolis",
+  "n": "Itápolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 43120,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4763.51,
+  "y": 613.36
+ },
+ "itaporanga": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itaporanga",
+    15149
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.6722,
+  "ll": [
+   "Itaporanga",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.4582,
+  "lx": 4702.28,
+  "ly": 411.74,
+  "m": "half",
+  "mu": "Itaporanga",
+  "n": "Itaporanga",
+  "ob": "",
+  "pm": 0,
+  "pop": 15149,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4698.18,
+  "y": 409.07
+ },
+ "itarare": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Itararé",
+    50503
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.0802,
+  "ll": [
+   "Itararé",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.3031,
+  "lx": 4712.48,
+  "ly": 374.25,
+  "m": "full",
+  "mu": "Itararé",
+  "n": "Itararé",
+  "ob": "",
+  "pm": 0,
+  "pop": 50503,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4715.47,
+  "y": 376.91
+ },
+ "itariri": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Itariri",
+    17436
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.2924,
+  "ll": [
+   "Itarirí",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.1279,
+  "lx": 4884.16,
+  "ly": 351.57,
+  "m": "full",
+  "mu": "Itariri",
+  "n": "Itariri",
+  "ob": "",
+  "pm": 0,
+  "pop": 17436,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4891.44,
+  "y": 353.68
+ },
+ "itatiba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Itatiba",
+    120858
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.0061,
+  "ll": [
+   "Itatiba",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.814,
+  "lx": 4934.27,
+  "ly": 464.58,
+  "m": "cross",
+  "mu": "Itatiba",
+  "n": "Itatiba",
+  "ob": "",
+  "pm": 1,
+  "pop": 120858,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT02",
+  "x": 4939.62,
+  "y": 466.72
+ },
+ "itatinga": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Itatinga",
+    20697
+   ]
+  ],
+  "cv": "47.1",
+  "en": "",
+  "lat": -23.1532,
+  "ll": [
+   "Itatinga",
+   "cn 44D",
+   "(VT47)"
+  ],
+  "lon": -48.629,
+  "lx": 4769.36,
+  "ly": 460.28,
+  "m": "full",
+  "mu": "Itatinga",
+  "n": "Itatinga",
+  "ob": "",
+  "pm": 0,
+  "pop": 20697,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT47",
+  "x": 4774.74,
+  "y": 462.59
+ },
+ "itu": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "41",
+  "ch": "41D",
+  "cov": [
+   [
+    "Itu",
+    173939
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -23.3068,
+  "ll": [
+   "Itu",
+   "cn41D",
+   "(VT41)"
+  ],
+  "lon": -47.2844,
+  "lx": 4867.61,
+  "ly": 452.83,
+  "m": "full",
+  "mu": "Itu",
+  "n": "Itu",
+  "ob": "",
+  "pm": 0,
+  "pop": 173939,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4879.37,
+  "y": 454.99
+ },
+ "ituverava": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Ituverava",
+    41824
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.3292,
+  "ll": [
+   "Ituverava",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.8094,
+  "lx": 4836.52,
+  "ly": 726.4,
+  "m": "full",
+  "mu": "Ituverava",
+  "n": "Ituverava",
+  "ob": "",
+  "pm": 0,
+  "pop": 41824,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4855.21,
+  "y": 720.83
+ },
+ "jaboticabal": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Jaboticabal",
+    77263
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.2179,
+  "ll": [
+   "Jaboticabal",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.2875,
+  "lx": 4820.03,
+  "ly": 637.78,
+  "m": "full",
+  "mu": "Jaboticabal",
+  "n": "Jaboticabal",
+  "ob": "",
+  "pm": 0,
+  "pop": 77263,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4816.05,
+  "y": 636.17
+ },
+ "jacupiranga": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Jacupiranga",
+    17866
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.7772,
+  "ll": null,
+  "lon": -48.0535,
+  "lx": null,
+  "ly": null,
+  "m": "",
+  "mu": "Jacupiranga",
+  "n": "Jacupiranga",
+  "ob": "Consta na planilha Projeto 100%, mas não no desenho DWG · posição aproximada",
+  "pm": 0,
+  "pop": 17866,
+  "pot": "-",
+  "r": "R",
+  "vt": "",
+  "x": 4817.86,
+  "y": 311.7
+ },
+ "jales": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Jales",
+    49107
+   ],
+   [
+    "Dirce Reis",
+    1793
+   ],
+   [
+    "Paranapuã",
+    4078
+   ],
+   [
+    "Pontalinda",
+    4628
+   ],
+   [
+    "Santa Salete",
+    1545
+   ],
+   [
+    "São Francisco",
+    2821
+   ],
+   [
+    "Urânia",
+    9114
+   ],
+   [
+    "Vitória Brasil",
+    1840
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.2856,
+  "ll": [
+   "Jales",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.5534,
+  "lx": 4612.96,
+  "ly": 727.76,
+  "m": "full",
+  "mu": "Jales",
+  "n": "Jales",
+  "ob": "",
+  "pm": 0,
+  "pop": 49107,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4618.06,
+  "y": 730.29
+ },
+ "japi": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -23.235,
+  "ll": [
+   "Japí"
+  ],
+  "lon": -46.935,
+  "lx": 4919.02,
+  "ly": 451.7,
+  "m": "",
+  "mu": "Jundiaí",
+  "n": "Japi",
+  "ob": "Repetidora na Serra do Japi",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "P",
+  "vt": "",
+  "x": 4917.02,
+  "y": 452.7
+ },
+ "jaragua": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "24D",
+  "cov": [
+   [
+    "Francisco Morato",
+    175844
+   ]
+  ],
+  "cv": "",
+  "en": "",
+  "lat": -23.3506,
+  "ll": [
+   "Jaragua",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.364,
+  "lx": 4961.16,
+  "ly": 436.11,
+  "m": "half",
+  "mu": "",
+  "n": "Jaraguá",
+  "ob": "Gap filler",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "G",
+  "vt": "VT02",
+  "x": 4968.89,
+  "y": 438.2
+ },
+ "jau": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Jaú",
+    150252
+   ],
+   [
+    "Mineiros do Tietê",
+    12908
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -22.2957,
+  "ll": [
+   "Jaú",
+   "cn 44D",
+   "(VT41)"
+  ],
+  "lon": -48.5554,
+  "lx": 4788.87,
+  "ly": 552.95,
+  "m": "full",
+  "mu": "Jaú",
+  "n": "Jaú",
+  "ob": "",
+  "pm": 0,
+  "pop": 150252,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4785.16,
+  "y": 543.8
+ },
+ "jose-bonifacio": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "José Bonifácio",
+    37015
+   ],
+   [
+    "Planalto",
+    5237
+   ],
+   [
+    "Ubarana",
+    6309
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.0892,
+  "ll": [
+   "José Bonifácio",
+   "cn 30D(VT04)"
+  ],
+  "lon": -49.7789,
+  "lx": 4680.45,
+  "ly": 654.88,
+  "m": "full",
+  "mu": "José Bonifácio",
+  "n": "José Bonifácio",
+  "ob": "",
+  "pm": 0,
+  "pop": 37015,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4691.49,
+  "y": 657.29
+ },
+ "jundiai": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Jundiaí",
+    418962
+   ],
+   [
+    "Campo Limpo Paulista",
+    84650
+   ],
+   [
+    "Várzea Paulista",
+    121838
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.1941,
+  "ll": [
+   "Jundiaí",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.9125,
+  "lx": 4907.02,
+  "ly": 468.04,
+  "m": "full",
+  "mu": "Jundiaí",
+  "n": "Jundiaí",
+  "ob": "",
+  "pm": 0,
+  "pop": 418962,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT02",
+  "x": 4926.7,
+  "y": 455.67
+ },
+ "junqueiropolis": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Junqueirópolis",
+    20679
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -21.4489,
+  "ll": [
+   "Junqueirópolis",
+   "cn 39D(VT22)"
+  ],
+  "lon": -51.4347,
+  "lx": 4541.44,
+  "ly": 632.22,
+  "m": "half",
+  "mu": "Junqueirópolis",
+  "n": "Junqueirópolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 20679,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4537.71,
+  "y": 621.67
+ },
+ "juquia": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Juquiá",
+    18812
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.2136,
+  "ll": [
+   "Juquiá",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.6531,
+  "lx": 4849.53,
+  "ly": 357.54,
+  "m": "full",
+  "mu": "Juquiá",
+  "n": "Juquiá",
+  "ob": "",
+  "pm": 0,
+  "pop": 18812,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4855.14,
+  "y": 359.56
+ },
+ "juquitiba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Juquitiba",
+    31444
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.9547,
+  "ll": [
+   "Juquitiba",
+   "cn 21D (VT03)"
+  ],
+  "lon": -47.0241,
+  "lx": 4899.13,
+  "ly": 385.21,
+  "m": "full",
+  "mu": "Juquitiba",
+  "n": "Juquitiba",
+  "ob": "",
+  "pm": 0,
+  "pop": 31444,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4905.02,
+  "y": 387.47
+ },
+ "lagoinha": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Lagoinha",
+    4896
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -23.0852,
+  "ll": [
+   "Lagoinha",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -45.2065,
+  "lx": 5067.01,
+  "ly": 455.55,
+  "m": "full",
+  "mu": "Lagoinha",
+  "n": "Lagoinha",
+  "ob": "",
+  "pm": 0,
+  "pop": 4896,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5070.02,
+  "y": 457.6
+ },
+ "laranjal-paulista": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "42",
+  "ch": "42D",
+  "cov": [
+   [
+    "Laranjal Paulista",
+    28516
+   ],
+   [
+    "Jumirim",
+    3367
+   ]
+  ],
+  "cv": "20.1",
+  "en": "",
+  "lat": -23.0117,
+  "ll": [
+   "Laranjal",
+   "Paulista",
+   "cn 42D",
+   "(VT20)"
+  ],
+  "lon": -47.8651,
+  "lx": 4810.17,
+  "ly": 485,
+  "m": "half",
+  "mu": "Laranjal Paulista",
+  "n": "Laranjal Paulista",
+  "ob": "",
+  "pm": 0,
+  "pop": 28516,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT20",
+  "x": 4834.36,
+  "y": 479.03
+ },
+ "leme": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Leme",
+    103391
+   ],
+   [
+    "Santa Cruz da Conceição",
+    4503
+   ]
+  ],
+  "cv": "34.1",
+  "en": "",
+  "lat": -22.1717,
+  "ll": [
+   "Leme",
+   "cn 30D (VT34)"
+  ],
+  "lon": -47.337,
+  "lx": 4881.93,
+  "ly": 550.05,
+  "m": "full",
+  "mu": "Leme",
+  "n": "Leme",
+  "ob": "",
+  "pm": 0,
+  "pop": 103391,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT34",
+  "x": 4884.4,
+  "y": 552.23
+ },
+ "lencois-paulista": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Lençóis Paulista",
+    68432
+   ],
+   [
+    "Borebi",
+    2653
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.6755,
+  "ll": [
+   "Lençóis",
+   "Paulista",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -48.8244,
+  "lx": 4745.61,
+  "ly": 517.1,
+  "m": "full",
+  "mu": "Lençóis Paulista",
+  "n": "Lençóis Paulista",
+  "ob": "",
+  "pm": 0,
+  "pop": 68432,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4764.07,
+  "y": 510.94
+ },
+ "limeira": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "-",
+  "ch": "",
+  "cov": [
+   [
+    "Limeira",
+    306114
+   ]
+  ],
+  "cv": "39.1",
+  "en": "",
+  "lat": -22.5981,
+  "ll": [
+   "Limeira",
+   "cn"
+  ],
+  "lon": -47.3632,
+  "lx": 4873.21,
+  "ly": 497,
+  "m": "full",
+  "mu": "Limeira",
+  "n": "Limeira",
+  "ob": "",
+  "pm": 0,
+  "pop": 306114,
+  "pot": "-",
+  "r": "J",
+  "vt": "",
+  "x": 4879.81,
+  "y": 499.69
+ },
+ "lindoia": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Lindóia",
+    7980
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.5129,
+  "ll": [
+   "Lindóia",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -46.6543,
+  "lx": 4926.14,
+  "ly": 521.21,
+  "m": "full",
+  "mu": "Lindóia",
+  "n": "Lindóia",
+  "ob": "",
+  "pm": 0,
+  "pop": 7980,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4945.05,
+  "y": 516.63
+ },
+ "lins": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Lins",
+    78013
+   ],
+   [
+    "Getulina",
+    11409
+   ],
+   [
+    "Guaiçara",
+    12168
+   ],
+   [
+    "Promissão",
+    40432
+   ]
+  ],
+  "cv": "13.1",
+  "en": "FPA",
+  "lat": -21.6494,
+  "ll": [
+   "Lins",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.6829,
+  "lx": 4671.76,
+  "ly": 604.4,
+  "m": "full",
+  "mu": "Lins",
+  "n": "Lins",
+  "ob": "",
+  "pm": 0,
+  "pop": 78013,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4683.26,
+  "y": 602.07
+ },
+ "mairipora": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Mairiporã",
+    100179
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.3169,
+  "ll": [
+   "Mairiporã",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.5608,
+  "lx": 4940.15,
+  "ly": 446.1,
+  "m": "full",
+  "mu": "Mairiporã",
+  "n": "Mairiporã",
+  "ob": "",
+  "pm": 0,
+  "pop": 100179,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT02",
+  "x": 4948.39,
+  "y": 448.39
+ },
+ "marilia": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "44D",
+  "cov": [
+   [
+    "Campos Novos Paulista",
+    4965
+   ],
+   [
+    "Echaporã",
+    6102
+   ],
+   [
+    "Júlio Mesquita",
+    4776
+   ],
+   [
+    "Ocauçu",
+    4289
+   ],
+   [
+    "Oriente",
+    6515
+   ],
+   [
+    "Oscar Bressane",
+    2603
+   ],
+   [
+    "Pompéia",
+    22014
+   ],
+   [
+    "Presidente Alves",
+    4094
+   ],
+   [
+    "Vera Cruz",
+    10843
+   ],
+   [
+    "Álvaro de Carvalho",
+    5227
+   ]
+  ],
+  "cv": "",
+  "en": "",
+  "lat": -22.1778,
+  "ll": [
+   "Marília",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.9825,
+  "lx": 4657.99,
+  "ly": 547.03,
+  "m": "full",
+  "mu": "Marília",
+  "n": "Marília",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4663.19,
+  "y": 549.51
+ },
+ "matao": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "",
+  "cov": [
+   [
+    "Matão",
+    83170
+   ],
+   [
+    "Dobrada",
+    8929
+   ],
+   [
+    "Motuca",
+    4758
+   ]
+  ],
+  "cv": "11.1",
+  "en": "",
+  "lat": -21.6097,
+  "ll": [
+   "Matão",
+   "VT 11"
+  ],
+  "lon": -48.43,
+  "lx": 4792.69,
+  "ly": 600.41,
+  "m": "full",
+  "mu": "Matão",
+  "n": "Matão",
+  "ob": "",
+  "pm": 0,
+  "pop": 83170,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT11",
+  "x": 4803.68,
+  "y": 602.78
+ },
+ "miracatu": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Miracatu",
+    19779
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.1945,
+  "ll": [
+   "Miracatu",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.3942,
+  "lx": 4867.73,
+  "ly": 363.32,
+  "m": "full",
+  "mu": "Miracatu",
+  "n": "Miracatu",
+  "ob": "",
+  "pm": 0,
+  "pop": 19779,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4870.99,
+  "y": 366.01
+ },
+ "mirandopolis": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Mirandópolis",
+    29564
+   ],
+   [
+    "Guaraçaí",
+    8323
+   ],
+   [
+    "Lavínia",
+    11980
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -21.0808,
+  "ll": [
+   "Mirandópolis",
+   "cn 38D",
+   "(VT05)"
+  ],
+  "lon": -51.1301,
+  "lx": 4552.82,
+  "ly": 654.55,
+  "m": "full",
+  "mu": "Mirandópolis",
+  "n": "Mirandópolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 29564,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4564.75,
+  "y": 657.05
+ },
+ "mococa": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Mococa",
+    68885
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -21.449,
+  "ll": [
+   "Mocóca",
+   "cn 30D (VT04)"
+  ],
+  "lon": -47.0324,
+  "lx": 4916.68,
+  "ly": 608.73,
+  "m": "full",
+  "mu": "Mococa",
+  "n": "Mococa",
+  "ob": "",
+  "pm": 0,
+  "pop": 68885,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4919.66,
+  "y": 611.01
+ },
+ "mogi-das-cruzes": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "24D",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -23.5689,
+  "ll": [
+   "Mogi das Cruzes",
+   "(Moro do Urubu)",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.1856,
+  "lx": 4976.82,
+  "ly": 411.03,
+  "m": "half",
+  "mu": "Mogi das Cruzes",
+  "n": "Mogi das Cruzes",
+  "ob": "Gap filler",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "G",
+  "vt": "VT02",
+  "x": 4988.46,
+  "y": 413.13
+ },
+ "mogi-guacu": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Mogi Guaçu",
+    445842
+   ],
+   [
+    "Mogi-Mirim",
+    93189
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.2316,
+  "ll": [
+   "Mogi guaçu",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -47.0288,
+  "lx": 4904.44,
+  "ly": 502.03,
+  "m": "half",
+  "mu": "Mogi Guaçu",
+  "n": "Mogi Guaçu",
+  "ob": "",
+  "pm": 0,
+  "pop": 445842,
+  "pot": "-",
+  "r": "X",
+  "vt": "VT10",
+  "x": 4909.94,
+  "y": 505.91
+ },
+ "mongagua": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "43",
+  "ch": "43D",
+  "cov": [
+   [
+    "Mongaguá",
+    56702
+   ]
+  ],
+  "cv": "44.1",
+  "en": "",
+  "lat": -24.0698,
+  "ll": [
+   "Mongaguá",
+   "cn 43D (VT44)"
+  ],
+  "lon": -46.6674,
+  "lx": 4938.21,
+  "ly": 367.8,
+  "m": "half",
+  "mu": "Mongaguá",
+  "n": "Mongaguá",
+  "ob": "",
+  "pm": 0,
+  "pop": 56702,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT44",
+  "x": 4937.29,
+  "y": 372.07
+ },
+ "monte-alegre-do-sul": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Monte Alegre do Sul",
+    8038
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.7037,
+  "ll": [
+   "Monte Alegre do Sul cn 38D (VT10)"
+  ],
+  "lon": -46.6671,
+  "lx": 4941.18,
+  "ly": 491.08,
+  "m": "full",
+  "mu": "Monte Alegre do Sul",
+  "n": "Monte Alegre do Sul",
+  "ob": "",
+  "pm": 0,
+  "pop": 8038,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4948.29,
+  "y": 492.86
+ },
+ "monte-alto": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Monte Alto",
+    50498
+   ],
+   [
+    "Cândido Rodrigues",
+    2793
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.2589,
+  "ll": [
+   "Monte Alto",
+   "cn 30D (VT04)"
+  ],
+  "lon": -48.5323,
+  "lx": 4781.51,
+  "ly": 654.58,
+  "m": "full",
+  "mu": "Monte Alto",
+  "n": "Monte Alto",
+  "ob": "",
+  "pm": 0,
+  "pop": 50498,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4786.66,
+  "y": 639.55
+ },
+ "monte-aprazivel": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Monte Aprazível",
+    25087
+   ],
+   [
+    "Nipoã",
+    5213
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.7369,
+  "ll": [
+   "Monte Aprazível",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.7652,
+  "lx": 4675.44,
+  "ly": 681.14,
+  "m": "full",
+  "mu": "Monte Aprazível",
+  "n": "Monte Aprazível",
+  "ob": "",
+  "pm": 0,
+  "pop": 25087,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4689.32,
+  "y": 683.8
+ },
+ "monteiro-lobato": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Monteiro Lobato",
+    4653
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.9365,
+  "ll": [
+   "Monteiro",
+   "Lobato",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -45.804,
+  "lx": 5017.08,
+  "ly": 463.89,
+  "m": "half",
+  "mu": "Monteiro Lobato",
+  "n": "Monteiro Lobato",
+  "ob": "",
+  "pm": 0,
+  "pop": 4653,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5023.59,
+  "y": 466.05
+ },
+ "morungaba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Morungaba",
+    13622
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.8933,
+  "ll": [
+   "Morungaba",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -46.7827,
+  "lx": 4924.87,
+  "ly": 481.89,
+  "m": "full",
+  "mu": "Morungaba",
+  "n": "Morungaba",
+  "ob": "",
+  "pm": 0,
+  "pop": 13622,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4935.05,
+  "y": 483.79
+ },
+ "nhandeara": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Nhandeara",
+    11478
+   ],
+   [
+    "Floreal",
+    2917
+   ],
+   [
+    "Gastão Vidigal",
+    4808
+   ],
+   [
+    "Macaubal",
+    8120
+   ],
+   [
+    "Monções",
+    2259
+   ],
+   [
+    "Sebastianópolis do Sul",
+    3513
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.6728,
+  "ll": [
+   "Nhandeara",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.0464,
+  "lx": 4653.6,
+  "ly": 687.45,
+  "m": "full",
+  "mu": "Nhandeara",
+  "n": "Nhandeara",
+  "ob": "",
+  "pm": 0,
+  "pop": 11478,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4660.38,
+  "y": 689.48
+ },
+ "nova-europa": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Nova Europa",
+    11186
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.7738,
+  "ll": [
+   "Nova Europa",
+   "cn 30D(VT04)"
+  ],
+  "lon": -48.5491,
+  "lx": 4779.18,
+  "ly": 585.45,
+  "m": "full",
+  "mu": "Nova Europa",
+  "n": "Nova Europa",
+  "ob": "",
+  "pm": 0,
+  "pop": 11186,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4785.88,
+  "y": 587.55
+ },
+ "novo-horizonte": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Novo Horizonte",
+    41052
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.4688,
+  "ll": [
+   "Novo",
+   "Horizonte",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.2832,
+  "lx": 4702.61,
+  "ly": 628.63,
+  "m": "full",
+  "mu": "Novo Horizonte",
+  "n": "Novo Horizonte",
+  "ob": "",
+  "pm": 0,
+  "pop": 41052,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4716.45,
+  "y": 626.54
+ },
+ "olimpia": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Olímpia",
+    54772
+   ],
+   [
+    "Severínia",
+    17496
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.7049,
+  "ll": [
+   "Olímpia",
+   "cn 30D(VT04)"
+  ],
+  "lon": -48.9593,
+  "lx": 4737.73,
+  "ly": 685.87,
+  "m": "full",
+  "mu": "Olímpia",
+  "n": "Olímpia",
+  "ob": "",
+  "pm": 0,
+  "pop": 54772,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4755.86,
+  "y": 684.28
+ },
+ "orindiuva": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Orindiúva",
+    7066
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.2016,
+  "ll": [
+   "Orindiúva",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.3555,
+  "lx": 4708.2,
+  "ly": 733.56,
+  "m": "full",
+  "mu": "Orindiúva",
+  "n": "Orindiúva",
+  "ob": "",
+  "pm": 0,
+  "pop": 7066,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4716.55,
+  "y": 735.78
+ },
+ "orlandia": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Orlândia",
+    44028
+   ],
+   [
+    "Morro Agudo",
+    32968
+   ],
+   [
+    "Sales Oliveira",
+    11890
+   ],
+   [
+    "Viradouro",
+    18898
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -20.6975,
+  "ll": [
+   "Orlândia",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.9054,
+  "lx": 4842.43,
+  "ly": 681.3,
+  "m": "full",
+  "mu": "Orlândia",
+  "n": "Orlândia",
+  "ob": "",
+  "pm": 0,
+  "pop": 44028,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4849.91,
+  "y": 683.92
+ },
+ "osvaldo-cruz": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Osvaldo Cruz",
+    32879
+   ],
+   [
+    "Inúbia Paulista",
+    3991
+   ],
+   [
+    "Pracinha",
+    4093
+   ],
+   [
+    "Sagres",
+    2432
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.7323,
+  "ll": [
+   "Osvaldo",
+   "Cruz",
+   "cn 38D",
+   "(VT04)"
+  ],
+  "lon": -50.8732,
+  "lx": 4569.31,
+  "ly": 589.3,
+  "m": "half",
+  "mu": "Osvaldo Cruz",
+  "n": "Osvaldo Cruz",
+  "ob": "",
+  "pm": 0,
+  "pop": 32879,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4581.8,
+  "y": 591.88
+ },
+ "ourinhos": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Ourinhos",
+    113542
+   ],
+   [
+    "Canitar",
+    5216
+   ],
+   [
+    "Chavantes",
+    12418
+   ],
+   [
+    "Salto Grande",
+    9331
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -22.9521,
+  "ll": [
+   "Ourinhos",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.8518,
+  "lx": 4673.91,
+  "ly": 488.54,
+  "m": "full",
+  "mu": "Ourinhos",
+  "n": "Ourinhos",
+  "ob": "",
+  "pm": 0,
+  "pop": 113542,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4669.63,
+  "y": 482.51
+ },
+ "pacaembu": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Pacaembu",
+    14197
+   ],
+   [
+    "Flora Rica",
+    1464
+   ],
+   [
+    "Flórida Paulista",
+    14640
+   ],
+   [
+    "Irapuru",
+    8294
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -21.4949,
+  "ll": [
+   "Pacaembu",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -51.2735,
+  "lx": 4538.85,
+  "ly": 614.26,
+  "m": "half",
+  "mu": "Pacaembu",
+  "n": "Pacaembu",
+  "ob": "",
+  "pm": 0,
+  "pop": 14197,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4549.19,
+  "y": 616.23
+ },
+ "palestina": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Palestina",
+    12957
+   ],
+   [
+    "Nova Granada",
+    21500
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.3209,
+  "ll": [
+   "Palestina",
+   "cn 30D(VT04)"
+  ],
+  "lon": -49.4972,
+  "lx": 4706.67,
+  "ly": 719.26,
+  "m": "full",
+  "mu": "Palestina",
+  "n": "Palestina",
+  "ob": "",
+  "pm": 0,
+  "pop": 12957,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4714.23,
+  "y": 721.47
+ },
+ "paraibuna": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Paraibuna",
+    18222
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -23.4778,
+  "ll": [
+   "Paraibuna",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -45.6414,
+  "lx": 5020.66,
+  "ly": 427.25,
+  "m": "half",
+  "mu": "Paraibuna",
+  "n": "Paraibuna",
+  "ob": "",
+  "pm": 0,
+  "pop": 18222,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5029.4,
+  "y": 429.61
+ },
+ "paranapanema": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Paranapanema",
+    20197
+   ]
+  ],
+  "cv": "47.1",
+  "en": "",
+  "lat": -23.438,
+  "ll": [
+   "Paranapanema",
+   "cn 44D",
+   "(VT47)"
+  ],
+  "lon": -48.7947,
+  "lx": 4750.58,
+  "ly": 442.92,
+  "m": "full",
+  "mu": "Paranapanema",
+  "n": "Paranapanema",
+  "ob": "",
+  "pm": 0,
+  "pop": 20197,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT47",
+  "x": 4762.96,
+  "y": 444.6
+ },
+ "parapua": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Parapuã",
+    10964
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.8527,
+  "ll": [
+   "Parapuã",
+   "cn 38D",
+   "(VT04)"
+  ],
+  "lon": -50.8209,
+  "lx": 4596.36,
+  "ly": 590.96,
+  "m": "half",
+  "mu": "Parapuã",
+  "n": "Parapuã",
+  "ob": "",
+  "pm": 0,
+  "pop": 10964,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4597.05,
+  "y": 593.53
+ },
+ "pariquera-acu": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Pariquera-Açu",
+    19648
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.6777,
+  "ll": [
+   "Pariquera-Açu",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.8496,
+  "lx": 4842.58,
+  "ly": 324.58,
+  "m": "full",
+  "mu": "Pariquera-Açu",
+  "n": "Pariquera-Açu",
+  "ob": "",
+  "pm": 0,
+  "pop": 19648,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4839.06,
+  "y": 322.89
+ },
+ "patrocinio-paulista": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Patrocínio Paulista",
+    14670
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.7041,
+  "ll": [
+   "Patrocínio",
+   "Paulista",
+   "cn 30D(VT04)"
+  ],
+  "lon": -47.289,
+  "lx": 4890.47,
+  "ly": 677.12,
+  "m": "cross",
+  "mu": "Patrocínio Paulista",
+  "n": "Patrocínio Paulista",
+  "ob": "",
+  "pm": 0,
+  "pop": 14670,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4899.51,
+  "y": 679.38
+ },
+ "paulo-de-faria": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Paulo de Faria",
+    8945
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.0662,
+  "ll": [
+   "Paulo de Faria",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.4627,
+  "lx": 4718.82,
+  "ly": 750.15,
+  "m": "full",
+  "mu": "Paulo de Faria",
+  "n": "Paulo de Faria",
+  "ob": "",
+  "pm": 0,
+  "pop": 8945,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4715.1,
+  "y": 748.36
+ },
+ "pederneiras": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Pederneiras",
+    46687
+   ],
+   [
+    "Itapuí",
+    13992
+   ],
+   [
+    "Macatuba",
+    17163
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -22.3005,
+  "ll": [
+   "Pederneiras",
+   "cn 44D",
+   "(VT41)"
+  ],
+  "lon": -48.8607,
+  "lx": 4753.08,
+  "ly": 532.34,
+  "m": "full",
+  "mu": "Pederneiras",
+  "n": "Pederneiras",
+  "ob": "",
+  "pm": 0,
+  "pop": 46687,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4763.88,
+  "y": 533.99
+ },
+ "pedreira-gap-filler-campinas": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "38D",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -22.7542,
+  "ll": null,
+  "lon": -46.8882,
+  "lx": null,
+  "ly": null,
+  "m": "",
+  "mu": "Pedreira",
+  "n": "Pedreira Gap Filler Campinas",
+  "ob": "Desenhado em destaque fora do mapa; posição aproximada",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "F",
+  "vt": "VT10",
+  "x": 4899.7,
+  "y": 503.79
+ },
+ "pedreira": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "38D",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -22.7542,
+  "ll": [
+   "Pedreira",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -46.8882,
+  "lx": 4891,
+  "ly": 503.11,
+  "m": "half",
+  "mu": "Pedreira",
+  "n": "Pedreira",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4896.5,
+  "y": 506.99
+ },
+ "pedro-de-toledo": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Pedro de Toledo",
+    11331
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.1633,
+  "ll": [
+   "Pedro de Toledo",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.1633,
+  "lx": 4898.31,
+  "ly": 374.6,
+  "m": "full",
+  "mu": "Pedro de Toledo",
+  "n": "Pedro de Toledo",
+  "ob": "",
+  "pm": 0,
+  "pop": 11331,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4895.1,
+  "y": 366.16
+ },
+ "penapolis": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Penápolis",
+    63407
+   ],
+   [
+    "Alto Alegre",
+    4099
+   ],
+   [
+    "Brejo Alegre",
+    2865
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.4049,
+  "ll": [
+   "Penápolis",
+   "cn 30D(VT04)"
+  ],
+  "lon": -50.0951,
+  "lx": 4647.22,
+  "ly": 627.1,
+  "m": "full",
+  "mu": "Penápolis",
+  "n": "Penápolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 63407,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4655.17,
+  "y": 629.14
+ },
+ "pereira-barreto": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Pereira Barreto",
+    25669
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -20.6777,
+  "ll": [
+   "Pereira Barreto",
+   "cn 38D (VT05)"
+  ],
+  "lon": -51.1053,
+  "lx": 4561.96,
+  "ly": 698.13,
+  "m": "full",
+  "mu": "Pereira Barreto",
+  "n": "Pereira Barreto",
+  "ob": "",
+  "pm": 0,
+  "pop": 25669,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4568.94,
+  "y": 700.24
+ },
+ "pereiras": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "42",
+  "ch": "42D",
+  "cov": [
+   [
+    "Pereiras",
+    8668
+   ]
+  ],
+  "cv": "20.1",
+  "en": "",
+  "lat": -23.1202,
+  "ll": [
+   "Pereiras",
+   "cn 42D",
+   "(VT20)"
+  ],
+  "lon": -47.9783,
+  "lx": 4828.06,
+  "ly": 462.19,
+  "m": "half",
+  "mu": "Pereiras",
+  "n": "Pereiras",
+  "ob": "",
+  "pm": 0,
+  "pop": 8668,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT20",
+  "x": 4831.16,
+  "y": 464.48
+ },
+ "peruibe": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "43",
+  "ch": "43D",
+  "cov": [
+   [
+    "Peruíbe",
+    68284
+   ]
+  ],
+  "cv": "44.1",
+  "en": "",
+  "lat": -24.3907,
+  "ll": [
+   "Peruíbe",
+   "cn 43D (VT44)"
+  ],
+  "lon": -46.9042,
+  "lx": 4909.5,
+  "ly": 349.28,
+  "m": "cross",
+  "mu": "Peruíbe",
+  "n": "Peruíbe",
+  "ob": "",
+  "pm": 0,
+  "pop": 68284,
+  "pot": "50W",
+  "r": "N",
+  "vt": "VT44",
+  "x": 4904.05,
+  "y": 350.25
+ },
+ "piedade": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "41",
+  "ch": "41D",
+  "cov": [
+   [
+    "Piedade",
+    55348
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -23.7864,
+  "ll": [
+   "Piedade",
+   "cn 41D",
+   "(VT41)"
+  ],
+  "lon": -47.4376,
+  "lx": 4877.91,
+  "ly": 401.46,
+  "m": "half",
+  "mu": "Piedade",
+  "n": "Piedade",
+  "ob": "",
+  "pm": 0,
+  "pop": 55348,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4878.79,
+  "y": 404.04
+ },
+ "pilar-do-sul": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "by": "u_66iz274A8EEPd_fZ1QDI6w",
+  "cf": "42",
+  "ch": "42D",
+  "cov": [
+   [
+    "Pilar do Sul",
+    29185
+   ]
+  ],
+  "cv": "20.1",
+  "en": "",
+  "lat": -23.8558,
+  "ll": null,
+  "lon": -47.7275,
+  "lx": null,
+  "ly": null,
+  "m": "full",
+  "mu": "Pilar do Sul",
+  "n": "Pilar do Sul",
+  "ob": "",
+  "pm": 0,
+  "pop": 29185,
+  "pot": "100W",
+  "r": "R",
+  "upd": "2026-10-23T20:59:43.643Z",
+  "vt": "VT20",
+  "x": 4845.37,
+  "y": 403.2
+ },
+ "pindorama": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Pindorama",
+    17049
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.2095,
+  "ll": [
+   "Pindorama",
+   "cn 30D (VT04)"
+  ],
+  "lon": -48.9111,
+  "lx": 4762.48,
+  "ly": 634.68,
+  "m": "half",
+  "mu": "Pindorama",
+  "n": "Pindorama",
+  "ob": "",
+  "pm": 0,
+  "pop": 17049,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4758.89,
+  "y": 631.67
+ },
+ "piracaia": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Piracaia",
+    27303
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.0466,
+  "ll": [
+   "Piracaia",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.3022,
+  "lx": 4978.35,
+  "ly": 463.38,
+  "m": "full",
+  "mu": "Piracaia",
+  "n": "Piracaia",
+  "ob": "",
+  "pm": 0,
+  "pop": 27303,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT02",
+  "x": 4974.59,
+  "y": 460.88
+ },
+ "piracicaba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Piracicaba",
+    404142
+   ],
+   [
+    "Rio das Pedras",
+    35228
+   ],
+   [
+    "Saltinho",
+    8286
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.7261,
+  "ll": [
+   "Piracicaba",
+   "cn 36D (VT19)"
+  ],
+  "lon": -47.7831,
+  "lx": 4828.66,
+  "ly": 502.11,
+  "m": "full",
+  "mu": "Piracicaba",
+  "n": "Piracicaba",
+  "ob": "",
+  "pm": 0,
+  "pop": 404142,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4858.94,
+  "y": 496.38
+ },
+ "piraju": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Piraju",
+    29806
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -23.1866,
+  "ll": [
+   "Piraju",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.3657,
+  "lx": 4705.06,
+  "ly": 460.16,
+  "m": "full",
+  "mu": "Piraju",
+  "n": "Piraju",
+  "ob": "",
+  "pm": 0,
+  "pop": 29806,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4710.13,
+  "y": 462.65
+ },
+ "pirajui": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Pirajuí",
+    25492
+   ],
+   [
+    "Guarantã",
+    6664
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -21.9573,
+  "ll": [
+   "Pirajuí",
+   "cn 44D",
+   "(VT13)"
+  ],
+  "lon": -49.4132,
+  "lx": 4702.37,
+  "ly": 567.72,
+  "m": "full",
+  "mu": "Pirajuí",
+  "n": "Pirajuí",
+  "ob": "",
+  "pm": 0,
+  "pop": 25492,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4708.23,
+  "y": 570.1
+ },
+ "pongai": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Pongaí",
+    3416
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.7298,
+  "ll": [
+   "Pongaí",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.3582,
+  "lx": 4713.04,
+  "ly": 594.56,
+  "m": "full",
+  "mu": "Pongaí",
+  "n": "Pongaí",
+  "ob": "",
+  "pm": 0,
+  "pop": 3416,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4718.79,
+  "y": 596.93
+ },
+ "pontes-gestal": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Pontes Gestal",
+    2577
+   ],
+   [
+    "Américo de Campos",
+    5969
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.1746,
+  "ll": [
+   "Pontes",
+   "Gestal",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.7568,
+  "lx": 4682.76,
+  "ly": 739.62,
+  "m": "full",
+  "mu": "Pontes Gestal",
+  "n": "Pontes Gestal",
+  "ob": "",
+  "pm": 0,
+  "pop": 2577,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4688.68,
+  "y": 742.38
+ },
+ "porangaba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "42",
+  "ch": "42D",
+  "cov": [
+   [
+    "Porangaba",
+    9925
+   ]
+  ],
+  "cv": "20.1",
+  "en": "",
+  "lat": -23.1733,
+  "ll": null,
+  "lon": -48.1168,
+  "lx": null,
+  "ly": null,
+  "m": "",
+  "mu": "Porangaba",
+  "n": "Porangaba",
+  "ob": "Consta na planilha Projeto 100%, mas não no desenho DWG · posição aproximada",
+  "pm": 0,
+  "pop": 9925,
+  "pot": "-",
+  "r": "R",
+  "vt": "",
+  "x": 4818.48,
+  "y": 458.9
+ },
+ "porto-feliz": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Porto Feliz",
+    53098
+   ]
+  ],
+  "cv": "14.1",
+  "en": "",
+  "lat": -23.2299,
+  "ll": [
+   "Porto",
+   "Feliz",
+   "cn 36D",
+   "(VT14)"
+  ],
+  "lon": -47.5163,
+  "lx": 4854.34,
+  "ly": 467.68,
+  "m": "half",
+  "mu": "Porto Feliz",
+  "n": "Porto Feliz",
+  "ob": "",
+  "pm": 0,
+  "pop": 53098,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT14",
+  "x": 4868.7,
+  "y": 459.71
+ },
+ "praia-grande": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Praia Grande",
+    325073
+   ]
+  ],
+  "cv": "3.1",
+  "en": "FPA",
+  "lat": -24.0148,
+  "ll": [
+   "Praia Grande",
+   "cn 21D (VT03)"
+  ],
+  "lon": -46.5214,
+  "lx": 4954.93,
+  "ly": 374.26,
+  "m": "full",
+  "mu": "Praia Grande",
+  "n": "Praia Grande",
+  "ob": "",
+  "pm": 0,
+  "pop": 325073,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4957.38,
+  "y": 379.37
+ },
+ "presidente-epitacio": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Presidente Epitácio",
+    44200
+   ]
+  ],
+  "cv": "21.1",
+  "en": "",
+  "lat": -21.9106,
+  "ll": [
+   "Presidente",
+   "Epitácio",
+   "cn 38D",
+   "(VT21)"
+  ],
+  "lon": -52.1748,
+  "lx": 4471.72,
+  "ly": 591.7,
+  "m": "full",
+  "mu": "Presidente Epitácio",
+  "n": "Presidente Epitácio",
+  "ob": "",
+  "pm": 0,
+  "pop": 44200,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT21",
+  "x": 4477.29,
+  "y": 594.04
+ },
+ "presidente-prudente": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Presidente Prudente",
+    228743
+   ],
+   [
+    "Anhumas",
+    4115
+   ],
+   [
+    "Emilianópolis",
+    3214
+   ],
+   [
+    "Martinópolis",
+    26461
+   ],
+   [
+    "Narandiba",
+    4857
+   ],
+   [
+    "Regente Feijó",
+    20261
+   ],
+   [
+    "Álvares Machado",
+    24915
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -21.9929,
+  "ll": [
+   "Presidente",
+   "Prudente",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -51.3427,
+  "lx": 4529.31,
+  "ly": 560.31,
+  "m": "full",
+  "mu": "Presidente Prudente",
+  "n": "Presidente Prudente",
+  "ob": "",
+  "pm": 0,
+  "pop": 228743,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4538.17,
+  "y": 562.5
+ },
+ "presidente-venceslau": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Presidente Venceslau",
+    39516
+   ],
+   [
+    "Piquerobi",
+    3692
+   ],
+   [
+    "Ribeirão dos Índios",
+    2225
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -21.7925,
+  "ll": [
+   "Presidente",
+   "Venceslau",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -51.8378,
+  "lx": 4492.24,
+  "ly": 583.19,
+  "m": "full",
+  "mu": "Presidente Venceslau",
+  "n": "Presidente Venceslau",
+  "ob": "",
+  "pm": 0,
+  "pop": 39516,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4499.82,
+  "y": 585.48
+ },
+ "quata": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Quatá",
+    14109
+   ],
+   [
+    "Borá",
+    837
+   ],
+   [
+    "João Ramalho",
+    4523
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -22.206,
+  "ll": [
+   "Quatá",
+   "cn 38D",
+   "(VT04)"
+  ],
+  "lon": -50.6451,
+  "lx": 4598.27,
+  "ly": 552.19,
+  "m": "half",
+  "mu": "Quatá",
+  "n": "Quatá",
+  "ob": "",
+  "pm": 0,
+  "pop": 14109,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4602.68,
+  "y": 554.77
+ },
+ "queluz": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Queluz",
+    13420
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.5036,
+  "ll": [
+   "Queluz",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -44.7848,
+  "lx": 5092.51,
+  "ly": 511.24,
+  "m": "full",
+  "mu": "Queluz",
+  "n": "Queluz",
+  "ob": "",
+  "pm": 0,
+  "pop": 13420,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5108.95,
+  "y": 505.55
+ },
+ "rancharia": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Rancharia",
+    29707
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -22.2828,
+  "ll": [
+   "Rancharia",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -50.928,
+  "lx": 4572.4,
+  "ly": 548.4,
+  "m": "full",
+  "mu": "Rancharia",
+  "n": "Rancharia",
+  "ob": "",
+  "pm": 0,
+  "pop": 29707,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4581.38,
+  "y": 550.85
+ },
+ "reginopolis": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Reginópolis",
+    9621
+   ],
+   [
+    "Balbinos",
+    5735
+   ]
+  ],
+  "cv": "5.1",
+  "en": "",
+  "lat": -21.8828,
+  "ll": [
+   "Reginópolis",
+   "cn 30D",
+   "(VT05)"
+  ],
+  "lon": -49.1799,
+  "lx": 4723.8,
+  "ly": 578.48,
+  "m": "full",
+  "mu": "Reginópolis",
+  "n": "Reginópolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 9621,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT05",
+  "x": 4732.03,
+  "y": 580.72
+ },
+ "registro": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Registro",
+    56322
+   ]
+  ],
+  "cv": "3.1",
+  "en": "FPA",
+  "lat": -24.5036,
+  "ll": [
+   "Registro",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.8205,
+  "lx": 4853.72,
+  "ly": 339.83,
+  "m": "full",
+  "mu": "Registro",
+  "n": "Registro",
+  "ob": "",
+  "pm": 0,
+  "pop": 56322,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4850.21,
+  "y": 337.27
+ },
+ "ribeira": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "30D",
+  "cov": [
+   [
+    "Ribeira",
+    3340
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.6068,
+  "ll": [
+   "Ribeira",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.0361,
+  "lx": 4715.75,
+  "ly": 341.98,
+  "m": "full",
+  "mu": "Ribeira",
+  "n": "Ribeira",
+  "ob": "",
+  "pm": 0,
+  "pop": 3340,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4731.99,
+  "y": 334.01
+ },
+ "ribeirao-bonito": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "34D",
+  "cov": [
+   [
+    "Ribeirão Bonito",
+    13219
+   ]
+  ],
+  "cv": "11.1",
+  "en": "",
+  "lat": -22.0597,
+  "ll": [
+   "Ribeirão",
+   "Bonito",
+   "cn 34D",
+   "(VT11)"
+  ],
+  "lon": -48.185,
+  "lx": 4806.22,
+  "ly": 558.29,
+  "m": "full",
+  "mu": "Ribeirão Bonito",
+  "n": "Ribeirão Bonito",
+  "ob": "",
+  "pm": 0,
+  "pop": 13219,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT11",
+  "x": 4817.7,
+  "y": 560.76
+ },
+ "ribeirao-branco": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Ribeirão Branco",
+    16444
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.2556,
+  "ll": [
+   "Ribeirão Branco",
+   "cn 30D (VT03)"
+  ],
+  "lon": -48.7777,
+  "lx": 4740.43,
+  "ly": 363.49,
+  "m": "full",
+  "mu": "Ribeirão Branco",
+  "n": "Ribeirão Branco",
+  "ob": "",
+  "pm": 0,
+  "pop": 16444,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4758.19,
+  "y": 366.18
+ },
+ "ribeirao-preto": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Ribeirão Preto",
+    703293
+   ],
+   [
+    "Brodowski",
+    24939
+   ],
+   [
+    "Jardinópolis",
+    44380
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -21.2105,
+  "ll": [
+   "Ribeirão Preto",
+   "cn 30D(VT04)"
+  ],
+  "lon": -47.821,
+  "lx": 4848.04,
+  "ly": 637.8,
+  "m": "full",
+  "mu": "Ribeirão Preto",
+  "n": "Ribeirão Preto",
+  "ob": "",
+  "pm": 0,
+  "pop": 703293,
+  "pot": "2.000W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4855.21,
+  "y": 639.83
+ },
+ "rifaina": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Rifaina",
+    3629
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.061,
+  "ll": [
+   "Rifaina",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.4399,
+  "lx": 4886.57,
+  "ly": 731.39,
+  "m": "full",
+  "mu": "Rifaina",
+  "n": "Rifaina",
+  "ob": "",
+  "pm": 0,
+  "pop": 3629,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4890.9,
+  "y": 733.72
+ },
+ "rincao": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "04S",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -21.5937,
+  "ll": [
+   "Rincão",
+   "cn 04S"
+  ],
+  "lon": -48.0316,
+  "lx": 4823.62,
+  "ly": 605.3,
+  "m": "cross",
+  "mu": "Rincão",
+  "n": "Rincão",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "",
+  "x": 4826.98,
+  "y": 607.96
+ },
+ "rinopolis": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "39D",
+  "cov": [
+   [
+    "Rinópolis",
+    9981
+   ],
+   [
+    "Gabriel Monteiro",
+    2776
+   ],
+   [
+    "Piacatu",
+    5980
+   ],
+   [
+    "Salmourão",
+    5300
+   ]
+  ],
+  "cv": "39.1",
+  "en": "",
+  "lat": -21.6808,
+  "ll": [
+   "Rinópolis",
+   "cn 39D(VT39)"
+  ],
+  "lon": -50.7171,
+  "lx": 4613.02,
+  "ly": 602.72,
+  "m": "half",
+  "mu": "Rinópolis",
+  "n": "Rinópolis",
+  "ob": "",
+  "pm": 0,
+  "pop": 9981,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT39",
+  "x": 4609.12,
+  "y": 600.83
+ },
+ "rio-claro": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "34D",
+  "cov": [
+   [
+    "Rio Claro",
+    206424
+   ],
+   [
+    "Santa Gertrudes",
+    26898
+   ]
+  ],
+  "cv": "35.1",
+  "en": "",
+  "lat": -22.3733,
+  "ll": [
+   "Rio Claro",
+   "cn 34D",
+   "(VT35)"
+  ],
+  "lon": -47.5793,
+  "lx": 4865.79,
+  "ly": 534.94,
+  "m": "full",
+  "mu": "Rio Claro",
+  "n": "Rio Claro",
+  "ob": "",
+  "pm": 0,
+  "pop": 206424,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT35",
+  "x": 4874.65,
+  "y": 537.43
+ },
+ "riolandia": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Riolândia",
+    12518
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.0233,
+  "ll": [
+   "Riolândia",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.7089,
+  "lx": 4692.3,
+  "ly": 756.03,
+  "m": "full",
+  "mu": "Riolândia",
+  "n": "Riolândia",
+  "ob": "",
+  "pm": 0,
+  "pop": 12518,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4688.51,
+  "y": 754.03
+ },
+ "riversul": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Riversul",
+    5524
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.8462,
+  "ll": [
+   "Riversul",
+   "cn 30D(VT03)"
+  ],
+  "lon": -49.4474,
+  "lx": 4700.91,
+  "ly": 391.66,
+  "m": "full",
+  "mu": "Riversul",
+  "n": "Riversul",
+  "ob": "",
+  "pm": 0,
+  "pop": 5524,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4703.9,
+  "y": 394.12
+ },
+ "rosana": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "39D",
+  "cov": [
+   [
+    "Rosana",
+    16643
+   ]
+  ],
+  "cv": "",
+  "en": "",
+  "lat": -22.4883,
+  "ll": [
+   "Rosana",
+   "(Porto Primavera)",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -52.8363,
+  "lx": 4410.87,
+  "ly": 534.77,
+  "m": "full",
+  "mu": "Rosana",
+  "n": "Rosana",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4406.65,
+  "y": 529.32
+ },
+ "salto": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Salto",
+    118663
+   ]
+  ],
+  "cv": "14.1",
+  "en": "",
+  "lat": -23.18,
+  "ll": [
+   "Salto",
+   "cn36D",
+   "(VT14)"
+  ],
+  "lon": -47.3021,
+  "lx": 4890.34,
+  "ly": 455.04,
+  "m": "full",
+  "mu": "Salto",
+  "n": "Salto",
+  "ob": "",
+  "pm": 0,
+  "pop": 118663,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT14",
+  "x": 4895.43,
+  "y": 457.33
+ },
+ "sandovalina": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Sandovalina",
+    4302
+   ]
+  ],
+  "cv": "39.1",
+  "en": "",
+  "lat": -22.4774,
+  "ll": [
+   "Sandovalina",
+   "cn 38D(VT39)"
+  ],
+  "lon": -51.8415,
+  "lx": 4488.07,
+  "ly": 539.19,
+  "m": "half",
+  "mu": "Sandovalina",
+  "n": "Sandovalina",
+  "ob": "",
+  "pm": 0,
+  "pop": 4302,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT39",
+  "x": 4497.12,
+  "y": 541.88
+ },
+ "santa-adelia": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Santa Adélia",
+    15480
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.3176,
+  "ll": [
+   "Sta. Adélia",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.8184,
+  "lx": 4792.96,
+  "ly": 633.52,
+  "m": "cross",
+  "mu": "Santa Adélia",
+  "n": "Santa Adélia",
+  "ob": "",
+  "pm": 0,
+  "pop": 15480,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4796.01,
+  "y": 635.79
+ },
+ "santa-barbara-d-oeste": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Santa Bárbara d'Oeste",
+    193475
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.8001,
+  "ll": [
+   "Santa Bárbara",
+   "D'Oeste",
+   "cn 38D(VT10)"
+  ],
+  "lon": -47.4275,
+  "lx": 4841.61,
+  "ly": 484.56,
+  "m": "full",
+  "mu": "Santa Bárbara d'Oeste",
+  "n": "Santa Bárbara d'Oeste",
+  "ob": "",
+  "pm": 1,
+  "pop": 193475,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4863.5,
+  "y": 487.17
+ },
+ "santa-cruz-das-palmeiras": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Santa Cruz das Palmeiras",
+    34361
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.8552,
+  "ll": [
+   "Santa Cruz",
+   "das Palmeiras",
+   "cn 30D(VT04)"
+  ],
+  "lon": -47.2497,
+  "lx": 4885.49,
+  "ly": 572.09,
+  "m": "full",
+  "mu": "Santa Cruz das Palmeiras",
+  "n": "Santa Cruz das Palmeiras",
+  "ob": "",
+  "pm": 0,
+  "pop": 34361,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4896.46,
+  "y": 574.47
+ },
+ "santa-cruz-do-rio-pardo": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "44",
+  "ch": "44D",
+  "cov": [
+   [
+    "Santa Cruz do Rio Pardo",
+    47673
+   ],
+   [
+    "Bernardino de Campos",
+    11148
+   ]
+  ],
+  "cv": "13.1",
+  "en": "",
+  "lat": -22.8091,
+  "ll": [
+   "Santa Cruz do",
+   "Rio Pardo",
+   "cn 44D(VT13)"
+  ],
+  "lon": -49.568,
+  "lx": 4658.08,
+  "ly": 507.04,
+  "m": "full",
+  "mu": "Santa Cruz do Rio Pardo",
+  "n": "Santa Cruz do Rio Pardo",
+  "ob": "",
+  "pm": 0,
+  "pop": 47673,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT13",
+  "x": 4689.76,
+  "y": 494.97
+ },
+ "santa-fe-do-sul": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Santa Fé do Sul",
+    32322
+   ],
+   [
+    "Rubinéia",
+    3148
+   ],
+   [
+    "Santa Clara d'Oeste",
+    2115
+   ],
+   [
+    "Santa Rita d'Oeste",
+    2498
+   ],
+   [
+    "Santana da Ponte Pensa",
+    1487
+   ],
+   [
+    "Três Fronteiras",
+    5807
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.2427,
+  "ll": [
+   "Santa Fé",
+   "do Sul",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.9517,
+  "lx": 4575.46,
+  "ly": 736.23,
+  "m": "full",
+  "mu": "Santa Fé do Sul",
+  "n": "Santa Fé do Sul",
+  "ob": "",
+  "pm": 0,
+  "pop": 32322,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4583.83,
+  "y": 738.72
+ },
+ "santa-isabel": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Santa Isabel",
+    57386
+   ]
+  ],
+  "cv": "2.1",
+  "en": "",
+  "lat": -23.2886,
+  "ll": [
+   "Santa",
+   "Isabel",
+   "cn 24D",
+   "(VT02)"
+  ],
+  "lon": -46.2419,
+  "lx": 4980.04,
+  "ly": 435.92,
+  "m": "half",
+  "mu": "Santa Isabel",
+  "n": "Santa Isabel",
+  "ob": "Gap filler",
+  "pm": 0,
+  "pop": 57386,
+  "pot": "50W",
+  "r": "G",
+  "vt": "VT02",
+  "x": 4987.77,
+  "y": 438.02
+ },
+ "santa-maria-da-serra": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "Santa Maria da Serra",
+    6173
+   ],
+   [
+    "Anhembi",
+    6724
+   ],
+   [
+    "Torrinha",
+    10010
+   ]
+  ],
+  "cv": "19.1",
+  "en": "FPA",
+  "lat": -22.5631,
+  "ll": null,
+  "lon": -48.155,
+  "lx": null,
+  "ly": null,
+  "m": "",
+  "mu": "Santa Maria da Serra",
+  "n": "Santa Maria da Serra",
+  "ob": "Consta na planilha Projeto 100%, mas não no desenho DWG · posição aproximada",
+  "pm": 0,
+  "pop": 6173,
+  "pot": "100W",
+  "r": "R",
+  "vt": "",
+  "x": 4817.5,
+  "y": 514.93
+ },
+ "santa-rita-do-passa-quatro": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Santa Rita do Passa Quatro",
+    27557
+   ],
+   [
+    "Ibaté",
+    35104
+   ],
+   [
+    "Porto Ferreira",
+    56150
+   ],
+   [
+    "Tambaú",
+    23207
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -21.6819,
+  "ll": [
+   "Santa Rita do",
+   "Passa Quatro",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.5076,
+  "lx": 4849.88,
+  "ly": 604.74,
+  "m": "full",
+  "mu": "Santa Rita do Passa Quatro",
+  "n": "Santa Rita do Passa Quatro",
+  "ob": "",
+  "pm": 0,
+  "pop": 27557,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4878.06,
+  "y": 597.12
+ },
+ "santos-guaruja": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Santos",
+    433311
+   ],
+   [
+    "Cubatão",
+    130705
+   ],
+   [
+    "Guarujá",
+    320459
+   ],
+   [
+    "São Vicente",
+    365798
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.868,
+  "ll": [
+   "Santos / Guarujá",
+   "cn 21D (VT03) / Costa Norte VT 48"
+  ],
+  "lon": -46.2909,
+  "lx": 4975.13,
+  "ly": 382.32,
+  "m": "full",
+  "mu": "Santos",
+  "n": "Santos / Guarujá",
+  "ob": "",
+  "pm": 0,
+  "pop": 433311,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4971.86,
+  "y": 379.82
+ },
+ "sao-bento-do-sapucai": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "São Bento do Sapucaí",
+    10878
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.681,
+  "ll": [
+   "São Bento Sapucaí",
+   "cn 50D (VT27)"
+  ],
+  "lon": -45.6862,
+  "lx": 5009.77,
+  "ly": 516.47,
+  "m": "half",
+  "mu": "São Bento do Sapucaí",
+  "n": "São Bento do Sapucaí",
+  "ob": "",
+  "pm": 0,
+  "pop": 10878,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5029.49,
+  "y": 493.22
+ },
+ "sao-carlos": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "34",
+  "ch": "34D",
+  "cov": [
+   [
+    "São Carlos",
+    251983
+   ]
+  ],
+  "cv": "11.1",
+  "en": "FPA",
+  "lat": -21.9185,
+  "ll": [
+   "São Carlos",
+   "cn 34D",
+   "(VT11)"
+  ],
+  "lon": -47.8667,
+  "lx": 4838.44,
+  "ly": 563.49,
+  "m": "full",
+  "mu": "São Carlos",
+  "n": "São Carlos",
+  "ob": "",
+  "pm": 0,
+  "pop": 251983,
+  "pot": "450W",
+  "r": "R",
+  "vt": "VT11",
+  "x": 4844.86,
+  "y": 565.86
+ },
+ "sao-francisco-xavier": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "24D",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -22.9603,
+  "ll": [
+   "São Fco.Xavier",
+   "cn 24D",
+   "(VT 08)"
+  ],
+  "lon": -45.9919,
+  "lx": 5005.86,
+  "ly": 478.26,
+  "m": "full",
+  "mu": "",
+  "n": "São Francisco Xavier",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "N",
+  "vt": "VT08",
+  "x": 5002.45,
+  "y": 473.04
+ },
+ "sao-joao-da-boa-vista": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "São João da Boa Vista",
+    91211
+   ],
+   [
+    "Aguaí",
+    36305
+   ],
+   [
+    "Santo Antônio do Jardim",
+    5954
+   ],
+   [
+    "Vargem Grande do Sul",
+    42845
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -21.9777,
+  "ll": [
+   "São João",
+   "Boa Vista",
+   "(Mte.da Lajinha)",
+   "cn 38D",
+   "(VT10)"
+  ],
+  "lon": -46.8018,
+  "lx": 4915.96,
+  "ly": 567.74,
+  "m": "full",
+  "mu": "São João da Boa Vista",
+  "n": "São João da Boa Vista",
+  "ob": "",
+  "pm": 0,
+  "pop": 91211,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4937.24,
+  "y": 560.74
+ },
+ "sao-joaquim-da-barra": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "São Joaquim da Barra",
+    51888
+   ],
+   [
+    "Guará",
+    21220
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.5503,
+  "ll": [
+   "São Joaquim",
+   "da Barra",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -47.9381,
+  "lx": 4827.31,
+  "ly": 701.49,
+  "m": "full",
+  "mu": "São Joaquim da Barra",
+  "n": "São Joaquim da Barra",
+  "ob": "",
+  "pm": 0,
+  "pop": 51888,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4841.55,
+  "y": 703.44
+ },
+ "sao-jose-do-barreiro": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "São José do Barreiro",
+    4147
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.748,
+  "ll": [
+   "São José do Barreiro",
+   "cn 50D(VT27)"
+  ],
+  "lon": -44.5867,
+  "lx": 5121.21,
+  "ly": 507.93,
+  "m": "full",
+  "mu": "São José do Barreiro",
+  "n": "São José do Barreiro",
+  "ob": "",
+  "pm": 0,
+  "pop": 4147,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5131.9,
+  "y": 491.05
+ },
+ "sao-jose-do-rio-pardo": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "São José do Rio Pardo",
+    54946
+   ],
+   [
+    "Casa Branca",
+    30380
+   ],
+   [
+    "Itobi",
+    7841
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.6033,
+  "ll": [
+   "São José do",
+   "Rio Pardo",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -46.8792,
+  "lx": 4891.65,
+  "ly": 604.27,
+  "m": "full",
+  "mu": "São José do Rio Pardo",
+  "n": "São José do Rio Pardo",
+  "ob": "",
+  "pm": 0,
+  "pop": 54946,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4911.62,
+  "y": 593.91
+ },
+ "sao-jose-do-rio-preto": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "São José do Rio Preto",
+    460671
+   ],
+   [
+    "Bady Bassitt",
+    17502
+   ],
+   [
+    "Cedral",
+    9237
+   ],
+   [
+    "Guapiaçu",
+    21454
+   ],
+   [
+    "Ipiguá",
+    5392
+   ],
+   [
+    "Mirassol",
+    59824
+   ],
+   [
+    "Onda Verde",
+    4381
+   ],
+   [
+    "Potirendaba",
+    17361
+   ],
+   [
+    "Uchoa",
+    10110
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -20.7977,
+  "ll": [
+   "São José",
+   "do Rio Preto",
+   "cn 30D(VT04)"
+  ],
+  "lon": -49.358,
+  "lx": 4705.86,
+  "ly": 676.8,
+  "m": "full",
+  "mu": "São José do Rio Preto",
+  "n": "São José do Rio Preto",
+  "ob": "",
+  "pm": 0,
+  "pop": 460671,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4719.5,
+  "y": 679.02
+ },
+ "sao-jose-dos-campos": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "São José dos Campos",
+    721944
+   ],
+   [
+    "Caçapava",
+    94263
+   ],
+   [
+    "Jacareí",
+    233662
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -23.0902,
+  "ll": [
+   "São José",
+   "dos Campos",
+   "cn 50D (VT 27)"
+  ],
+  "lon": -45.9282,
+  "lx": 4995.08,
+  "ly": 450.09,
+  "m": "full",
+  "mu": "São José dos Campos",
+  "n": "São José dos Campos",
+  "ob": "",
+  "pm": 0,
+  "pop": 721944,
+  "pot": "500W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5005.36,
+  "y": 452.49
+ },
+ "sao-luis-do-paraitinga": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "São Luís do Paraitinga",
+    10687
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -23.2396,
+  "ll": [
+   "São Luís do",
+   "Paraitinga",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -45.2535,
+  "lx": 5044.52,
+  "ly": 441.12,
+  "m": "full",
+  "mu": "São Luís do Paraitinga",
+  "n": "São Luís do Paraitinga",
+  "ob": "",
+  "pm": 0,
+  "pop": 10687,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5053.25,
+  "y": 443.98
+ },
+ "sao-manuel": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "São Manuel",
+    40954
+   ],
+   [
+    "Areiópolis",
+    11129
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.6817,
+  "ll": [
+   "São Manuel",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -48.5398,
+  "lx": 4754.73,
+  "ly": 494.49,
+  "m": "full",
+  "mu": "São Manuel",
+  "n": "São Manuel",
+  "ob": "",
+  "pm": 0,
+  "pop": 40954,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4776.54,
+  "y": 496.99
+ },
+ "sao-miguel-arcanjo": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "42",
+  "ch": "42D",
+  "cov": [
+   [
+    "São Miguel Arcanjo",
+    32931
+   ]
+  ],
+  "cv": "20.1",
+  "en": "",
+  "lat": -23.9136,
+  "ll": [
+   "São Miguel",
+   "Arcanjo",
+   "cn 42D",
+   "(VT20)"
+  ],
+  "lon": -47.9928,
+  "lx": 4815.04,
+  "ly": 395.47,
+  "m": "full",
+  "mu": "São Miguel Arcanjo",
+  "n": "São Miguel Arcanjo",
+  "ob": "",
+  "pm": 0,
+  "pop": 32931,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT20",
+  "x": 4825.74,
+  "y": 398.27
+ },
+ "sao-paulo": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "24D",
+  "cov": [
+   [
+    "Arujá",
+    89824
+   ],
+   [
+    "Barueri",
+    274182
+   ],
+   [
+    "Caieiras",
+    101470
+   ],
+   [
+    "Cajamar",
+    76801
+   ],
+   [
+    "Carapicuíba",
+    400927
+   ],
+   [
+    "Cotia",
+    249210
+   ],
+   [
+    "Diadema",
+    423884
+   ],
+   [
+    "Embu das Artes",
+    273726
+   ],
+   [
+    "Embu-Guaçu",
+    69385
+   ],
+   [
+    "Ferraz de Vasconcelos",
+    194276
+   ],
+   [
+    "Franco da Rocha",
+    154489
+   ],
+   [
+    "Guarulhos",
+    1379182
+   ],
+   [
+    "Itapecerica da Serra",
+    175693
+   ],
+   [
+    "Itaquaquecetuba",
+    370821
+   ],
+   [
+    "Jandira",
+    124937
+   ],
+   [
+    "Mauá",
+    472912
+   ],
+   [
+    "Mogi das Cruzes",
+    151888
+   ],
+   [
+    "Osasco",
+    698418
+   ],
+   [
+    "Poá",
+    117452
+   ],
+   [
+    "Ribeirão Pires",
+    123393
+   ],
+   [
+    "Rio Grande da Serra",
+    50846
+   ],
+   [
+    "Santana de Parnaíba",
+    139447
+   ],
+   [
+    "Santo André",
+    718773
+   ],
+   [
+    "Suzano",
+    297637
+   ],
+   [
+    "São Bernardo do Campo",
+    838936
+   ],
+   [
+    "São Caetano do Sul",
+    161127
+   ],
+   [
+    "Taboão da Serra",
+    289664
+   ]
+  ],
+  "cv": "",
+  "en": "",
+  "lat": -23.6502,
+  "ll": [
+   "SÃO PAULO",
+   "cn 24D (VT02)",
+   "(Geradora)"
+  ],
+  "lon": -46.648,
+  "lx": 4938.95,
+  "ly": 409.72,
+  "m": "",
+  "mu": "São Paulo",
+  "n": "São Paulo",
+  "ob": "Geradora",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "H",
+  "vt": "VT02",
+  "x": 4940.95,
+  "y": 413.72
+ },
+ "sao-pedro": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "36",
+  "ch": "36D",
+  "cov": [
+   [
+    "São Pedro",
+    35653
+   ],
+   [
+    "Águas de São Pedro",
+    3451
+   ]
+  ],
+  "cv": "19.1",
+  "en": "",
+  "lat": -22.5581,
+  "ll": [
+   "São Pedro",
+   "cn 36D (VT19)"
+  ],
+  "lon": -47.9242,
+  "lx": 4827.45,
+  "ly": 516.74,
+  "m": "full",
+  "mu": "São Pedro",
+  "n": "São Pedro",
+  "ob": "",
+  "pm": 0,
+  "pop": 35653,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4836.95,
+  "y": 519.48
+ },
+ "sao-roque": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "41",
+  "ch": "41D",
+  "cov": [
+   [
+    "São Roque",
+    91016
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -23.549,
+  "ll": [
+   "São Roque",
+   "cn 41D",
+   "(VT41)"
+  ],
+  "lon": -47.1096,
+  "lx": 4907.03,
+  "ly": 428.04,
+  "m": "full",
+  "mu": "São Roque",
+  "n": "São Roque",
+  "ob": "",
+  "pm": 0,
+  "pop": 91016,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4903.58,
+  "y": 425.9
+ },
+ "sao-sebastiao-da-grama": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "05-",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -21.7534,
+  "ll": [
+   "São Sebastião",
+   "da Grama",
+   "cn 05-"
+  ],
+  "lon": -46.7528,
+  "lx": 4917.88,
+  "ly": 589.84,
+  "m": "full",
+  "mu": "São Sebastião da Grama",
+  "n": "São Sebastião da Grama",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "",
+  "x": 4921.85,
+  "y": 592.1
+ },
+ "serra-negra": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Serra Negra",
+    29229
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.5888,
+  "ll": [
+   "Serra Negra",
+   "cn38D (VT10)"
+  ],
+  "lon": -46.6865,
+  "lx": 4939.65,
+  "ly": 505.47,
+  "m": "cross",
+  "mu": "Serra Negra",
+  "n": "Serra Negra",
+  "ob": "",
+  "pm": 0,
+  "pop": 29229,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4946.23,
+  "y": 507.47
+ },
+ "sertaozinho": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Sertãozinho",
+    125815
+   ],
+   [
+    "Barrinha",
+    32812
+   ],
+   [
+    "Morro Agudo",
+    32968
+   ],
+   [
+    "Pitangueiras",
+    39719
+   ],
+   [
+    "Pontal",
+    49961
+   ],
+   [
+    "Serrana",
+    45107
+   ]
+  ],
+  "cv": "4.1",
+  "en": "FPA",
+  "lat": -21.1226,
+  "ll": [
+   "Sertãozinho",
+   "cn 30D(VT04)"
+  ],
+  "lon": -48.0086,
+  "lx": 4823.56,
+  "ly": 649.51,
+  "m": "full",
+  "mu": "Sertãozinho",
+  "n": "Sertãozinho",
+  "ob": "",
+  "pm": 0,
+  "pop": 125815,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4835.02,
+  "y": 651.82
+ },
+ "sete-barras": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Sete Barras",
+    12832
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -24.2736,
+  "ll": [
+   "Sete Barras",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -47.9351,
+  "lx": 4820.24,
+  "ly": 347.36,
+  "m": "full",
+  "mu": "Sete Barras",
+  "n": "Sete Barras",
+  "ob": "",
+  "pm": 0,
+  "pop": 12832,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4830.88,
+  "y": 349.82
+ },
+ "silveiras": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "50",
+  "ch": "50D",
+  "cov": [
+   [
+    "Silveiras",
+    6302
+   ]
+  ],
+  "cv": "27.1",
+  "en": "",
+  "lat": -22.7344,
+  "ll": [
+   "Silveiras",
+   "cn 50D",
+   "(VT27)"
+  ],
+  "lon": -44.8404,
+  "lx": 5091.2,
+  "ly": 489.46,
+  "m": "full",
+  "mu": "Silveiras",
+  "n": "Silveiras",
+  "ob": "",
+  "pm": 0,
+  "pop": 6302,
+  "pot": "100W",
+  "r": "N",
+  "vt": "VT27",
+  "x": 5096.92,
+  "y": 491.52
+ },
+ "socorro": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Socorro",
+    41005
+   ]
+  ],
+  "cv": "10.1",
+  "en": "",
+  "lat": -22.6106,
+  "ll": [
+   "Socorro",
+   "cn 38D (VT10)"
+  ],
+  "lon": -46.524,
+  "lx": 4966.75,
+  "ly": 509.52,
+  "m": "full",
+  "mu": "Socorro",
+  "n": "Socorro",
+  "ob": "",
+  "pm": 0,
+  "pop": 41005,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT10",
+  "x": 4962.04,
+  "y": 506.54
+ },
+ "sorocaba": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "41",
+  "ch": "41D",
+  "cov": [
+   [
+    "Sorocaba",
+    679378
+   ],
+   [
+    "Capela do Alto",
+    20706
+   ]
+  ],
+  "cv": "41.1",
+  "en": "FPA",
+  "lat": -23.4641,
+  "ll": [
+   "Sorocaba",
+   "cn 41D",
+   "(VT41)"
+  ],
+  "lon": -47.4464,
+  "lx": 4880.62,
+  "ly": 441.02,
+  "m": "full",
+  "mu": "Sorocaba",
+  "n": "Sorocaba",
+  "ob": "",
+  "pm": 0,
+  "pop": 679378,
+  "pot": "250W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4876.68,
+  "y": 430.51
+ },
+ "tabapua": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Tabapuã",
+    12407
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.9314,
+  "ll": [
+   "Tabapuã",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -49.0286,
+  "lx": 4751.81,
+  "ly": 671.37,
+  "m": "half",
+  "mu": "Tabapuã",
+  "n": "Tabapuã",
+  "ob": "",
+  "pm": 0,
+  "pop": 12407,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4747.86,
+  "y": 667.23
+ },
+ "taguai": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Taguaí",
+    13859
+   ],
+   [
+    "Fartura",
+    16036
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -23.4739,
+  "ll": [
+   "Taguaí",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.3966,
+  "lx": 4691.73,
+  "ly": 446.59,
+  "m": "full",
+  "mu": "Taguaí",
+  "n": "Taguaí",
+  "ob": "",
+  "pm": 0,
+  "pop": 13859,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4708.26,
+  "y": 438.51
+ },
+ "tanabi": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Tanabi",
+    25967
+   ],
+   [
+    "Bálsamo",
+    9068
+   ],
+   [
+    "Mirassolândia",
+    4871
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.5308,
+  "ll": [
+   "Tanabí",
+   "cn 30D(VT04)"
+  ],
+  "lon": -49.6457,
+  "lx": 4709.89,
+  "ly": 697.11,
+  "m": "full",
+  "mu": "Tanabi",
+  "n": "Tanabi",
+  "ob": "",
+  "pm": 0,
+  "pop": 25967,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4716.06,
+  "y": 699.38
+ },
+ "tapirai": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "42D",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -24.0082,
+  "ll": [
+   "Tapiraí",
+   "cn 42D (VT20)"
+  ],
+  "lon": -47.6189,
+  "lx": 4863.82,
+  "ly": 385.31,
+  "m": "full",
+  "mu": "Tapiraí",
+  "n": "Tapiraí",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "VT20",
+  "x": 4871.4,
+  "y": 387.56
+ },
+ "taquaritinga": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Taquaritinga",
+    57177
+   ],
+   [
+    "Santa Ernestina",
+    5599
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.4252,
+  "ll": [
+   "Taquaritinga",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -48.5374,
+  "lx": 4775.49,
+  "ly": 617.83,
+  "m": "full",
+  "mu": "Taquaritinga",
+  "n": "Taquaritinga",
+  "ob": "",
+  "pm": 0,
+  "pop": 57177,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4785.84,
+  "y": 619.88
+ },
+ "taquarituba": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Taquarituba",
+    23218
+   ],
+   [
+    "Coronel Macedo",
+    4681
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -23.5298,
+  "ll": [
+   "Taquarituba",
+   "cn 30D",
+   "(VT03)"
+  ],
+  "lon": -49.2341,
+  "lx": 4720.39,
+  "ly": 430.05,
+  "m": "full",
+  "mu": "Taquarituba",
+  "n": "Taquarituba",
+  "ob": "",
+  "pm": 0,
+  "pop": 23218,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT03",
+  "x": 4721.47,
+  "y": 432.86
+ },
+ "taubate": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "24",
+  "ch": "24D",
+  "cov": [
+   [
+    "Taubaté",
+    314924
+   ],
+   [
+    "Pindamonhangaba",
+    168328
+   ],
+   [
+    "Tremembé",
+    47185
+   ]
+  ],
+  "cv": "8.1",
+  "en": "",
+  "lat": -23.0867,
+  "ll": [
+   "Taubaté",
+   "cn 24D",
+   "(VT08)"
+  ],
+  "lon": -45.502,
+  "lx": 5035.28,
+  "ly": 460.8,
+  "m": "full",
+  "mu": "Taubaté",
+  "n": "Taubaté",
+  "ob": "",
+  "pm": 0,
+  "pop": 314924,
+  "pot": "250W",
+  "r": "N",
+  "vt": "VT08",
+  "x": 5043.34,
+  "y": 463.07
+ },
+ "teodoro-sampaio": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "39",
+  "ch": "39D",
+  "cov": [
+   [
+    "Teodoro Sampaio",
+    23148
+   ]
+  ],
+  "cv": "22.1",
+  "en": "",
+  "lat": -22.4163,
+  "ll": [
+   "Teodoro",
+   "Sampaio",
+   "cn 39D",
+   "(VT22)"
+  ],
+  "lon": -52.3735,
+  "lx": 4449.81,
+  "ly": 540.44,
+  "m": "full",
+  "mu": "Teodoro Sampaio",
+  "n": "Teodoro Sampaio",
+  "ob": "",
+  "pm": 0,
+  "pop": 23148,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT22",
+  "x": 4469.16,
+  "y": 527.78
+ },
+ "terra-roxa": {
+  "a": 3,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Terra Roxa",
+    9370
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.7783,
+  "ll": [
+   "Terra Roxa",
+   "cn 30D(VT04)"
+  ],
+  "lon": -48.3455,
+  "lx": 4809.45,
+  "ly": 676.25,
+  "m": "full",
+  "mu": "Terra Roxa",
+  "n": "Terra Roxa",
+  "ob": "",
+  "pm": 0,
+  "pop": 9370,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4812.09,
+  "y": 678.84
+ },
+ "torrinha": {
+  "a": 2,
+  "ab": "",
+  "ag": "",
+  "cf": "",
+  "ch": "36D",
+  "cov": [],
+  "cv": "",
+  "en": "",
+  "lat": -22.4429,
+  "ll": [
+   "Torrinha",
+   "cn 36D",
+   "(VT19)"
+  ],
+  "lon": -48.1631,
+  "lx": 4810.49,
+  "ly": 523.43,
+  "m": "full",
+  "mu": "Torrinha",
+  "n": "Torrinha",
+  "ob": "",
+  "pm": 0,
+  "pop": 0,
+  "pot": "",
+  "r": "R",
+  "vt": "VT19",
+  "x": 4815.86,
+  "y": 526.28
+ },
+ "tupa": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "38",
+  "ch": "38D",
+  "cov": [
+   [
+    "Tupã",
+    65524
+   ],
+   [
+    "Arco-Íris",
+    1791
+   ],
+   [
+    "Herculândia",
+    9526
+   ],
+   [
+    "Iacri",
+    6321
+   ],
+   [
+    "Santópolis do Aguapeí",
+    4777
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.9472,
+  "ll": [
+   "Tupã",
+   "cn 38D",
+   "(VT04)"
+  ],
+  "lon": -50.5342,
+  "lx": 4617.9,
+  "ly": 578.1,
+  "m": "full",
+  "mu": "Tupã",
+  "n": "Tupã",
+  "ob": "",
+  "pm": 0,
+  "pop": 65524,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4619.14,
+  "y": 580.75
+ },
+ "ubatuba": {
+  "a": 5,
+  "ab": "",
+  "ag": "",
+  "cf": "21",
+  "ch": "21D",
+  "cov": [
+   [
+    "Ubatuba",
+    90799
+   ]
+  ],
+  "cv": "3.1",
+  "en": "",
+  "lat": -23.5667,
+  "ll": [
+   "Ubatuba",
+   "cn 21D",
+   "(VT03)"
+  ],
+  "lon": -45.1551,
+  "lx": 5080.26,
+  "ly": 424.19,
+  "m": "full",
+  "mu": "Ubatuba",
+  "n": "Ubatuba",
+  "ob": "",
+  "pm": 0,
+  "pop": 90799,
+  "pot": "250W",
+  "r": "N",
+  "vt": "VT03",
+  "x": 5075.44,
+  "y": 425.3
+ },
+ "valparaiso": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Valparaíso",
+    26480
+   ],
+   [
+    "Bento de Abreu",
+    2980
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -21.2027,
+  "ll": [
+   "Valparaíso",
+   "cn 30D",
+   "(VT04)"
+  ],
+  "lon": -50.9234,
+  "lx": 4577,
+  "ly": 644.38,
+  "m": "half",
+  "mu": "Valparaíso",
+  "n": "Valparaíso",
+  "ob": "",
+  "pm": 0,
+  "pop": 26480,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4586.37,
+  "y": 646.45
+ },
+ "votorantim": {
+  "a": 1,
+  "ab": "",
+  "ag": "",
+  "cf": "41",
+  "ch": "41D",
+  "cov": [
+   [
+    "Votorantim",
+    122480
+   ]
+  ],
+  "cv": "41.1",
+  "en": "",
+  "lat": -23.5792,
+  "ll": [
+   "Votorantim",
+   "cn 41D",
+   "(VT41)"
+  ],
+  "lon": -47.406,
+  "lx": 4861.24,
+  "ly": 418.9,
+  "m": "cross",
+  "mu": "Votorantim",
+  "n": "Votorantim",
+  "ob": "",
+  "pm": 0,
+  "pop": 122480,
+  "pot": "50W",
+  "r": "R",
+  "vt": "VT41",
+  "x": 4876.5,
+  "y": 421.06
+ },
+ "votuporanga": {
+  "a": 4,
+  "ab": "",
+  "ag": "",
+  "cf": "30",
+  "ch": "30D",
+  "cov": [
+   [
+    "Votuporanga",
+    94547
+   ],
+   [
+    "Parisi",
+    2161
+   ],
+   [
+    "Valentim Gentil",
+    13326
+   ],
+   [
+    "Álvares Florence",
+    3679
+   ]
+  ],
+  "cv": "4.1",
+  "en": "",
+  "lat": -20.4582,
+  "ll": [
+   "Votuporanga",
+   "cn 30D(VT04)"
+  ],
+  "lon": -49.9882,
+  "lx": 4657.67,
+  "ly": 713.13,
+  "m": "full",
+  "mu": "Votuporanga",
+  "n": "Votuporanga",
+  "ob": "",
+  "pm": 0,
+  "pop": 94547,
+  "pot": "100W",
+  "r": "R",
+  "vt": "VT04",
+  "x": 4667.35,
+  "y": 715.06
+ }
+}
