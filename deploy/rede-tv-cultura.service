@@ -1,0 +1,24 @@
+[Unit]
+Description=Rede TV Cultura SP (mapa e cadastro das estações)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=redetv
+Group=redetv
+WorkingDirectory=/opt/rede-tv-cultura
+EnvironmentFile=/etc/rede-tv-cultura.env
+ExecStart=/usr/bin/env node server.js
+Restart=always
+RestartSec=5
+
+# Proteções
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/rede-tv-cultura
+
+[Install]
+WantedBy=multi-user.target

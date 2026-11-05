@@ -1,0 +1,39 @@
+# Rede TV Cultura SP com PostgreSQL. Não precisa configurar nada:
+#   docker compose up -d
+# Abra http://IP-DO-SERVIDOR:3100  ·  login admin / senha admin (troca no 1º acesso)
+#
+# Opcional: crie um arquivo .env (veja .env.example) para escolher a senha inicial ou a porta.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: redetv
+      POSTGRES_USER: redetv
+      # o banco não fica exposto fora do Docker; só o sistema fala com ele
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-redetv-rede-interna}
+    volumes:
+      - redetv-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U redetv -d redetv"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://redetv:${DB_PASSWORD:-redetv-rede-interna}@db:5432/redetv
+      # vazio = senha inicial "admin"
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      # opcional: redefine a senha do admin ao iniciar (uma vez por valor)
+      ADMIN_RESET_PASSWORD: ${ADMIN_RESET_PASSWORD:-}
+    ports:
+      - "${PORT:-3100}:3100"
+
+volumes:
+  redetv-db:

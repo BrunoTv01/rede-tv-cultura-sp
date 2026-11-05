@@ -10,41 +10,39 @@ O visual segue a linha de um console de satélites (estilo Satbeams). A página 
 - "mancha de cobertura" ligando as cidades atendidas por cada estação;
 - aba Tabela.
 
-**Abrir o mapa como site:** https://raw.githack.com/BrunoTv01/rede-tv-cultura-sp/main/index.html
+## Instalar num servidor Linux da rede interna
 
-Quando o GitHub Pages estiver ligado (*Settings → Pages → Deploy from a branch → main / root*), o endereço oficial passa a ser https://brunotv01.github.io/rede-tv-cultura-sp/
+A versão completa roda num servidor próprio, com banco PostgreSQL, login (perfis Leitura, Editor e Admin) e histórico de alterações. Instala com um comando:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/instalar.sh | sudo bash
+```
+
+Depois abra `http://IP-DO-SERVIDOR:3100` e entre com **admin** / **admin**. O sistema pede uma senha nova no primeiro acesso. O passo a passo completo, com backup, atualização, Docker e instalação sem internet, está em **[INSTALL.md](INSTALL.md)**.
+
+## Versão só para consulta (sem servidor)
+
+O `index.html` da raiz abre o mapa em modo somente leitura, com os dados de `data/estacoes.json`:
+
+- **Como site:** https://raw.githack.com/BrunoTv01/rede-tv-cultura-sp/main/index.html
+- **No GitHub Pages:** ligue em *Settings → Pages → Deploy from a branch → main / root*, e o endereço passa a ser https://brunotv01.github.io/rede-tv-cultura-sp/
+
+Para abrir no próprio computador, use um servidor local (`python3 -m http.server 8000`). Abrir o arquivo direto pelo explorador (`file://`) não funciona.
 
 ## Conteúdo
 
 | Caminho | O que é |
 |---|---|
-| `index.html` | A página completa (HTML, CSS e JS num arquivo só). |
-| `data/estacoes.json` | Cadastro das estações, uma entrada por estação (veja o formato abaixo). |
-| `data/geometria.json` | Desenho do mapa extraído do DWG: contorno do estado, linhas de divisão, polígonos das áreas e posição aproximada dos municípios. Já vem embutido no `index.html`; o arquivo fica aqui como fonte. |
-| `scripts/extracao/` | Scripts Python usados para ler o DWG e cruzar com a planilha (veja abaixo). |
-
-## Como usar
-
-**Dentro do claude.ai.** A página publicada como artefato usa o banco de dados do próprio artefato. Quem tem acesso de Colaborador ou Editor pode:
-
-- incluir estações;
-- editar estações;
-- mudar a posição de uma estação no mapa;
-- excluir estações;
-- exportar o cadastro em CSV.
-
-As alterações aparecem na hora para todos que estão com a página aberta.
-
-**Fora do claude.ai** (GitHub Pages ou servidor local). A página entra em modo somente leitura e carrega `data/estacoes.json`. Para testar localmente:
-
-```bash
-python3 -m http.server 8000
-# abra http://localhost:8000
-```
-
-Abrir o `index.html` direto pelo explorador de arquivos (`file://`) não funciona, porque o navegador bloqueia a leitura do JSON. Use um servidor, mesmo que local.
-
-Para publicar no GitHub Pages: em *Settings → Pages*, escolha a branch `main` e a pasta raiz.
+| `server.js`, `auth.js` | Servidor (Node.js + Express): API das estações, login, usuários e histórico |
+| `public/index.html` | A página do sistema instalado (mapa, tabela, edição, usuários, histórico) |
+| `db/` | Esquema do banco e descoberta automática do PostgreSQL |
+| `deploy/` | Instalador, atualização, backup, recuperação de senha, remoção, serviço systemd e nginx |
+| `instalar.sh` | Instalação e atualização num comando só (baixa do GitHub) |
+| `Dockerfile`, `docker-compose.yml` | Instalação com Docker |
+| `data/estacoes.json` | Carga inicial das estações (usada quando o banco está vazio) |
+| `data/geometria.json` | Desenho do mapa extraído do DWG: contorno, linhas de divisão, áreas e posição aproximada dos municípios |
+| `index.html` | Versão só para consulta, sem servidor (GitHub Pages) |
+| `scripts/extracao/` | Scripts Python usados para ler o DWG e cruzar com a planilha |
 
 ## Formato de `data/estacoes.json`
 
@@ -65,7 +63,7 @@ Objeto em que a chave é o id da estação e o valor tem estes campos:
 | `x`, `y` | Posição no sistema de coordenadas do DWG |
 | `lx`, `ly`, `ll` | Posição e linhas do rótulo original do DWG; ficam vazios quando a estação é editada ou movida |
 | `lat`, `lon` | Centro do município, usado no link do Google Maps |
-| `upd`, `by` | Data e autor da última edição feita pela página |
+| `upd`, `by` | Data e usuário da última edição (preenchidos pelo servidor) |
 
 ## Como os dados foram montados
 
