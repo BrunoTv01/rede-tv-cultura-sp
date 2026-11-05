@@ -55,7 +55,7 @@ As linhas vermelhas que dividem as áreas podem ser ajustadas pelo **Admin**, no
 | Botão | O que faz |
 |---|---|
 | Arrastar os pontos brancos | Move a linha. Clique numa linha para criar um ponto; clique duplo num ponto para apagar |
-| **Gerar automático** | Traça as linhas a partir da área de cada estação. Depois de salvar, as linhas **mudam sozinhas** sempre que alguém muda a área ou a posição de uma estação |
+| **Gerar automático** | Parte do desenho original e só redesenha em volta das estações que mudaram de área ou de lugar. Sem mudanças, fica igual ao original. Depois de salvar, as linhas **mudam sozinhas** sempre que alguém muda a área ou a posição de uma estação |
 | **Nova linha** | Desenha uma linha nova, clicando ponto a ponto; termine com clique duplo |
 | **Desenho original** | Volta às linhas do DWG |
 | **Salvar** / **Cancelar** | Grava para todos os usuários, ou descarta o que foi feito |

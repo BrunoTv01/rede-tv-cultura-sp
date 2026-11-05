@@ -944,7 +944,7 @@ function stateMask(){
   return insideMask;
 }
 const areaGroup=a=>a===5?1:a; // Costa Norte faz parte da Área 1 no desenho
-function stationPixels(){ return ST.map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),a:areaGroup(s.a)}; }).filter(s=>s.px>=0&&s.py>=0&&s.px<RW&&s.py<RH); }
+function stationPixels(){ return ST.map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),a:areaGroup(s.a),x:s.x,y:s.y}; }).filter(s=>s.px>=0&&s.py>=0&&s.px<RW&&s.py<RH); }
 
 // cores das áreas a partir das linhas
 function fillsFromLines(red){
@@ -982,70 +982,112 @@ function fillsFromLines(red){
 }
 
 // linhas geradas automaticamente: fronteira entre as áreas das estações mais próximas
-function autoLines(){
-  const inside=stateMask(), sp=stationPixels(); if(!sp.length) return [];
-  // estação mais próxima de cada célula: propagação a partir das estações (rápida, sem laço por estação)
-  const N=RW*RH, seed=new Int32Array(N).fill(-1), dist=new Float64Array(N).fill(Infinity), q=[]; let h=0;
-  sp.forEach((s,k)=>{ const i=s.py*RW+s.px; if(dist[i]>0){ dist[i]=0; seed[i]=k; q.push(i); } });
-  const nb=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
-  while(h<q.length){ const i=q[h++], px=i%RW, py=(i/RW)|0, s=sp[seed[i]];
-    for(const [dx,dy] of nb){ const x=px+dx, y=py+dy; if(x<0||y<0||x>=RW||y>=RH) continue; const j=y*RW+x;
-      const d=(s.px-x)**2+(s.py-y)**2; if(d<dist[j]){ dist[j]=d; seed[j]=seed[i]; q.push(j); } } }
-  const A=new Int8Array(N);
-  for(let i=0;i<N;i++) if(inside[i]&&seed[i]>=0) A[i]=sp[seed[i]].a;
-  // suaviza a grade (maioria 5x5) para tirar degraus, sem apagar o entorno de nenhuma estação:
-  // uma estação cercada por outra equipe (ex.: Santa Adélia) continua com a sua "ilha"
-  const B=new Int8Array(A), KEEP=16; // 4 células (6 unidades) em volta de cada estação não mudam
-  for(let it=0;it<2;it++){ for(let py=2;py<RH-2;py++) for(let px=2;px<RW-2;px++){ const i=py*RW+px; if(!inside[i]||dist[i]<=KEEP) continue; const c={};
-      for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++){ const v=A[i+dy*RW+dx]; if(v) c[v]=(c[v]||0)+1; }
-      let m=A[i],mv=0; for(const k in c) if(c[k]>mv){mv=c[k];m=+k;} B[i]=m; } A.set(B); }
-  // arestas entre células de áreas diferentes
+// ----- linhas automáticas -----
+// Parte do desenho original (DWG) e só redesenha em volta das estações que estão fora da área original
+// (área trocada ou estação movida). Sem nenhuma mudança, o resultado é exatamente o desenho original.
+const origAt=(x,y)=>{ for(const k of Object.keys(G.areas)){ let c=false; for(const r of G.areas[k]) for(let i=0,j=r.length-1;i<r.length;j=i++){ const [xi,yi]=r[i],[xj,yj]=r[j]; if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi)) c=!c; } if(c) return +k; } return 0; };
+let origGridC=null;
+function origGrid(){ // área original de cada célula
+  if(origGridC) return origGridC;
+  const O=new Int8Array(RW*RH);
+  Object.keys(G.areas).forEach(k=>{ const c=document.createElement('canvas'); c.width=RW; c.height=RH; const x=c.getContext('2d'); x.fillStyle='#fff';
+    x.beginPath(); G.areas[k].forEach(r=>{ r.forEach((p,i)=>{ const [a,b]=toPx(p[0],p[1]); i?x.lineTo(a,b):x.moveTo(a,b); }); x.closePath(); }); x.fill('evenodd');
+    const d=x.getImageData(0,0,RW,RH).data; for(let i=0;i<RW*RH;i++) if(d[i*4+3]>127) O[i]=+k; });
+  return origGridC=O;
+}
+function gridPaths(A){ const paths={1:'',2:'',3:'',4:''};
+  for(let py=0;py<RH;py++){ let run=-1,start=0;
+    for(let px=0;px<=RW;px++){ const a=px<RW?A[py*RW+px]:-1;
+      if(a!==run){ if(run>0){ const X=RX0+start*RES, Yt=-(RY1-py*RES); paths[run]+=`M${X.toFixed(1)} ${Yt.toFixed(1)}h${((px-start)*RES).toFixed(1)}v${(RES+0.05).toFixed(2)}h${(-(px-start)*RES).toFixed(1)}z`; } run=a; start=px; } } }
+  return paths; }
+function autoDivision(){
+  const inside=stateMask(), O=origGrid();
+  const sp=stationPixels().map(s=>({...s,fora:origAt(s.x,s.y)!==s.a}));
+  const fora=sp.filter(s=>s.fora);
+  if(!fora.length) return {red:JSON.parse(JSON.stringify(G.red)), fill:null, fora:[]};
+  // distância de cada célula até a estação mais próxima de um grupo (propagação a partir das estações)
+  const N=RW*RH, nb=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  const field=list=>{ const seed=new Int32Array(N).fill(-1), dist=new Float64Array(N).fill(Infinity), q=[]; let h=0;
+    list.forEach(s=>{ const i=s.py*RW+s.px; if(dist[i]>0){ dist[i]=0; seed[i]=s.k; q.push(i); } });
+    while(h<q.length){ const i=q[h++], px=i%RW, py=(i/RW)|0, s=sp[seed[i]];
+      for(const [dx,dy] of nb){ const x=px+dx, y=py+dy; if(x<0||y<0||x>=RW||y>=RH) continue; const j=y*RW+x;
+        const d=(s.px-x)**2+(s.py-y)**2; if(d<dist[j]){ dist[j]=d; seed[j]=seed[i]; q.push(j); } } }
+    return {seed,dist}; };
+  sp.forEach((s,k)=>{ s.k=k; s.o=origAt(s.x,s.y); });
+  const all=field(sp), agora={}, antes={};
+  for(const k of [1,2,3,4]){ agora[k]=field(sp.filter(s=>s.a===k)).dist; antes[k]=field(sp.filter(s=>s.o===k)).dist; }
+  // cada célula fica com a área original, a não ser que:
+  //  - a estação mais próxima esteja fora da área original (vai para a área dela), ou
+  //  - a estação da área que atendia aquela célula tenha mudado de área ou saído dali
+  //    (a célula vai para a estação mais próxima que restou)
+  const A=new Int8Array(N), flip=new Uint8Array(N);
+  for(let i=0;i<N;i++){ if(!inside[i]||all.seed[i]<0) continue; const s=sp[all.seed[i]], o=O[i];
+    let v=o;
+    if(!o||s.fora) v=s.a;
+    else if(Math.sqrt(agora[o][i])>Math.sqrt(antes[o][i])+0.01) v=s.a;
+    A[i]=v; flip[i]=v!==o?1:0; }
+  const near=(px,py,r,f)=>{ for(let dy=-r;dy<=r;dy++) for(let dx=-r;dx<=r;dx++){ const x=px+dx,y=py+dy; if(x<0||y<0||x>=RW||y>=RH) continue; if(f(y*RW+x)) return true; } return false; };
+  // 1) linhas originais: ficam onde continuam separando áreas diferentes
+  const kept=[];
+  G.red.forEach(l=>{ let cur=[];
+    const push=()=>{ if(cur.length>=2) kept.push(cur); cur=[]; };
+    for(let i=0;i<l.length;i++){ const [x0,y0]=l[i], nx=l[i+1];
+      const steps=nx?Math.max(1,Math.ceil(Math.hypot(nx[0]-x0,nx[1]-y0)/1)):1;
+      for(let t=0;t<steps;t++){ const x=nx?x0+(nx[0]-x0)*t/steps:x0, y=nx?y0+(nx[1]-y0)*t/steps:y0;
+        const [fx,fy]=toPx(x,y), px=Math.round(fx), py=Math.round(fy);
+        let ok=!near(px,py,3,i2=>flip[i2]);
+        if(!ok){ const seen=new Set(); near(px,py,2,i2=>{ if(A[i2]) seen.add(A[i2]); return false; }); ok=seen.size>=2; }
+        if(ok){ if(t===0||!cur.length) cur.push([x,y]); else if(t===steps-1||!nx) cur.push([x,y]); else cur.push([x,y]); } else push(); } }
+    push(); });
+  const simp=(pts,tol)=>{ if(pts.length<3) return pts; const keep=new Uint8Array(pts.length); keep[0]=keep[pts.length-1]=1; const st=[[0,pts.length-1]];
+    while(st.length){ const [i,j]=st.pop(); const [ax,ay]=pts[i],[bx,by]=pts[j]; const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy)||1e-9; let best=0,bi=-1;
+      for(let k=i+1;k<j;k++){ const d=L<1e-6?Math.hypot(pts[k][0]-ax,pts[k][1]-ay):Math.abs(dy*(pts[k][0]-ax)-dx*(pts[k][1]-ay))/L; if(d>best){best=d;bi=k;} } if(best>tol){keep[bi]=1;st.push([i,bi],[bi,j]);} }
+    return pts.filter((_,i)=>keep[i]); };
+  const origLines=kept.map(l=>simp(l,0.15).map(([x,y])=>[+x.toFixed(2),+y.toFixed(2)]));
+  // 2) linhas novas: só as fronteiras que encostam em células que mudaram de área
   const adj=new Map(); const key=(x,y)=>x+','+y;
   const addE=(a,b)=>{ (adj.get(a)||adj.set(a,[]).get(a)).push(b); (adj.get(b)||adj.set(b,[]).get(b)).push(a); };
   for(let py=0;py<RH;py++) for(let px=0;px<RW;px++){ const i=py*RW+px, a=A[i]; if(!a) continue;
-    if(px+1<RW&&A[i+1]&&A[i+1]!==a) addE(key(px+1,py),key(px+1,py+1));
-    if(py+1<RH&&A[i+RW]&&A[i+RW]!==a) addE(key(px,py+1),key(px+1,py+1)); }
-  // encadeia as arestas em linhas
+    if(px+1<RW&&A[i+1]&&A[i+1]!==a&&(flip[i]||flip[i+1])) addE(key(px+1,py),key(px+1,py+1));
+    if(py+1<RH&&A[i+RW]&&A[i+RW]!==a&&(flip[i]||flip[i+RW])) addE(key(px,py+1),key(px+1,py+1)); }
   const used=new Set(), ek=(a,b)=>a<b?a+'|'+b:b+'|'+a, lines=[];
   const walk=(s,n)=>{ const l=[s,n]; used.add(ek(s,n)); let prev=s,cur=n;
     while((adj.get(cur)||[]).length===2){ const nx=adj.get(cur).find(v=>v!==prev&&!used.has(ek(cur,v))); if(!nx) break; used.add(ek(cur,nx)); l.push(nx); prev=cur; cur=nx; }
     return l; };
   for(const [v,ns] of adj) if(ns.length!==2) for(const n of ns) if(!used.has(ek(v,n))) lines.push(walk(v,n));
   for(const [v,ns] of adj) for(const n of ns) if(!used.has(ek(v,n))) lines.push(walk(v,n));
-  const dp=(pts,tol)=>{ if(pts.length<3) return pts; const keep=new Uint8Array(pts.length); keep[0]=keep[pts.length-1]=1; const st=[[0,pts.length-1]];
-    while(st.length){ const [i,j]=st.pop(); const [ax,ay]=pts[i],[bx,by]=pts[j]; const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy)||1e-9; let best=0,bi=-1;
-      for(let k=i+1;k<j;k++){ const d=Math.abs(dy*(pts[k][0]-ax)-dx*(pts[k][1]-ay))/L; if(d>best){best=d;bi=k;} } if(best>tol){keep[bi]=1;st.push([i,bi],[bi,j]);} }
-    return pts.filter((_,i)=>keep[i]); };
-  // linha fechada (ilha em volta de uma estação): divide no ponto mais distante do início antes de simplificar
-  const dpLine=(pts,tol)=>{ const n=pts.length, [x0,y0]=pts[0], [x1,y1]=pts[n-1];
-    if(n<4||Math.hypot(x1-x0,y1-y0)>1e-6) return dp(pts,tol);
-    let far=1,fd=-1; pts.forEach(([x,y],i)=>{ const d=Math.hypot(x-x0,y-y0); if(d>fd){fd=d;far=i;} });
-    return dp(pts.slice(0,far+1),tol).concat(dp(pts.slice(far),tol).slice(1)); };
-  const chaikinClosed=pts=>{ const n=pts.length; if(n<4||Math.hypot(pts[0][0]-pts[n-1][0],pts[0][1]-pts[n-1][1])>1e-6) return chaikin(pts);
-    const o=[]; for(let i=0;i<n-1;i++){ const [a,b]=pts[i],[c,d]=pts[i+1]; o.push([a*.75+c*.25,b*.75+d*.25],[a*.25+c*.75,b*.25+d*.75]); } o.push(o[0]); return o; };
-  const chaikin=pts=>{ if(pts.length<3) return pts; const o=[pts[0]]; for(let i=0;i<pts.length-1;i++){ const [a,b]=pts[i],[c,d]=pts[i+1]; o.push([a*.75+c*.25,b*.75+d*.25],[a*.25+c*.75,b*.25+d*.75]); } o.push(pts[pts.length-1]); return o; };
-  return lines.map(l=>l.map(k=>k.split(',').map(Number))).filter(l=>l.length>=4)
-    .map(l=>chaikinClosed(chaikinClosed(dpLine(l,1.3))).map(([px,py])=>fromPx(px,py)));
+  const closed=p=>p.length>=4&&Math.hypot(p[0][0]-p[p.length-1][0],p[0][1]-p[p.length-1][1])<1e-6;
+  const dpLine=(pts,tol)=>{ if(!closed(pts)) return simp(pts,tol); const [x0,y0]=pts[0]; let far=1,fd=-1;
+    pts.forEach(([x,y],i)=>{ const d=Math.hypot(x-x0,y-y0); if(d>fd){fd=d;far=i;} });
+    return simp(pts.slice(0,far+1),tol).concat(simp(pts.slice(far),tol).slice(1)); };
+  const chaikin=pts=>{ if(pts.length<3) return pts; const c=closed(pts), o=c?[]:[pts[0]];
+    for(let i=0;i<pts.length-1;i++){ const [a,b]=pts[i],[e,d]=pts[i+1]; o.push([a*.75+e*.25,b*.75+d*.25],[a*.25+e*.75,b*.25+d*.75]); }
+    o.push(c?o[0]:pts[pts.length-1]); return o; };
+  const ends=[]; origLines.forEach(l=>{ ends.push(l[0],l[l.length-1]); });
+  const snap=p=>{ let best=5,bp=null; ends.forEach(e=>{ const d=Math.hypot(e[0]-p[0],e[1]-p[1]); if(d<best){best=d;bp=e;} }); return bp?[bp[0],bp[1]]:p; };
+  const newLines=lines.map(l=>l.map(k=>k.split(',').map(Number))).filter(l=>l.length>=3)
+    .map(l=>chaikin(chaikin(dpLine(l,1.3))).map(([px,py])=>fromPx(px,py)))
+    .map(l=>{ if(!closed(l)){ l[0]=snap(l[0]); l[l.length-1]=snap(l[l.length-1]); } return l; });
+  return {red:origLines.concat(newLines), fill:gridPaths(A), fora:fora};
 }
 
 function currentRed(){ return DIV.modo==='dwg'?G.red:DIV.red; }
 // assinatura das estações (posição e área): no modo automático as linhas são refeitas quando ela muda
 function stationSig(){ let h=2166136261; const str=stationPixels().map(s=>s.px+','+s.py+','+s.a).sort().join(';');
   for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h.toString(36)+'.'+str.length; }
-let autoCache=null; // {sig, red}
-function liveAuto(){ const sig=stationSig();
-  if(DIV.sig===sig&&DIV.red&&DIV.red.length) return;
-  if(!(autoCache&&autoCache.sig===sig)){ const r=autoLines(); if(!r.length) return; autoCache={sig,red:r}; }
-  DIV.red=autoCache.red; DIV.sig=sig; }
+let autoCache=null; // {sig, red, fill}
+function autoNow(){ const sig=stationSig(); if(!(autoCache&&autoCache.sig===sig)) autoCache={sig,...autoDivision()}; return autoCache; }
 function applyDivision(){
-  divFill=DIV.modo==='dwg'?null:fillsFromLines(DIV.red);
-  areaEls.forEach(el=>{ const k=el.dataset.a; el.setAttribute('d',divFill?divFill[k]:G.areas[k].map(r=>pathOf(r,true)).join('')); el.setAttribute('fill-rule',divFill?'nonzero':'evenodd'); });
+  let fill=null;
+  if(DIV.modo==='auto'){ const r=autoNow(); DIV.red=r.red; fill=r.fill; }
+  else if(DIV.modo==='manual') fill=fillsFromLines(DIV.red);
+  divFill=fill;
+  areaEls.forEach(el=>{ const k=el.dataset.a; el.setAttribute('d',fill?fill[k]:G.areas[k].map(r=>pathOf(r,true)).join('')); el.setAttribute('fill-rule',fill?'nonzero':'evenodd'); });
   dvEl.setAttribute('d',currentRed().map(p=>pathOf(p)).join(''));
 }
 async function loadDivision(){
   try{ DIV=await api('GET','/api/divisao'); }catch(e){ DIV={modo:'dwg'}; }
-  if(DIV.modo==='auto') liveAuto();
-  if(DIV.modo!=='dwg'&&!(DIV.red&&DIV.red.length)) DIV={modo:'dwg'};
+  if(DIV.modo==='manual'&&!(DIV.red&&DIV.red.length)) DIV={modo:'dwg'};
   if(!divEdit) applyDivision();
 }
 
@@ -1078,7 +1120,7 @@ let fillT=null;
 window.addEventListener('pointermove',e=>{ if(!dragV||!divEdit) return; const l=divEdit.red[dragV.li]; if(!l) return; l[dragV.vi]=evToMap(e); toManual(); editRedraw(); });
 window.addEventListener('pointerup',()=>{ if(dragV){ dragV=null; editChanged(); } });
 function toManual(){ if(divEdit.modo==='auto') toast('Com ajuste manual, as linhas deixam de acompanhar as estações. Para voltar, use “Gerar automático”.'); divEdit.modo='manual'; }
-function editChanged(){ editRedraw(); clearTimeout(fillT); fillT=setTimeout(()=>{ if(!divEdit) return; divFill=fillsFromLines(divEdit.red); areaEls.forEach(el=>{ el.setAttribute('d',divFill[el.dataset.a]); el.setAttribute('fill-rule','nonzero'); }); },120); $('dvMode').textContent=divModeTxt(divEdit.modo); }
+function editChanged(){ editRedraw(); clearTimeout(fillT); fillT=setTimeout(()=>{ if(!divEdit) return; divFill=divEdit.modo==='auto'?autoNow().fill:divEdit.modo==='dwg'?null:fillsFromLines(divEdit.red); if(!divFill){ areaEls.forEach(el=>{ const k=el.dataset.a; el.setAttribute('d',G.areas[k].map(r=>pathOf(r,true)).join('')); el.setAttribute('fill-rule','evenodd'); }); return; } areaEls.forEach(el=>{ el.setAttribute('d',divFill[el.dataset.a]); el.setAttribute('fill-rule','nonzero'); }); },120); $('dvMode').textContent=divModeTxt(divEdit.modo); }
 const divModeTxt=m=>({dwg:'Desenho original (DWG)',manual:'Ajuste manual',auto:'Automático · acompanha as estações'}[m]);
 
 function openDivEditor(){
@@ -1094,7 +1136,8 @@ svg.addEventListener('click',e=>{ if(!divEdit||!divEdit.drawing||moved>=6) retur
 svg.addEventListener('dblclick',e=>{ if(divEdit&&divEdit.drawing){ e.preventDefault(); finishDrawing(); } });
 $('dvNew').onclick=()=>{ if(divEdit.drawing){ finishDrawing(); return; } divEdit.drawing=[]; $('dvNew').textContent='Terminar linha'; toast('Clique no mapa para marcar os pontos. Clique duplo ou “Terminar linha” para encerrar.'); };
 $('dvAuto').onclick=()=>{ $('dvAuto').disabled=true; $('dvMode').textContent='Calculando…';
-  setTimeout(()=>{ const r=autoLines(); $('dvAuto').disabled=false; if(!r.length){ toast('Não foi possível gerar: as estações estão todas na mesma área.'); editChanged(); return; } divEdit.red=r; divEdit.modo='auto'; editChanged(); toast('Linhas automáticas: depois de salvar, mudam sozinhas sempre que a área ou a posição de uma estação mudar.'); },30); };
+  setTimeout(()=>{ const r=autoNow(); $('dvAuto').disabled=false; divEdit.red=JSON.parse(JSON.stringify(r.red)); divEdit.modo='auto'; editChanged();
+    toast((r.fora.length?'Linhas do desenho original, redesenhadas em volta de '+r.fora.length+(r.fora.length===1?' estação que mudou':' estações que mudaram')+' de área ou de lugar.':'Nenhuma estação mudou de área: as linhas ficam iguais ao desenho original.')+' Depois de salvar, elas acompanham as mudanças sozinhas.'); },30); };
 $('dvDwg').onclick=()=>{ divEdit.red=JSON.parse(JSON.stringify(G.red)); divEdit.modo='dwg'; editChanged(); };
 $('dvCancel').onclick=closeDivEditor;
 $('dvSave').onclick=async()=>{ if(divEdit.drawing) finishDrawing(); $('dvSave').disabled=true;
