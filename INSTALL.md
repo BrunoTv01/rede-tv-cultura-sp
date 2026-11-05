@@ -74,6 +74,18 @@ O sistema pede confirmação antes de aplicar. Tudo fica no histórico com o val
 
 As linhas são só o desenho do mapa: a cor de cada região segue a maioria das estações dentro dela, mas a área de cada estação continua sendo a do campo **Área** da ficha. Cada gravação fica no histórico.
 
+Para imprimir o mapa como a planta do AutoCAD, use o botão **Imprimir**, no alto da tela, ou **Imprimir mapa (prancha)**, no menu do seu nome. A prancha sai em fundo branco e tem:
+
+- moldura;
+- título;
+- quadro de cobertura;
+- lista das áreas;
+- ampliação da Grande São Paulo;
+- legenda;
+- carimbo.
+
+Ela usa os dados e as linhas de divisão atuais. Escolha o papel, de A4 a A0, e os textos do carimbo. Você também pode carregar o logotipo. Depois clique em **Imprimir / salvar PDF**. Na janela de impressão, escolha orientação paisagem e margens “Nenhuma”. **Baixar SVG** gera o desenho em vetor, que abre no Inkscape, Illustrator ou CorelDRAW.
+
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
 
 ## Opções do instalador

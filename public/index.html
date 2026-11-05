@@ -178,6 +178,11 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 .sheethead h2{margin:0;font:700 22px/1.1 var(--display)}
 .sheethead .x{position:static}
 .sheetbody{padding:14px 16px;overflow:auto;min-height:0}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px 12px;margin:12px 0}
+.pf{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
+.pf input,.pf select{font:13px var(--body);background:var(--card2);color:var(--fg);border:1px solid var(--line2);border-radius:6px;padding:7px 9px}
+.pf small{font-size:11.5px}.pf a{color:var(--accent)}
+.pprev{background:#7d8590;padding:10px;border-radius:8px;margin-bottom:12px}.pprev svg{display:block;width:100%;height:auto;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 .optlist{display:flex;flex-direction:column;gap:10px;margin:12px 0 16px}
 .optlist label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;line-height:1.35}
 .optlist input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex:none}
@@ -246,10 +251,12 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
     <div class="topact">
       <button class="btn pri" id="btnNew" hidden>+ Nova estação</button>
       <button class="btn" id="btnExport" hidden>Exportar CSV</button>
+      <button class="btn" id="btnPrint" hidden>Imprimir</button>
       <div class="usermenu" id="userMenu" hidden>
         <button class="btn ghost" id="btnUser" aria-haspopup="menu" aria-expanded="false"><span class="avatar" id="uAvatar"></span><span id="uName"></span></button>
         <div class="menu" id="menu" role="menu" hidden>
           <div class="menuhead"><b id="uFull"></b><span id="uRole"></span></div>
+          <button role="menuitem" id="mPrint">Imprimir mapa (prancha)</button>
           <button role="menuitem" id="mHist">Histórico de alterações</button>
           <button role="menuitem" id="mAreas" hidden>Áreas e responsáveis</button>
           <button role="menuitem" id="mDiv" hidden>Ajustar linhas de divisão</button>
@@ -568,7 +575,7 @@ function render(){
   list.innerHTML=lh||(loaded?'<div class="note">Nenhuma estação com esses filtros.</div>':(dbMissing?'<div class="note">Não foi possível falar com o servidor. Verifique a conexão e recarregue a página.</div>':''));
   list.querySelectorAll('.row').forEach(b=>b.onclick=()=>select(b.dataset.id,true));
   $('btnNew').hidden=!(canWrite&&loaded);
-  $('btnExport').hidden=!ST.length;
+  $('btnExport').hidden=!ST.length; $('btnPrint').hidden=!ST.length;
   if(view2==='table') renderTable(vis);
   if(!editing) renderDetail();
   $('hint').hidden=!!sel||!!editing||!loaded;
@@ -1146,6 +1153,154 @@ $('dvSave').onclick=async()=>{ if(divEdit.drawing) finishDrawing(); $('dvSave').
   catch(e){ toast(e.message); }
   finally{ $('dvSave').disabled=false; } };
 $('mDiv').onclick=openDivEditor;
+
+// ---------- impressão em prancha, no estilo da planta do AutoCAD ----------
+// A prancha é desenhada em milímetros numa folha A3 deitada (420 × 297) e ampliada ou reduzida para o papel escolhido.
+const PAPEIS={A4:[297,210],A3:[420,297],A2:[594,420],A1:[841,594],A0:[1189,841]};
+const PR_COR={R:'#12a312',N:'#ef7d00',J:'#7d7a1c',X:'#111111',G:'#d400d4',F:'#d400d4',L:'#8a1bb0',H:'#12a312',P:'#111111'};
+const PR_TXT={N:'#d76f00',G:'#c000c0',F:'#c000c0',L:'#7a1aa0'};
+const PR_AZUL='#1010c8', PR_VERDE='#16b316', PR_VERM='#e10000';
+function prDefs(){
+  const sym=(id,inner)=>`<g id="${id}"><path d="M-0.47 -6.87 A2.27 2.27 0 0 0 2.95 -3.89 Z" fill="currentColor" stroke="currentColor" stroke-width=".5" stroke-linejoin="round"/>`+
+    `<path d="M0 -4.9 L-4.25 2.5 L4.25 2.5 Z" fill="#fff" stroke="currentColor" stroke-width=".85" stroke-linejoin="round"/>`+
+    `<circle r="1.55" fill="${inner==='full'?'currentColor':'#fff'}" stroke="currentColor" stroke-width=".45"/>`+
+    (inner==='half'?`<path d="M-1.55 0 A1.55 1.55 0 0 1 1.55 0 Z" fill="currentColor"/>`:'')+
+    (inner==='half'||inner==='line'||inner==='cross'?`<line x1="-1.55" x2="1.55" stroke="currentColor" stroke-width=".4"/>`:'')+
+    (inner==='cross'?`<line y1="-1.55" y2="1.55" stroke="currentColor" stroke-width=".4"/>`:'')+`</g>`;
+  return `<defs>${['full','half','line','cross'].map(k=>sym('p-'+k,k)).join('')}
+    <g id="p-H"><circle r="3.6" fill="#fff" stroke="currentColor" stroke-width=".7"/><circle r="1.8" fill="currentColor"/></g>
+    <g id="p-P"><circle r="1.6" fill="#fff" stroke="currentColor" stroke-width=".6"/></g>
+    <g id="p-F"><circle r="1.2" fill="currentColor"/></g></defs>`;
+}
+const prSymId=s=>'#p-'+(s.r==='H'||s.r==='P'||s.r==='F'?s.r:(s.m||'full'));
+// conteúdo do mapa, nas coordenadas do desenho (x, -y)
+function prMapa(win,fs,symK,lw){
+  const inWin=(x,y)=>!win||(x>=win.x0-8&&x<=win.x1+8&&y>=win.y0-8&&y<=win.y1+8);
+  let o='';
+  o+=`<path d="${G.border.map(p=>pathOf(p)).join('')}" fill="none" stroke="#7a7a7a" stroke-width="${2.4*lw}" stroke-linejoin="round" stroke-linecap="round"/>`;
+  o+=`<path d="${currentRed().map(p=>pathOf(p)).join('')}" fill="none" stroke="${PR_VERM}" stroke-width="${1.1*lw}" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(!win) G.alab.forEach(a=>{ const num=+(a.t[0].match(/\d/)||[0])[0]; const ar=AREAS[num]; if(!ar) return;
+    o+=`<text x="${a.x}" y="${-a.y+7}" font-size="6.5" fill="${PR_VERDE}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" stroke="#fff" stroke-width="1.2" paint-order="stroke" stroke-linejoin="round">`+
+      `<tspan x="${a.x}">${esc(ar.n.toUpperCase())}</tspan><tspan x="${a.x}" dy="7.4">${esc(ar.e.toUpperCase())}</tspan></text>`; });
+  ST.forEach(s=>{ if(!inWin(s.x,s.y)) return; const rc=s.rc||recOf(s);
+    o+=`<use href="${prSymId(s)}" color="${PR_COR[rc]||PR_COR.R}" transform="translate(${s.x} ${-s.y}) scale(${symK*(s.r==='H'?1.25:1)})"/>`; });
+  ST.forEach(s=>{ if(!inWin(s.x,s.y)) return; const rc=s.rc||recOf(s), L=win?{x:s.x+symK*4.6,y:s.y+symK*1.5,lines:[s.n,[s.ch?'cn '+s.ch:'',s.vt?'('+s.vt+')':''].filter(Boolean).join(' ')].filter(Boolean)}:labelLines(s);
+    o+=`<text x="${L.x}" y="${-L.y}" font-size="${fs}" fill="${PR_TXT[rc]||PR_AZUL}" font-family="Arial,Helvetica,sans-serif" stroke="#fff" stroke-width="${fs*.22}" paint-order="stroke" stroke-linejoin="round">`+
+      L.lines.map((ln,j)=>`<tspan x="${L.x}" dy="${j?'1.18em':'0.95em'}"${j===0&&!/^(cn|\(|VT)/i.test(ln)?' font-weight="bold"':''}>${esc(ln)}</tspan>`).join('')+`</text>`; });
+  return o;
+}
+function prCobertura(){
+  const uniq=list=>{ const m=new Map(); list.forEach(s=>(s.cov||[]).forEach(c=>{ const k=nkey(c[0]); if(!m.has(k)) m.set(k,+c[1]||0); })); return {n:m.size,p:[...m.values()].reduce((a,b)=>a+b,0)}; };
+  const ger=ST.filter(s=>s.r==='H'), ret=ST.filter(s=>s.r!=='H'&&s.r!=='X');
+  return {ger:ger.length,gm:uniq(ger),ret:ret.length,rm:uniq(ret),tot:uniq(ST.filter(s=>s.r!=='X'))};
+}
+function prFolha(o){
+  const W=420,H=297,F=7, B0={x0:4384,x1:5178,y0:-786,y1:-262};
+  const s=0.462, mw=(B0.x1-B0.x0)*s, ox=(W-mw)/2-4, oy=38;
+  const T=(x,y,t,sz,extra='')=>`<text x="${x}" y="${y}" font-size="${sz}" font-family="Arial,Helvetica,sans-serif" ${extra}>${esc(t)}</text>`;
+  const dots=(a,b,w)=>`${a} ${'.'.repeat(Math.max(3,w))} ${b}`;
+  let g=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}" width="${o.pw}mm" height="${o.ph}mm" style="background:#fff">${prDefs()}`;
+  g+=`<rect width="${W}" height="${H}" fill="#fff"/>`;
+  // moldura com marcas de divisão, como na planta
+  g+=`<rect x="${F}" y="${F}" width="${W-2*F}" height="${H-2*F}" fill="none" stroke="#000" stroke-width=".5"/>`;
+  [W/4,W/2,3*W/4].forEach(x=>{ g+=`<line x1="${x}" y1="0" x2="${x}" y2="${F}" stroke="#000" stroke-width=".35"/><line x1="${x}" y1="${H-F}" x2="${x}" y2="${H}" stroke="#000" stroke-width=".35"/>`; });
+  [H/2].forEach(y=>{ g+=`<line x1="0" y1="${y}" x2="${F}" y2="${y}" stroke="#000" stroke-width=".35"/><line x1="${W-F}" y1="${y}" x2="${W}" y2="${y}" stroke="#000" stroke-width=".35"/>`; });
+  // mapa principal
+  g+=`<g transform="translate(${ox-s*B0.x0} ${oy-s*B0.y0}) scale(${s})">${prMapa(null,3,1,1)}</g>`;
+  // título
+  g+=T(W/2,27,'TV CULTURA',17,'text-anchor="middle" font-weight="bold" letter-spacing="2"');
+  g+=T(W/2,33.5,o.sub,4.2,'text-anchor="middle"');
+  g+=`<rect x="${o.tagX}" y="${o.tagY}" width="62" height="10" fill="#fff" stroke="${PR_VERM}" stroke-width=".5"/>`+T(o.tagX+31,o.tagY+7.3,o.tag,6.2,`text-anchor="middle" fill="${PR_VERM}"`);
+  // quadro de cobertura (canto superior esquerdo)
+  const c=prCobertura(), bx=12, by=12;
+  g+=`<rect x="${bx}" y="${by}" width="86" height="52" fill="#fff" stroke="#000" stroke-width=".4"/>`;
+  g+=T(bx+4,by+7,'COBERTURA  -  REDE  PRÓPRIA',4.2,'text-decoration="underline"');
+  const ln=(y,a,b)=>T(bx+4,y,a,2.5)+T(bx+82,y,b,2.5,'text-anchor="end"');
+  g+=ln(by+14,'Geradora',fmt(c.ger))+ln(by+17.5,'Municípios atendidos (capital)',fmt(c.gm.n))+ln(by+21,'População atendida (estimativa IBGE)',fmt(c.gm.p)+' hab.');
+  g+=ln(by+27,'Retransmissoras (interior)',fmt(c.ret))+ln(by+30.5,'Municípios atendidos (interior)',fmt(c.rm.n))+ln(by+34,'População atendida (estimativa IBGE)',fmt(c.rm.p)+' hab.');
+  g+=T(bx+4,by+40,'TOTAL:',2.5)+ln(by+43.5,'Municípios atendidos (capital + interior)',fmt(c.tot.n))+ln(by+47,'População atendida',fmt(c.tot.p)+' hab.');
+  g+=T(bx+4,by+50.5,'Dados da planilha “Projeto 100%” e do cadastro do sistema',1.8,'fill="#555"');
+  // ampliação da região metropolitana (canto superior direito)
+  const win={x0:4900,x1:4990,y0:388,y1:448}, iw=104, ih=iw*(win.y1-win.y0)/(win.x1-win.x0), ix=W-F-iw-5, iy=12, k=iw/(win.x1-win.x0);
+  g+=`<svg x="${ix}" y="${iy}" width="${iw}" height="${ih}" viewBox="${win.x0} ${-win.y1} ${win.x1-win.x0} ${win.y1-win.y0}" overflow="hidden"><rect x="${win.x0}" y="${-win.y1}" width="${win.x1-win.x0}" height="${win.y1-win.y0}" fill="#fff"/>${prMapa(win,1.55,.42,.45)}</svg>`;
+  g+=`<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="none" stroke="#000" stroke-width=".4"/>`;
+  g+=T(ix+iw/2,iy+ih+6,'REGIÃO METROPOLITANA DE SÃO PAULO',4,'text-anchor="middle" font-weight="bold"');
+  // marca da ampliação no mapa principal
+  const mx=ox+(win.x0-B0.x0)*s, my=oy+(-win.y1-B0.y0)*s;
+  g+=`<rect x="${mx}" y="${my}" width="${(win.x1-win.x0)*s}" height="${(win.y1-win.y0)*s}" fill="none" stroke="#000" stroke-width=".3" stroke-dasharray="1.5 1"/>`;
+  // legenda (canto inferior esquerdo)
+  const lx=14, ly=190, sy=(id,x,y,col,k=.42)=>`<use href="${id}" color="${col}" transform="translate(${x} ${y}) scale(${k})"/>`;
+  g+=T(lx,ly,'LEGENDA:',4,'font-weight="bold" text-decoration="underline"');
+  let y=ly+8; g+=T(lx,y+1,'ESTAÇÕES:',2.6);
+  [['full','Canal FPA  -  Manutenção FPA'],['half','Canal FPA  -  Manutenção PM'],['line','Canal PM  -  Manutenção FPA'],['cross','Canal PM  -  Licença / Manutenção PM']].forEach(([k,t],i)=>{ const yy=y+i*4.6;
+    g+=sy('#p-'+k,lx+25,yy,k==='cross'?PR_COR.L:'#111')+T(lx+29,yy+1,t,2.5,k==='cross'?`fill="${PR_COR.L}"`:''); });
+  y+=20; g+=T(lx,y+1,'OUTRAS:',2.6);
+  [['#p-H',PR_COR.H,'Geradora',.42],['#p-P','#111','Repetidora',.6],['#p-F',PR_COR.F,'Gap filler',.6]].forEach(([id,col,t,kk],i)=>{ g+=sy(id,lx+25,y+i*4.6,col,kk)+T(lx+29,y+i*4.6+1,t,2.5); });
+  y+=16; g+=T(lx,y+1,'VIA SATÉLITE:',2.6);
+  [['R','Recepção via satélite digital  -  Retransmissão'],['N','Recepção via satélite digital  -  Costa Norte Paulista'],['J','Recepção via satélite digital  -  TV Jornal'],['X','Estação sem operação'],['G','Recepção de sinal e complemento de sinal da geradora']].forEach(([r,t],i)=>{ const yy=y+i*5;
+    g+=sy('#p-full',lx+25,yy+.6,PR_COR[r],.48)+T(lx+29,yy+1,t,2.5,`fill="${r==='X'?'#111':PR_COR[r]}"`); });
+  y+=27; g+=`<line x1="${lx}" y1="${y}" x2="${lx+16}" y2="${y}" stroke="${PR_VERM}" stroke-width=".6"/>`+T(lx+20,y+1,'Divisão das áreas de manutenção',2.5);
+  g+=`<line x1="${lx}" y1="${y+4.5}" x2="${lx+16}" y2="${y+4.5}" stroke="#7a7a7a" stroke-width="1.1"/>`+T(lx+20,y+5.5,'Limite do estado',2.5);
+  g+=T(lx+70,y+4,'VT  =  CANAL VIRTUAL',4,`fill="${PR_AZUL}"`);
+  // áreas e quantidade de estações (abaixo do quadro de cobertura)
+  const ax=14, ay=74;
+  g+=T(ax,ay,'ÁREAS DE MANUTENÇÃO',2.8,'font-weight="bold"');
+  AK.forEach((a,i)=>{ const n=ST.filter(s=>s.a===a).length; g+=T(ax,ay+4.8+i*4.2,`${AREAS[a].n} · ${AREAS[a].e}: ${n} estações`,2.4); });
+  // carimbo (canto inferior direito)
+  const cx=W-F-112, cy=H-F-46;
+  g+=`<line x1="${cx}" y1="${cy}" x2="${W-F}" y2="${cy}" stroke="#000" stroke-width=".3"/>`;
+  let tx=cx+6;
+  if(o.logo){ g+=`<image href="${o.logo}" x="${cx+4}" y="${cy+4}" width="24" height="20" preserveAspectRatio="xMidYMid meet"/>`; tx=cx+32; }
+  g+=T(tx,cy+11,o.org,6)+T(tx,cy+18,o.org2,2.6)+T(tx,cy+26,o.setor,4,'text-decoration="underline"')+T(tx,cy+34,o.titulo,3.6);
+  g+=T(W-F-4,cy+42,`Atualização: ${o.autor} ${o.data}`,2.4,'text-anchor="end" font-style="italic"');
+  return g+`</svg>`;
+}
+const PR_KEY='tvc-print';
+function prOpcoes(){ let v={}; try{ v=JSON.parse(localStorage.getItem(PR_KEY)||'{}'); }catch(e){}
+  const hoje=new Date().toLocaleDateString('pt-BR');
+  return {papel:v.papel||'A3', sub:v.sub||'SISTEMA DE REPETIÇÃO E RETRANSMISSÃO DE SINAIS', tag:v.tag||'NOVA DIVISÃO 2026',
+    org:v.org||'FUNDAÇÃO PADRE ANCHIETA', org2:v.org2||'CENTRO PAULISTA DE RÁDIO E TV EDUCATIVAS', setor:v.setor||'G.P.  -  Gerência de Projetos',
+    titulo:v.titulo||'TV CULTURA  -  Situação Atual de Cobertura', autor:(me&&(me.name||me.username)||'').toUpperCase(), data:hoje, tagX:300, tagY:96, logo:v.logo||null}; }
+function prPagina(o){
+  const [pw,ph]=PAPEIS[o.papel]||PAPEIS.A3;
+  const svgTxt=prFolha({...o,pw,ph});
+  return {svgTxt,pw,ph,html:`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa TV Cultura · ${esc(o.papel)}</title>
+<style>@page{size:${o.papel} landscape;margin:0}html,body{margin:0;background:#888}svg{display:block;margin:0 auto;background:#fff}
+@media screen{body{padding:16px}svg{width:min(100%,${pw*3.78}px);height:auto;box-shadow:0 2px 12px rgba(0,0,0,.4)}.bar{font:14px Arial;color:#fff;text-align:center;margin-bottom:10px}}
+@media print{html,body{background:#fff}.bar{display:none}svg{width:${pw}mm;height:${ph}mm}}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>
+<body><div class="bar">Prancha ${esc(o.papel)} deitada. Na janela de impressão, escolha o papel ${esc(o.papel)}, orientação paisagem e margens “Nenhuma”. Para PDF, escolha “Salvar como PDF”.</div>${svgTxt}</body></html>`};
+}
+function openPrint(){
+  const o=prOpcoes();
+  openSheet('Imprimir mapa (prancha)');
+  const f=(k,l,ph='')=>`<label class="pf">${l}<input data-k="${k}" value="${esc(o[k])}" placeholder="${esc(ph)}"></label>`;
+  $('sheetBody').innerHTML=`<p class="sub">Monta a prancha no estilo da planta do AutoCAD, com fundo branco, moldura, legenda, quadro de cobertura, ampliação da Grande São Paulo e carimbo. Usa os dados e as linhas de divisão atuais.</p>
+  <div class="pgrid">
+    <label class="pf">Papel<select data-k="papel">${Object.keys(PAPEIS).map(p=>`<option${p===o.papel?' selected':''}>${p}</option>`).join('')}</select></label>
+    ${f('tag','Destaque em vermelho')}${f('sub','Subtítulo')}${f('titulo','Título do carimbo')}${f('org','Instituição')}${f('org2','Linha abaixo da instituição')}${f('setor','Setor')}
+    ${f('autor','Atualizado por')}${f('data','Data')}
+    <label class="pf">Logotipo (opcional)<input type="file" accept="image/png,image/jpeg,image/svg+xml" id="pLogo"><small id="pLogoTxt">${o.logo?'Logotipo salvo neste navegador. <a href="#" id="pLogoX">Remover</a>':'Imagem PNG, JPG ou SVG para o carimbo.'}</small></label>
+  </div>
+  <div class="pprev" id="pPrev"></div>
+  <div class="btnrow"><button class="btn pri" id="pGo">Imprimir / salvar PDF</button><button class="btn" id="pSvg">Baixar SVG</button><button class="btn" id="pCancel">Fechar</button></div>
+  <div class="status" id="pMsg" role="status"></div>`;
+  const read=()=>{ const v={...o}; $('sheetBody').querySelectorAll('[data-k]').forEach(el=>{ v[el.dataset.k]=el.value.trim(); }); return v; };
+  const save=v=>{ try{ const {papel,sub,tag,org,org2,setor,titulo,logo}=v; localStorage.setItem(PR_KEY,JSON.stringify({papel,sub,tag,org,org2,setor,titulo,logo})); }catch(e){} };
+  const prev=()=>{ const v=read(); $('pPrev').innerHTML=prFolha({...v,pw:420,ph:297}).replace(/width="[\d.]+mm" height="[\d.]+mm"/,''); };
+  let t=null; $('sheetBody').querySelectorAll('[data-k]').forEach(el=>el.addEventListener('input',()=>{ clearTimeout(t); t=setTimeout(prev,250); }));
+  $('pLogo').onchange=()=>{ const file=$('pLogo').files[0]; if(!file) return; if(file.size>1.5e6){ $('pMsg').className='status err'; $('pMsg').textContent='Imagem grande demais (máximo 1,5 MB).'; return; }
+    const r=new FileReader(); r.onload=()=>{ o.logo=r.result; save(read()); prev(); $('pLogoTxt').textContent='Logotipo carregado.'; }; r.readAsDataURL(file); };
+  const lx=$('pLogoX'); if(lx) lx.onclick=e=>{ e.preventDefault(); o.logo=null; save(read()); prev(); $('pLogoTxt').textContent='Logotipo removido.'; };
+  $('pCancel').onclick=closeSheet;
+  $('pGo').onclick=()=>{ const v=read(); save(v); const p=prPagina(v); const w=window.open('','_blank');
+    if(!w){ $('pMsg').className='status err'; $('pMsg').textContent='O navegador bloqueou a janela. Libere pop-ups para este endereço e tente de novo.'; return; }
+    w.document.open(); w.document.write(p.html); w.document.close(); setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} },400); };
+  $('pSvg').onclick=()=>{ const v=read(); save(v); const p=prPagina(v); const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+p.svgTxt],{type:'image/svg+xml'})); a.download=`mapa-tv-cultura-${v.papel}.svg`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+  prev();
+}
+$('mPrint').onclick=()=>{ toggleMenu(false); openPrint(); };
+$('btnPrint').onclick=openPrint;
 
 // ---------- início ----------
 async function start(){
