@@ -80,7 +80,7 @@ svg#map.placing{cursor:crosshair}
 .base{fill:var(--land)}
 .bd{fill:none;stroke:var(--border);stroke-linejoin:round;stroke-linecap:round}
 .dv{fill:none;stroke:var(--div);stroke-linejoin:round;stroke-linecap:round;opacity:.85}
-.alab{font-family:var(--display);font-weight:700;letter-spacing:.06em;pointer-events:none;opacity:.35}
+.alab{font-family:var(--display);font-weight:700;letter-spacing:.08em;pointer-events:none;opacity:.8;paint-order:stroke;stroke:var(--sea);stroke-linejoin:round}
 .sym{cursor:pointer}
 .sym .hit{fill:transparent;stroke:none}
 .sym .halo{fill:none;stroke:var(--ring);opacity:0}
@@ -195,6 +195,13 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 .uform{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;align-items:end;margin-bottom:14px}
 .tag{font:600 11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--muted)}
 .tag.off{color:var(--div);border-color:rgba(255,90,78,.5)}
+.sechead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sechead h4{margin-bottom:8px}
+.sechead .linkbtn{font-size:12px}
+.agrid{display:grid;grid-template-columns:auto minmax(0,.8fr) minmax(0,1.4fr);gap:8px 10px;align-items:center}
+.agrid .sw{width:10px;height:10px;border-radius:50%}
+.agrid input{font:400 14px/1.35 var(--body);color:var(--fg);background:var(--base);border:1px solid var(--line2);border-radius:7px;padding:8px 10px;width:100%;min-width:0}
+.agrid .h{font:600 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
 .linkbtn{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font:inherit;font-size:13px}
 @media (max-width:820px){
   .uform{grid-template-columns:1fr 1fr}
@@ -232,6 +239,7 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
         <div class="menu" id="menu" role="menu" hidden>
           <div class="menuhead"><b id="uFull"></b><span id="uRole"></span></div>
           <button role="menuitem" id="mHist">Histórico de alterações</button>
+          <button role="menuitem" id="mAreas" hidden>Áreas e responsáveis</button>
           <button role="menuitem" id="mUsers" hidden>Usuários</button>
           <button role="menuitem" id="mPass">Trocar senha</button>
           <button role="menuitem" id="mOut">Sair</button>
@@ -242,7 +250,7 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 
   <div class="body">
     <aside class="side">
-      <div class="sec"><h4>Área / equipe</h4><div class="chips" id="tally"></div></div>
+      <div class="sec"><div class="sechead"><h4>Área / responsável</h4><button class="linkbtn" id="btnAreas" hidden>Editar nomes</button></div><div class="chips" id="tally"></div></div>
       <div class="sec"><h4>Tipo</h4><div class="chips" id="typeChips"></div></div>
       <div class="countline"><span id="countTxt">Carregando…</span><span id="covTxt"></span></div>
       <div class="list" id="list"></div>
@@ -302,7 +310,7 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 <script>
 (function(){
 let G={areas:{1:[],2:[],3:[],4:[]},border:[],red:[],alab:[],cx:{},semSinal:[]};
-const AREAS={1:{n:'Área 1',e:'Equipe SP1'},2:{n:'Área 2',e:'Equipe SP2'},3:{n:'Área 3',e:'Saile Telecom (Elias)'},4:{n:'Área 4',e:'Alexandre Cosme'},5:{n:'Área 1',e:'Equipe Costa Norte'}};
+let AREAS={1:{n:'Área 1',e:'Equipe SP1'},2:{n:'Área 2',e:'Equipe SP2'},3:{n:'Área 3',e:'Saile Telecom (Elias)'},4:{n:'Área 4',e:'Alexandre Cosme'},5:{n:'Área 1',e:'Equipe Costa Norte'}};
 const AK=[1,5,2,3,4];
 const REC={R:'Satélite · Retransmissão',N:'Satélite · Costa Norte Paulista',J:'Satélite · TV Jornal',X:'Estação sem operação',G:'Complemento da geradora (gap filler)',L:'Canal PM · licença da prefeitura',H:'Geradora',P:'Repetidora',F:'Gap filler'};
 const MAN={full:'Canal FPA · Manutenção FPA',half:'Canal FPA · Manutenção PM',line:'Canal PM · Manutenção FPA',cross:'Canal PM · Licença / Manutenção PM'};
@@ -338,13 +346,22 @@ function symDef(id,inner){
 // desenho fixo (vem de /api/geometria depois do login)
 const gArea=$('gArea'), areaEls=[], gLine=$('gLine'), gALab=$('gALab'), aLabEls=[];
 let bdEl=mk('path',{class:'bd'},gLine), dvEl=mk('path',{class:'dv'},gLine);
-function drawBase(){
+function drawBase(){ drawBaseShapes(); drawAreaLabels(); semSinalTxt(); }
+function drawBaseShapes(){
 gArea.textContent=''; gALab.textContent=''; areaEls.length=0; aLabEls.length=0;
 mk('path',{d:Object.values(G.areas).flat().map(r=>pathOf(r,true)).join(''),class:'base'},gArea);
 for(const k of ['1','2','3','4']){ const el=mk('path',{d:G.areas[k].map(r=>pathOf(r,true)).join(''),class:'ar'+k,'fill-rule':'evenodd'},gArea); el.dataset.a=k; areaEls.push(el); }
 bdEl.setAttribute('d',G.border.map(p=>pathOf(p)).join('')); dvEl.setAttribute('d',G.red.map(p=>pathOf(p)).join(''));
-G.alab.forEach(a=>{ const num=+(a.t[0].match(/\d/)||[0])[0]; const t=mk('text',{x:a.x,y:-a.y,class:'alab',fill:`var(--a${num})`,'font-size':7},gALab);
-  a.t.forEach((ln,j)=>{ const ts=mk('tspan',{x:a.x,dy:j?8:6},t); ts.textContent=ln; }); aLabEls.push(t); });
+drawAreaLabels();
+}
+// rótulo de cada área no mapa: só o nome do responsável (editável em "Áreas e responsáveis")
+function drawAreaLabels(){
+  gALab.textContent=''; aLabEls.length=0;
+  G.alab.forEach(a=>{ const num=+(a.t[0].match(/\d/)||[0])[0]; const ar=AREAS[num]; if(!ar) return;
+    const t=mk('text',{x:a.x,y:-a.y,class:'alab',fill:`var(--a${num})`,'font-size':7},gALab);
+    const ts=mk('tspan',{x:a.x,dy:10},t); ts.textContent=ar.e.toUpperCase(); aLabEls.push(t); });
+}
+function semSinalTxt(){
 if(G.semSinal&&G.semSinal.length) $('semSinal').textContent='Sem estação na planilha: '+G.semSinal.map(x=>x[0]).join(', ')+'.';
 }
 
@@ -422,7 +439,7 @@ function apply(){
   bdEl.setAttribute('stroke-width',Math.max(1.4/k,.3)); dvEl.setAttribute('stroke-width',Math.max(2/k,.45));
   const show=k*3>=8.5;
   ST.forEach(s=>{ const t=labEls.get(s.id), g=symEls.get(s.id); if(t){ t.classList.toggle('off',!(show||sel===s.id)||(g&&g.classList.contains('off'))); t.style.fontSize=Math.min(3,13/k)+'px'; t.setAttribute('stroke-width',2.4/k); } });
-  aLabEls.forEach(t=>t.style.display=k*7<9?'none':'');
+  aLabEls.forEach(t=>{ t.style.fontSize=Math.max(4,14/k)+'px'; t.setAttribute('stroke-width',3/k); });
   gFoot.querySelectorAll('.fp-lab').forEach(t=>{ t.style.display=k<2.2?'none':''; t.style.fontSize=(11.5/k)+'px'; t.setAttribute('stroke-width',2.6/k); });
   gFoot.querySelectorAll('.fp-tag').forEach(t=>{ t.style.fontSize=(15/k)+'px'; t.setAttribute('stroke-width',3/k); });
   gFoot.querySelectorAll('.fp-city').forEach(c=>c.setAttribute('r',3/k));
@@ -468,9 +485,13 @@ function hideTip(){ tip.hidden=true; }
 
 // filtros
 const tally=$('tally');
-AK.forEach(a=>{ const b=document.createElement('button'); b.className='chip'; b.id='chipA'+a; b.title=AREAS[a].n+' · '+AREAS[a].e;
-  b.innerHTML=`<span class="sw" style="background:var(--a${a})"></span>${a===5?'Costa Norte':AREAS[a].n.replace('Área ','Área ')}<span class="n" id="cntA${a}">0</span>`;
-  b.onclick=()=>{ areaOn[a]=!areaOn[a]; if(!Object.values(areaOn).some(Boolean)) areaOn[a]=true; render(); }; tally.appendChild(b); });
+function buildAreaChips(){
+  tally.textContent='';
+  AK.forEach(a=>{ const b=document.createElement('button'); b.className='chip'; b.id='chipA'+a; b.title=AREAS[a].n+' · '+AREAS[a].e;
+    b.innerHTML=`<span class="sw" style="background:var(--a${a})"></span>${esc(AREAS[a].e)}<span class="n" id="cntA${a}">0</span>`;
+    b.onclick=()=>{ areaOn[a]=!areaOn[a]; if(!Object.values(areaOn).some(Boolean)) areaOn[a]=true; render(); }; tally.appendChild(b); });
+}
+buildAreaChips();
 const typeChips=$('typeChips');
 Object.keys(GRP).forEach(g=>{ const b=document.createElement('button'); b.className='chip'; b.id='chipT'+g; b.innerHTML=`${GRP[g].n}<span class="n" id="cntT${g}">0</span>`;
   b.onclick=()=>{ typeOn[g]=!typeOn[g]; if(!Object.values(typeOn).some(Boolean)) typeOn[g]=true; render(); }; typeChips.appendChild(b); });
@@ -685,7 +706,13 @@ function toast(msg){ let t=$('toast'); if(!t){ t=document.createElement('div'); 
   t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>{t.hidden=true;},4200); }
 
 async function loadGeometry(){ G=await api('GET','/api/geometria'); drawBase(); }
+async function loadAreas(){
+  const rows=await api('GET','/api/areas');
+  const next={}; rows.forEach(r=>{ next[r.id]={n:r.nome,e:r.responsavel}; });
+  AREAS={...AREAS,...next}; buildAreaChips(); drawAreaLabels();
+}
 async function loadStations(){
+  await loadAreas();
   const j=await api('GET','/api/estacoes');
   versao=j.versao;
   ST=j.estacoes.map(o=>{ o.rc=recOf(o); o.n=o.n||'(sem nome)'; o.a=+o.a||1; return o; });
@@ -705,6 +732,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
+  $('mAreas').hidden=!canWrite; $('btnAreas').hidden=!canWrite;
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
@@ -744,6 +772,8 @@ document.addEventListener('click',e=>{ if(!$('menu').hidden&&!$('menu').contains
 $('mPass').onclick=()=>{ toggleMenu(false); showChange(false); };
 $('mOut').onclick=async()=>{ toggleMenu(false); try{ await api('POST','/api/auth/logout'); }catch(e){} ST=[]; byId=new Map(); sel=null; loaded=false; rebuild(); render(); showLogin(); };
 $('mHist').onclick=()=>{ toggleMenu(false); openHistory(); };
+$('mAreas').onclick=()=>{ toggleMenu(false); openAreas(); };
+$('btnAreas').onclick=()=>openAreas();
 $('mUsers').onclick=()=>{ toggleMenu(false); openUsers(); };
 
 // ---------- painéis ----------
@@ -765,7 +795,7 @@ async function openHistory(stationId,stationName){
     const list=rows.filter(r=>!qv||norm([r.context,r.field,r.username,r.new_value,r.old_value,r.row_id].join(' ')).includes(qv));
     $('hl').innerHTML=list.length?list.map(r=>{
       const isSt=r.tbl==='estacoes';
-      const name=isSt?(r.context||r.row_id):'Usuários';
+      const name=isSt?(r.context||r.row_id):r.tbl==='areas'?'Área · '+(r.context||r.row_id):'Usuários';
       const chg=(r.old_value||r.new_value)&&!['cadastro','restauração','login','login falhou'].includes(r.field)
         ?`<div class="chg">${r.old_value?`<del>${esc(r.old_value)}</del> → `:''}${r.new_value?`<ins>${esc(r.new_value)}</ins>`:''}</div>`
         :(r.field==='cadastro'||r.field==='restauração'?'':(r.context&&!isSt?`<div class="chg">${esc(r.context)}</div>`:''));
@@ -779,6 +809,26 @@ async function openHistory(stationId,stationName){
     });
   };
   draw(); if($('hq')) $('hq').oninput=draw;
+}
+
+async function openAreas(){
+  openSheet('Áreas e responsáveis');
+  let rows; try{ rows=await api('GET','/api/areas'); }catch(e){ $('sheetBody').innerHTML=`<p class="status err">${esc(e.message)}</p>`; return; }
+  $('sheetBody').innerHTML=`<p class="sub" style="margin-bottom:12px">O nome do responsável aparece no mapa, nos filtros, na lista e na ficha de cada estação. As alterações ficam no histórico.</p>
+  <form id="af" novalidate><div class="agrid"><span></span><span class="h">Área</span><span class="h">Responsável (aparece no mapa)</span>
+  ${rows.map(r=>`<span class="sw" style="background:var(--a${r.id})"></span><input data-id="${r.id}" data-k="nome" value="${esc(r.nome)}" aria-label="Nome da área ${r.id}" maxlength="60"><input data-id="${r.id}" data-k="responsavel" value="${esc(r.responsavel)}" aria-label="Responsável da área ${r.id}" maxlength="80">`).join('')}
+  </div><div class="btnrow" style="margin-top:14px"><button class="btn pri" type="submit" id="aSave">Salvar</button><button class="btn" type="button" id="aCancel">Cancelar</button></div><div class="status" id="aMsg" role="status"></div></form>`;
+  $('aCancel').onclick=closeSheet;
+  $('af').onsubmit=async ev=>{ ev.preventDefault(); const msg=$('aMsg'); msg.className='status'; msg.textContent='Salvando…'; $('aSave').disabled=true;
+    try{
+      for(const r of rows){
+        const nome=$('af').querySelector(`[data-id="${r.id}"][data-k="nome"]`).value.trim();
+        const resp=$('af').querySelector(`[data-id="${r.id}"][data-k="responsavel"]`).value.trim();
+        if(nome!==r.nome||resp!==r.responsavel) await api('PUT','/api/areas/'+r.id,{nome,responsavel:resp});
+      }
+      await loadStations(); closeSheet(); toast('Nomes das áreas salvos.');
+    }catch(e){ msg.className='status err'; msg.textContent=e.message; $('aSave').disabled=false; }
+  };
 }
 
 const ROLE_OPTS=[['viewer','Leitura'],['editor','Editor'],['admin','Admin']];

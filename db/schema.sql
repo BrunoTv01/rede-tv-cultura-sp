@@ -48,3 +48,18 @@ CREATE TABLE IF NOT EXISTS sessions (
   user_agent  TEXT
 );
 CREATE INDEX IF NOT EXISTS sessions_user ON sessions(user_id);
+
+-- Áreas de manutenção: nome e responsável editáveis pela página
+CREATE TABLE IF NOT EXISTS areas (
+  id           INTEGER PRIMARY KEY,
+  nome         TEXT NOT NULL,
+  responsavel  TEXT NOT NULL,
+  ordem        INTEGER NOT NULL DEFAULT 0
+);
+INSERT INTO areas (id, nome, responsavel, ordem) VALUES
+  (1, 'Área 1', 'Equipe SP1', 1),
+  (5, 'Área 1', 'Equipe Costa Norte', 2),
+  (2, 'Área 2', 'Equipe SP2', 3),
+  (3, 'Área 3', 'Saile Telecom (Elias)', 4),
+  (4, 'Área 4', 'Alexandre Cosme', 5)
+ON CONFLICT (id) DO NOTHING;

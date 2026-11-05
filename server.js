@@ -28,7 +28,12 @@ const LABELS = {
   ch: 'canal físico', vt: 'canal virtual', ob: 'observação', pop: 'população', pot: 'potência TX',
   en: 'energia', ag: 'água', ab: 'abrigo', cov: 'cobertura', pos: 'posição no mapa',
 };
-const AREA_NAME = { 1: 'Área 1 · Equipe SP1', 5: 'Área 1 · Equipe Costa Norte', 2: 'Área 2 · Equipe SP2', 3: 'Área 3 · Saile Telecom (Elias)', 4: 'Área 4 · Alexandre Cosme' };
+// nomes das áreas: lidos do banco (tabela areas) e guardados aqui para o texto do histórico
+let AREA_NAME = {};
+async function loadAreaNames() {
+  const { rows } = await pool.query('SELECT id, nome, responsavel FROM areas');
+  AREA_NAME = Object.fromEntries(rows.map(r => [r.id, `${r.nome} · ${r.responsavel}`]));
+}
 
 const str = (v, max = 200) => String(v ?? '').trim().slice(0, max);
 const num = v => { const n = Number(v); return Number.isFinite(n) ? n : null; };
@@ -144,7 +149,7 @@ const rowOut = r => ({ id: r.id, ...r.data, upd: r.updated_at, by: r.updated_by 
 app.get('/api/estacoes', async (_req, res, next) => {
   try {
     const { rows } = await pool.query('SELECT * FROM estacoes ORDER BY id');
-    const v = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl='estacoes'");
+    const v = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl IN ('estacoes','areas')");
     res.json({ versao: v.rows[0].v, estacoes: rows.map(rowOut) });
   } catch (e) { next(e); }
 });
@@ -152,7 +157,7 @@ app.get('/api/estacoes', async (_req, res, next) => {
 // número que muda a cada alteração: a página consulta a cada poucos segundos e recarrega se mudou
 app.get('/api/estacoes/versao', async (_req, res, next) => {
   try {
-    const { rows } = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl='estacoes'");
+    const { rows } = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl IN ('estacoes','areas')");
     res.json({ versao: rows[0].v });
   } catch (e) { next(e); }
 });
@@ -213,12 +218,36 @@ app.post('/api/estacoes/:id/restaurar', requireRole('admin'), async (req, res, n
   }
 });
 
+/* ---------- áreas (nome e responsável) ---------- */
+app.get('/api/areas', async (_req, res, next) => {
+  try {
+    const { rows } = await pool.query('SELECT id, nome, responsavel FROM areas ORDER BY ordem, id');
+    res.json(rows);
+  } catch (e) { next(e); }
+});
+
+app.put('/api/areas/:id', editor, async (req, res, next) => {
+  const id = Number(req.params.id);
+  const nome = str((req.body || {}).nome, 60), responsavel = str((req.body || {}).responsavel, 80);
+  if (!nome || !responsavel) return res.status(400).json({ error: 'Preencha o nome da área e o responsável.' });
+  try {
+    const cur = await pool.query('SELECT * FROM areas WHERE id=$1', [id]);
+    if (!cur.rows.length) return res.status(404).json({ error: 'Área não encontrada.' });
+    const old = cur.rows[0];
+    await pool.query('UPDATE areas SET nome=$1, responsavel=$2 WHERE id=$3', [nome, responsavel, id]);
+    if (old.nome !== nome) await audit('areas', String(id), 'nome da área', old.nome, nome, `${nome} · ${responsavel}`);
+    if (old.responsavel !== responsavel) await audit('areas', String(id), 'responsável', old.responsavel, responsavel, `${nome} · ${responsavel}`);
+    await loadAreaNames();
+    res.json({ id, nome, responsavel });
+  } catch (e) { next(e); }
+});
+
 app.get('/api/historico', async (req, res, next) => {
   const limit = Math.min(1000, Math.max(1, Number(req.query.limit) || 300));
   const params = [limit];
   let where = '';
   if (req.query.estacao) { where = "WHERE tbl='estacoes' AND row_id=$2"; params.push(String(req.query.estacao)); }
-  else if (req.user.role !== 'admin') where = "WHERE tbl='estacoes'";
+  else if (req.user.role !== 'admin') where = "WHERE tbl IN ('estacoes','areas')";
   try {
     const { rows } = await pool.query(`SELECT id, at, tbl, row_id, field, old_value, new_value, context, username FROM audit_log ${where} ORDER BY id DESC LIMIT $1`, params);
     res.json(rows.map(r => ({ ...r, old_value: r.field === 'exclusão' ? null : r.old_value, restoravel: r.field === 'exclusão' })));
@@ -237,6 +266,7 @@ resolveDatabaseUrl()
     console.log(`Banco de dados: ${how}`);
   })
   .then(migrate)
+  .then(loadAreaNames)
   .then(bootstrap)
   .then(() => app.listen(PORT, HOST, () => console.log(`Rede TV Cultura SP ${VERSION} rodando em ${HOST}:${PORT}`)))
   .catch(e => { console.error(e.friendly ? e.message : 'Falha ao preparar o banco: ' + (e.stack || e)); process.exit(1); });

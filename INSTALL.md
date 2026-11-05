@@ -48,6 +48,8 @@ Cada pessoa recebe uma senha provisória e cria a própria senha no primeiro ace
 | Editor | Tudo da Leitura, e também incluir, editar, mover e excluir estações |
 | Admin | Tudo do Editor, e também cadastrar pessoas, redefinir senhas e restaurar estações excluídas |
 
+Os nomes das áreas e dos responsáveis também podem ser trocados: use **Editar nomes**, ao lado de “Área / responsável” no painel da esquerda (perfis Editor e Admin). O mapa mostra em cada área só o nome do responsável.
+
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
 
 ## Opções do instalador
