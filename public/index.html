@@ -944,7 +944,7 @@ function stateMask(){
   return insideMask;
 }
 const areaGroup=a=>a===5?1:a; // Costa Norte faz parte da Área 1 no desenho
-function stationPixels(){ return ST.filter(s=>s.r!=='F'&&s.r!=='P').map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),a:areaGroup(s.a)}; }).filter(s=>s.px>=0&&s.py>=0&&s.px<RW&&s.py<RH); }
+function stationPixels(){ return ST.map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),a:areaGroup(s.a)}; }).filter(s=>s.px>=0&&s.py>=0&&s.px<RW&&s.py<RH); }
 
 // cores das áreas a partir das linhas
 function fillsFromLines(red){
@@ -993,9 +993,10 @@ function autoLines(){
       const d=(s.px-x)**2+(s.py-y)**2; if(d<dist[j]){ dist[j]=d; seed[j]=seed[i]; q.push(j); } } }
   const A=new Int8Array(N);
   for(let i=0;i<N;i++) if(inside[i]&&seed[i]>=0) A[i]=sp[seed[i]].a;
-  // suaviza a grade (maioria 5x5) para tirar degraus e ilhas pequenas
-  const B=new Int8Array(A);
-  for(let it=0;it<2;it++){ for(let py=2;py<RH-2;py++) for(let px=2;px<RW-2;px++){ const i=py*RW+px; if(!inside[i]) continue; const c={};
+  // suaviza a grade (maioria 5x5) para tirar degraus, sem apagar o entorno de nenhuma estação:
+  // uma estação cercada por outra equipe (ex.: Santa Adélia) continua com a sua "ilha"
+  const B=new Int8Array(A), KEEP=16; // 4 células (6 unidades) em volta de cada estação não mudam
+  for(let it=0;it<2;it++){ for(let py=2;py<RH-2;py++) for(let px=2;px<RW-2;px++){ const i=py*RW+px; if(!inside[i]||dist[i]<=KEEP) continue; const c={};
       for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++){ const v=A[i+dy*RW+dx]; if(v) c[v]=(c[v]||0)+1; }
       let m=A[i],mv=0; for(const k in c) if(c[k]>mv){mv=c[k];m=+k;} B[i]=m; } A.set(B); }
   // arestas entre células de áreas diferentes
@@ -1015,9 +1016,16 @@ function autoLines(){
     while(st.length){ const [i,j]=st.pop(); const [ax,ay]=pts[i],[bx,by]=pts[j]; const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy)||1e-9; let best=0,bi=-1;
       for(let k=i+1;k<j;k++){ const d=Math.abs(dy*(pts[k][0]-ax)-dx*(pts[k][1]-ay))/L; if(d>best){best=d;bi=k;} } if(best>tol){keep[bi]=1;st.push([i,bi],[bi,j]);} }
     return pts.filter((_,i)=>keep[i]); };
+  // linha fechada (ilha em volta de uma estação): divide no ponto mais distante do início antes de simplificar
+  const dpLine=(pts,tol)=>{ const n=pts.length, [x0,y0]=pts[0], [x1,y1]=pts[n-1];
+    if(n<4||Math.hypot(x1-x0,y1-y0)>1e-6) return dp(pts,tol);
+    let far=1,fd=-1; pts.forEach(([x,y],i)=>{ const d=Math.hypot(x-x0,y-y0); if(d>fd){fd=d;far=i;} });
+    return dp(pts.slice(0,far+1),tol).concat(dp(pts.slice(far),tol).slice(1)); };
+  const chaikinClosed=pts=>{ const n=pts.length; if(n<4||Math.hypot(pts[0][0]-pts[n-1][0],pts[0][1]-pts[n-1][1])>1e-6) return chaikin(pts);
+    const o=[]; for(let i=0;i<n-1;i++){ const [a,b]=pts[i],[c,d]=pts[i+1]; o.push([a*.75+c*.25,b*.75+d*.25],[a*.25+c*.75,b*.25+d*.75]); } o.push(o[0]); return o; };
   const chaikin=pts=>{ if(pts.length<3) return pts; const o=[pts[0]]; for(let i=0;i<pts.length-1;i++){ const [a,b]=pts[i],[c,d]=pts[i+1]; o.push([a*.75+c*.25,b*.75+d*.25],[a*.25+c*.75,b*.25+d*.75]); } o.push(pts[pts.length-1]); return o; };
   return lines.map(l=>l.map(k=>k.split(',').map(Number))).filter(l=>l.length>=4)
-    .map(l=>chaikin(chaikin(dp(l,1.3))).map(([px,py])=>fromPx(px,py)));
+    .map(l=>chaikinClosed(chaikinClosed(dpLine(l,1.3))).map(([px,py])=>fromPx(px,py)));
 }
 
 function currentRed(){ return DIV.modo==='dwg'?G.red:DIV.red; }
