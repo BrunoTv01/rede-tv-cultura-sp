@@ -953,9 +953,15 @@ function fillsFromLines(red){
 // linhas geradas automaticamente: fronteira entre as áreas das estações mais próximas
 function autoLines(){
   const inside=stateMask(), sp=stationPixels(); if(!sp.length) return [];
-  const A=new Int8Array(RW*RH);
-  for(let py=0;py<RH;py++) for(let px=0;px<RW;px++){ const i=py*RW+px; if(!inside[i]) continue; let best=1e18,a=0;
-    for(const s of sp){ const d=(s.px-px)**2+(s.py-py)**2; if(d<best){best=d;a=s.a;} } A[i]=a; }
+  // estação mais próxima de cada célula: propagação a partir das estações (rápida, sem laço por estação)
+  const N=RW*RH, seed=new Int32Array(N).fill(-1), dist=new Float64Array(N).fill(Infinity), q=[]; let h=0;
+  sp.forEach((s,k)=>{ const i=s.py*RW+s.px; if(dist[i]>0){ dist[i]=0; seed[i]=k; q.push(i); } });
+  const nb=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  while(h<q.length){ const i=q[h++], px=i%RW, py=(i/RW)|0, s=sp[seed[i]];
+    for(const [dx,dy] of nb){ const x=px+dx, y=py+dy; if(x<0||y<0||x>=RW||y>=RH) continue; const j=y*RW+x;
+      const d=(s.px-x)**2+(s.py-y)**2; if(d<dist[j]){ dist[j]=d; seed[j]=seed[i]; q.push(j); } } }
+  const A=new Int8Array(N);
+  for(let i=0;i<N;i++) if(inside[i]&&seed[i]>=0) A[i]=sp[seed[i]].a;
   // suaviza a grade (maioria 5x5) para tirar degraus e ilhas pequenas
   const B=new Int8Array(A);
   for(let it=0;it<2;it++){ for(let py=2;py<RH-2;py++) for(let px=2;px<RW-2;px++){ const i=py*RW+px; if(!inside[i]) continue; const c={};
@@ -984,13 +990,23 @@ function autoLines(){
 }
 
 function currentRed(){ return DIV.modo==='dwg'?G.red:DIV.red; }
+// assinatura das estações (posição e área): no modo automático as linhas são refeitas quando ela muda
+function stationSig(){ let h=2166136261; const str=stationPixels().map(s=>s.px+','+s.py+','+s.a).sort().join(';');
+  for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h.toString(36)+'.'+str.length; }
+let autoCache=null; // {sig, red}
+function liveAuto(){ const sig=stationSig();
+  if(DIV.sig===sig&&DIV.red&&DIV.red.length) return;
+  if(!(autoCache&&autoCache.sig===sig)){ const r=autoLines(); if(!r.length) return; autoCache={sig,red:r}; }
+  DIV.red=autoCache.red; DIV.sig=sig; }
 function applyDivision(){
   divFill=DIV.modo==='dwg'?null:fillsFromLines(DIV.red);
   areaEls.forEach(el=>{ const k=el.dataset.a; el.setAttribute('d',divFill?divFill[k]:G.areas[k].map(r=>pathOf(r,true)).join('')); el.setAttribute('fill-rule',divFill?'nonzero':'evenodd'); });
   dvEl.setAttribute('d',currentRed().map(p=>pathOf(p)).join(''));
 }
 async function loadDivision(){
-  try{ DIV=await api('GET','/api/divisao'); if(DIV.modo!=='dwg'&&!(DIV.red&&DIV.red.length)) DIV={modo:'dwg'}; }catch(e){ DIV={modo:'dwg'}; }
+  try{ DIV=await api('GET','/api/divisao'); }catch(e){ DIV={modo:'dwg'}; }
+  if(DIV.modo==='auto') liveAuto();
+  if(DIV.modo!=='dwg'&&!(DIV.red&&DIV.red.length)) DIV={modo:'dwg'};
   if(!divEdit) applyDivision();
 }
 
@@ -1005,12 +1021,12 @@ function editRedraw(){
     const hit=mk('path',{d:pathOf(l),fill:'none',stroke:'transparent','stroke-width':12/k,style:'cursor:copy'},gEdit);
     hit.addEventListener('pointerdown',e=>e.stopPropagation());
     hit.addEventListener('click',e=>{ e.stopPropagation(); const [X,Y]=evToMap(e); let best=1e18,bi=0;
-      for(let i=0;i<l.length-1;i++){ const d=segDist(X,Y,l[i],l[i+1]); if(d<best){best=d;bi=i;} } l.splice(bi+1,0,[X,Y]); divEdit.modo='manual'; editChanged(); });
+      for(let i=0;i<l.length-1;i++){ const d=segDist(X,Y,l[i],l[i+1]); if(d<best){best=d;bi=i;} } l.splice(bi+1,0,[X,Y]); toManual(); editChanged(); });
     mk('path',{d:pathOf(l),fill:'none',stroke:'var(--div)','stroke-width':w,'stroke-linejoin':'round','pointer-events':'none'},gEdit);
     l.forEach((p,vi)=>{
       const h=mk('circle',{cx:p[0],cy:-p[1],r,fill:'var(--sea)',stroke:'#fff','stroke-width':1.4/k,style:'cursor:grab'},gEdit);
       h.addEventListener('pointerdown',e=>{ e.stopPropagation(); e.preventDefault(); dragV={li,vi}; h.setPointerCapture&&h.setPointerCapture(e.pointerId); });
-      h.addEventListener('dblclick',e=>{ e.stopPropagation(); if(l.length>2) l.splice(vi,1); else divEdit.red.splice(li,1); divEdit.modo='manual'; editChanged(); });
+      h.addEventListener('dblclick',e=>{ e.stopPropagation(); if(l.length>2) l.splice(vi,1); else divEdit.red.splice(li,1); toManual(); editChanged(); });
     });
   });
   if(divEdit.drawing&&divEdit.drawing.length){ const d=divEdit.drawing;
@@ -1020,10 +1036,11 @@ function editRedraw(){
 function segDist(X,Y,a,b){ const dx=b[0]-a[0],dy=b[1]-a[1]; const t=Math.max(0,Math.min(1,((X-a[0])*dx+(Y-a[1])*dy)/((dx*dx+dy*dy)||1))); return Math.hypot(X-(a[0]+t*dx),Y-(a[1]+t*dy)); }
 function evToMap(e){ const r=stage.getBoundingClientRect(); return [+(view.x+(e.clientX-r.left)/r.width*view.w).toFixed(2), +(-(view.y+(e.clientY-r.top)/r.height*view.h)).toFixed(2)]; }
 let fillT=null;
-window.addEventListener('pointermove',e=>{ if(!dragV||!divEdit) return; const l=divEdit.red[dragV.li]; if(!l) return; l[dragV.vi]=evToMap(e); divEdit.modo='manual'; editRedraw(); });
+window.addEventListener('pointermove',e=>{ if(!dragV||!divEdit) return; const l=divEdit.red[dragV.li]; if(!l) return; l[dragV.vi]=evToMap(e); toManual(); editRedraw(); });
 window.addEventListener('pointerup',()=>{ if(dragV){ dragV=null; editChanged(); } });
-function editChanged(){ editRedraw(); clearTimeout(fillT); fillT=setTimeout(()=>{ divFill=fillsFromLines(divEdit.red); areaEls.forEach(el=>{ el.setAttribute('d',divFill[el.dataset.a]); el.setAttribute('fill-rule','nonzero'); }); },120); $('dvMode').textContent=divModeTxt(divEdit.modo); }
-const divModeTxt=m=>({dwg:'Desenho original (DWG)',manual:'Ajuste manual',auto:'Gerado pelas estações'}[m]);
+function toManual(){ if(divEdit.modo==='auto') toast('Com ajuste manual, as linhas deixam de acompanhar as estações. Para voltar, use “Gerar automático”.'); divEdit.modo='manual'; }
+function editChanged(){ editRedraw(); clearTimeout(fillT); fillT=setTimeout(()=>{ if(!divEdit) return; divFill=fillsFromLines(divEdit.red); areaEls.forEach(el=>{ el.setAttribute('d',divFill[el.dataset.a]); el.setAttribute('fill-rule','nonzero'); }); },120); $('dvMode').textContent=divModeTxt(divEdit.modo); }
+const divModeTxt=m=>({dwg:'Desenho original (DWG)',manual:'Ajuste manual',auto:'Automático · acompanha as estações'}[m]);
 
 function openDivEditor(){
   if(divEdit) return; closeDetail(); toggleMenu(false);
@@ -1031,18 +1048,19 @@ function openDivEditor(){
   dvEl.style.display='none'; $('divBar').hidden=false; $('hint').hidden=true; svg.classList.add('editing');
   editChanged();
 }
-function closeDivEditor(){ divEdit=null; dragV=null; gEdit.textContent=''; dvEl.style.display=''; $('divBar').hidden=true; svg.classList.remove('editing'); applyDivision(); render(); }
-function finishDrawing(){ const d=divEdit&&divEdit.drawing; if(d&&d.length>=2){ divEdit.red.push(d); divEdit.modo='manual'; } if(divEdit) divEdit.drawing=null; $('dvNew').textContent='Nova linha'; editChanged(); }
+function closeDivEditor(){ clearTimeout(fillT); divEdit=null; dragV=null; gEdit.textContent=''; dvEl.style.display=''; $('divBar').hidden=true; svg.classList.remove('editing'); applyDivision(); render(); }
+function finishDrawing(){ const d=divEdit&&divEdit.drawing; if(d&&d.length>=2){ divEdit.red.push(d); toManual(); } if(divEdit) divEdit.drawing=null; $('dvNew').textContent='Nova linha'; editChanged(); }
 // clique no mapa durante o desenho de uma linha nova
 svg.addEventListener('click',e=>{ if(!divEdit||!divEdit.drawing||moved>=6) return; e.stopImmediatePropagation(); divEdit.drawing.push(evToMap(e)); editRedraw(); },true);
 svg.addEventListener('dblclick',e=>{ if(divEdit&&divEdit.drawing){ e.preventDefault(); finishDrawing(); } });
 $('dvNew').onclick=()=>{ if(divEdit.drawing){ finishDrawing(); return; } divEdit.drawing=[]; $('dvNew').textContent='Terminar linha'; toast('Clique no mapa para marcar os pontos. Clique duplo ou “Terminar linha” para encerrar.'); };
 $('dvAuto').onclick=()=>{ $('dvAuto').disabled=true; $('dvMode').textContent='Calculando…';
-  setTimeout(()=>{ const r=autoLines(); $('dvAuto').disabled=false; if(!r.length){ toast('Não foi possível gerar: as estações estão todas na mesma área.'); editChanged(); return; } divEdit.red=r; divEdit.modo='auto'; editChanged(); toast('Linhas geradas a partir da área de cada estação. Ajuste os pontos se precisar e clique em Salvar.'); },30); };
+  setTimeout(()=>{ const r=autoLines(); $('dvAuto').disabled=false; if(!r.length){ toast('Não foi possível gerar: as estações estão todas na mesma área.'); editChanged(); return; } divEdit.red=r; divEdit.modo='auto'; editChanged(); toast('Linhas automáticas: depois de salvar, mudam sozinhas sempre que a área ou a posição de uma estação mudar.'); },30); };
 $('dvDwg').onclick=()=>{ divEdit.red=JSON.parse(JSON.stringify(G.red)); divEdit.modo='dwg'; editChanged(); };
 $('dvCancel').onclick=closeDivEditor;
 $('dvSave').onclick=async()=>{ if(divEdit.drawing) finishDrawing(); $('dvSave').disabled=true;
-  try{ await api('PUT','/api/divisao',divEdit.modo==='dwg'?{modo:'dwg'}:{modo:divEdit.modo,red:divEdit.red}); DIV=divEdit.modo==='dwg'?{modo:'dwg'}:{modo:divEdit.modo,red:divEdit.red}; closeDivEditor(); toast('Linhas de divisão salvas.'); versao=-1; }
+  try{ const body=divEdit.modo==='dwg'?{modo:'dwg'}:{modo:divEdit.modo,red:divEdit.red}; if(divEdit.modo==='auto') body.sig=stationSig();
+    await api('PUT','/api/divisao',body); DIV=body; closeDivEditor(); toast('Linhas de divisão salvas.'); versao=-1; }
   catch(e){ toast(e.message); }
   finally{ $('dvSave').disabled=false; } };
 $('mDiv').onclick=openDivEditor;

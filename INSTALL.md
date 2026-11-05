@@ -55,10 +55,12 @@ As linhas vermelhas que dividem as áreas podem ser ajustadas pelo **Admin**, no
 | Botão | O que faz |
 |---|---|
 | Arrastar os pontos brancos | Move a linha. Clique numa linha para criar um ponto; clique duplo num ponto para apagar |
-| **Gerar automático** | Redesenha as linhas a partir da área de cada estação. Depois dá para ajustar os pontos à mão |
+| **Gerar automático** | Traça as linhas a partir da área de cada estação. Depois de salvar, as linhas **mudam sozinhas** sempre que alguém muda a área ou a posição de uma estação |
 | **Nova linha** | Desenha uma linha nova, clicando ponto a ponto; termine com clique duplo |
 | **Desenho original** | Volta às linhas do DWG |
 | **Salvar** / **Cancelar** | Grava para todos os usuários, ou descarta o que foi feito |
+
+Se você arrastar um ponto depois de gerar automático, as linhas passam para **ajuste manual** e deixam de acompanhar as estações. Para voltar ao automático, clique de novo em **Gerar automático** e salve.
 
 As linhas são só o desenho do mapa: a cor de cada região segue a maioria das estações dentro dela, mas a área de cada estação continua sendo a do campo **Área** da ficha. Cada gravação fica no histórico.
 

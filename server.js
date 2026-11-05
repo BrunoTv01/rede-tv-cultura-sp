@@ -252,7 +252,7 @@ app.get('/api/divisao', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
-const MODOS = { dwg: 'desenho original (DWG)', manual: 'ajuste manual', auto: 'geração automática' };
+const MODOS = { dwg: 'desenho original (DWG)', manual: 'ajuste manual', auto: 'automático (acompanha as estações)' };
 app.put('/api/divisao', requireRole('admin'), async (req, res, next) => {
   const b = req.body || {};
   const modo = Object.keys(MODOS).includes(b.modo) ? b.modo : null;
@@ -271,7 +271,7 @@ app.put('/api/divisao', requireRole('admin'), async (req, res, next) => {
     const cur = await pool.query("SELECT valor FROM config WHERE chave='divisao'");
     const antes = cur.rows.length ? cur.rows[0].valor.modo : 'dwg';
     await pool.query(`INSERT INTO config (chave, valor, updated_at, updated_by) VALUES ('divisao', $1, now(), $2)
-      ON CONFLICT (chave) DO UPDATE SET valor=EXCLUDED.valor, updated_at=now(), updated_by=EXCLUDED.updated_by`, [{ modo, red }, req.user.username]);
+      ON CONFLICT (chave) DO UPDATE SET valor=EXCLUDED.valor, updated_at=now(), updated_by=EXCLUDED.updated_by`, [modo === 'auto' && typeof b.sig === 'string' ? { modo, red, sig: b.sig.slice(0, 64) } : { modo, red }, req.user.username]);
     const pts = red.reduce((t, l) => t + l.length, 0);
     await audit('divisao', '-', 'linhas de divisão', MODOS[antes], MODOS[modo], modo === 'dwg' ? 'Divisão das áreas' : `Divisão das áreas · ${red.length} linhas, ${pts} pontos`);
     res.json({ ok: true, modo });
