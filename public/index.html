@@ -178,6 +178,10 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 .sheethead h2{margin:0;font:700 22px/1.1 var(--display)}
 .sheethead .x{position:static}
 .sheetbody{padding:14px 16px;overflow:auto;min-height:0}
+.optlist{display:flex;flex-direction:column;gap:10px;margin:12px 0 16px}
+.optlist label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;line-height:1.35}
+.optlist input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.optlist small{display:block;color:var(--muted);font-size:12px}
 .hlist{display:grid;gap:0}
 .hrow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
 .hrow time{color:var(--muted);font-family:var(--mono);font-size:12px}
@@ -249,6 +253,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
           <button role="menuitem" id="mHist">Histórico de alterações</button>
           <button role="menuitem" id="mAreas" hidden>Áreas e responsáveis</button>
           <button role="menuitem" id="mDiv" hidden>Ajustar linhas de divisão</button>
+          <button role="menuitem" id="mOrig" hidden>Voltar ao mapa original</button>
           <button role="menuitem" id="mUsers" hidden>Usuários</button>
           <button role="menuitem" id="mPass">Trocar senha</button>
           <button role="menuitem" id="mOut">Sair</button>
@@ -754,7 +759,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
-  $('mAreas').hidden=!canWrite; $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin');
+  $('mAreas').hidden=!canWrite; $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin');
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
@@ -852,6 +857,32 @@ async function openAreas(){
     }catch(e){ msg.className='status err'; msg.textContent=e.message; $('aSave').disabled=false; }
   };
 }
+
+function openRestore(){
+  openSheet('Voltar ao mapa original');
+  const opts=[
+    ['linhas',true,'Linhas de divisão','Volta às linhas vermelhas do DWG.'],
+    ['areas',true,'Área de cada estação','Cada estação volta para a equipe do DWG.'],
+    ['posicoes',true,'Posição das estações','Estações movidas voltam ao ponto original.'],
+    ['nomes',false,'Nomes das áreas e responsáveis','Voltam a Equipe SP1, Equipe Costa Norte, Equipe SP2, Saile Telecom (Elias) e Alexandre Cosme.'],
+    ['tudo',false,'Todos os dados das estações','Desfaz também nome, canal, cidades e demais campos; recupera as estações excluídas e retira as incluídas depois.'],
+  ];
+  $('sheetBody').innerHTML=`<p class="sub">Escolha o que volta ao original. Tudo fica no Histórico de alterações com o valor anterior, e estações retiradas podem ser restauradas por lá.</p>
+  <div class="optlist">${opts.map(([k,on,t,d])=>`<label><input type="checkbox" data-k="${k}"${on?' checked':''}><span><b>${t}</b><small>${d}</small></span></label>`).join('')}</div>
+  <div class="btnrow"><button class="btn pri" id="rGo">Voltar ao original</button><button class="btn" id="rCancel">Cancelar</button></div><div class="status" id="rMsg" role="status"></div>`;
+  $('rCancel').onclick=closeSheet;
+  let armed=false;
+  $('rGo').onclick=async()=>{ const body={}; $('sheetBody').querySelectorAll('[data-k]').forEach(c=>{ body[c.dataset.k]=c.checked; });
+    const msg=$('rMsg'); if(!Object.values(body).some(Boolean)){ msg.className='status err'; msg.textContent='Marque pelo menos uma opção.'; return; }
+    if(!armed){ armed=true; $('rGo').textContent='Confirmar: voltar ao original'; msg.className='status'; msg.textContent='Clique de novo para confirmar.'; return; }
+    $('rGo').disabled=true; msg.className='status'; msg.textContent='Restaurando…';
+    try{ const r=await api('POST','/api/mapa/restaurar',body);
+      const p=[]; if(r.linhas) p.push('linhas do DWG'); const n=(k,u,v)=>k+' '+(k===1?u:v); if(r.estacoes) p.push(n(r.estacoes,'estação corrigida','estações corrigidas')); if(r.recuperadas) p.push(n(r.recuperadas,'estação recuperada','estações recuperadas')); if(r.retiradas) p.push(n(r.retiradas,'estação retirada','estações retiradas')); if(r.nomes) p.push(n(r.nomes,'nome de área','nomes de área'));
+      autoCache=null; await loadStations(); closeSheet(); toast(p.length?'Mapa original restaurado: '+p.join(', ')+'.':'O mapa já estava igual ao original.'); }
+    catch(e){ msg.className='status err'; msg.textContent=e.message; $('rGo').disabled=false; }
+  };
+}
+$('mOrig').onclick=()=>{ toggleMenu(false); openRestore(); };
 
 const ROLE_OPTS=[['viewer','Leitura'],['editor','Editor'],['admin','Admin']];
 async function openUsers(){

@@ -278,6 +278,78 @@ app.put('/api/divisao', requireRole('admin'), async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/* ---------- voltar o mapa ao original (admin) ---------- */
+// Cada parte é opcional. Tudo fica no histórico, com o valor anterior, e estações retiradas podem ser restauradas.
+const AREAS_ORIGINAIS = [
+  [1, 'Área 1', 'Equipe SP1'], [5, 'Área 1', 'Equipe Costa Norte'], [2, 'Área 2', 'Equipe SP2'],
+  [3, 'Área 3', 'Saile Telecom (Elias)'], [4, 'Área 4', 'Alexandre Cosme'],
+];
+app.post('/api/mapa/restaurar', requireRole('admin'), async (req, res, next) => {
+  const b = req.body || {};
+  const op = { linhas: !!b.linhas, areas: !!b.areas, posicoes: !!b.posicoes, nomes: !!b.nomes, tudo: !!b.tudo };
+  if (!Object.values(op).some(Boolean)) return res.status(400).json({ error: 'Marque pelo menos uma opção.' });
+  const r = { linhas: false, estacoes: 0, recuperadas: 0, retiradas: 0, nomes: 0 };
+  try {
+    if (op.linhas) {
+      const cur = await pool.query("SELECT valor FROM config WHERE chave='divisao'");
+      const antes = cur.rows.length ? cur.rows[0].valor.modo : 'dwg';
+      await pool.query("DELETE FROM config WHERE chave='divisao'");
+      if (antes !== 'dwg') { await audit('divisao', '-', 'linhas de divisão', MODOS[antes], MODOS.dwg, 'Mapa original restaurado'); r.linhas = true; }
+    }
+    if (op.nomes) {
+      for (const [id, nome, responsavel] of AREAS_ORIGINAIS) {
+        const cur = await pool.query('SELECT nome, responsavel FROM areas WHERE id=$1', [id]);
+        const o = cur.rows[0]; if (o && o.nome === nome && o.responsavel === responsavel) continue;
+        await pool.query(`INSERT INTO areas (id,nome,responsavel,ordem) VALUES ($1,$2,$3,0)
+          ON CONFLICT (id) DO UPDATE SET nome=EXCLUDED.nome, responsavel=EXCLUDED.responsavel`, [id, nome, responsavel]);
+        if (o && o.nome !== nome) await audit('areas', String(id), 'nome da área', o.nome, nome, 'Mapa original restaurado');
+        if (o && o.responsavel !== responsavel) await audit('areas', String(id), 'responsável', o.responsavel, responsavel, 'Mapa original restaurado');
+        r.nomes++;
+      }
+      await loadAreaNames();
+    }
+    if (op.areas || op.posicoes || op.tudo) {
+      const orig = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'estacoes.json'), 'utf8'));
+      const { rows } = await pool.query('SELECT * FROM estacoes');
+      const atuais = new Map(rows.map(x => [x.id, x.data]));
+      for (const [id, old] of atuais) {
+        const o = orig[id];
+        if (!o) {
+          if (!op.tudo) continue;
+          await pool.query('DELETE FROM estacoes WHERE id=$1', [id]);
+          await audit('estacoes', id, 'exclusão', JSON.stringify(old), null, `${old.n} · retirada ao restaurar o mapa original`);
+          r.retiradas++; continue;
+        }
+        const base = cleanStation(o);
+        let d;
+        if (op.tudo) d = base;
+        else {
+          d = { ...old };
+          if (op.areas) d.a = base.a;
+          if (op.posicoes) {
+            d.x = base.x; d.y = base.y;
+            // o rótulo original do DWG volta junto se nome, canal e VT forem os originais
+            if (d.n === base.n && d.ch === base.ch && d.vt === base.vt) { d.lx = base.lx; d.ly = base.ly; d.ll = base.ll; }
+          }
+        }
+        const changes = diff(old, d);
+        if (!changes.length && JSON.stringify(old) === JSON.stringify(d)) continue;
+        await pool.query('UPDATE estacoes SET data=$1, updated_at=now(), updated_by=$2 WHERE id=$3', [d, req.user.username, id]);
+        for (const [f, a, bb] of changes) await audit('estacoes', id, f, a.slice(0, 2000), bb.slice(0, 2000), `${d.n} · mapa original restaurado`);
+        if (changes.length) r.estacoes++;
+      }
+      if (op.tudo) for (const [id, o] of Object.entries(orig)) {
+        if (atuais.has(id)) continue;
+        const d = cleanStation(o);
+        await pool.query('INSERT INTO estacoes (id,data,updated_by) VALUES ($1,$2,$3)', [id, d, req.user.username]);
+        await audit('estacoes', id, 'restauração', null, d.n, `${d.n} · mapa original restaurado`);
+        r.recuperadas++;
+      }
+    }
+    res.json({ ok: true, ...r });
+  } catch (e) { next(e); }
+});
+
 app.get('/api/historico', async (req, res, next) => {
   const limit = Math.min(1000, Math.max(1, Number(req.query.limit) || 300));
   const params = [limit];

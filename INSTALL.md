@@ -62,6 +62,16 @@ As linhas vermelhas que dividem as áreas podem ser ajustadas pelo **Admin**, no
 
 Se você arrastar um ponto depois de gerar automático, as linhas passam para **ajuste manual** e deixam de acompanhar as estações. Para voltar ao automático, clique de novo em **Gerar automático** e salve.
 
+Para desfazer as mudanças, o **Admin** usa **Voltar ao mapa original**, no menu do seu nome. Ele escolhe o que volta ao original:
+
+- linhas de divisão;
+- área de cada estação;
+- posição das estações;
+- nomes das áreas e responsáveis;
+- todos os dados das estações. Esta opção também recupera as excluídas e retira as incluídas.
+
+O sistema pede confirmação antes de aplicar. Tudo fica no histórico com o valor anterior.
+
 As linhas são só o desenho do mapa: a cor de cada região segue a maioria das estações dentro dela, mas a área de cada estação continua sendo a do campo **Área** da ficha. Cada gravação fica no histórico.
 
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
