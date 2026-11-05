@@ -78,7 +78,7 @@ Para imprimir o mapa igual à planta do AutoCAD (“Mapa de rotas – Nova Divis
 
 A prancha junta duas partes:
 
-- **Do próprio DWG:** moldura, título, quadro de cobertura, legenda, Grande São Paulo, Brasília/Brazlândia, carimbo e logotipo.
+- **Do próprio DWG:** moldura, título, quadro de cobertura, legenda de recepção via satélite, Grande São Paulo, Brasília/Brazlândia, carimbo e logotipo.
 - **Do cadastro atual:** estações, rótulos, linhas de divisão, nomes das áreas e a linha “Atualização”.
 
 Estações que não mudaram saem com o símbolo e o rótulo originais do DWG. Estações novas ou alteradas saem no mesmo padrão.

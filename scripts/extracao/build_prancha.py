@@ -54,6 +54,28 @@ for p in prims:
 for k, v in st.items():
     e = est[k]; v.update(x0=R(e['x']), y0=R(e['y']), r=e.get('r'), m=e.get('m'), pm=e.get('pm', 0))
     if e.get('lx') is not None: v.update(lx0=R(e['lx']), ly0=R(e['ly']))
+# itens da legenda que não entram na prancha: infraestrutura telefônica, repetidoras, estações, enlaces,
+# infra, quadro de equipamentos e contagem "SP - n - estações"
+def centro(p):
+    f = p[4] if p[0] == 'p' else [c for r in p[2] for c in r] if p[0] == 'f' else [p[3], p[4]] if p[0] == 'c' else [p[1], p[2]]
+    return sum(f[0::2]) / len(f[0::2]), sum(f[1::2]) / len(f[1::2])
+def fora_da_prancha(p):
+    if p[0] in ('p', 'f', 'c') and p[1] == '#5b5b5b': return False  # contorno do estado
+    x, y = centro(p)
+    if p[0] == 't':
+        t = ' '.join(''.join(s[0] for s in ln) for ln in p[7])
+        if t.startswith('LEGENDA:'):
+            titulo = p[7][0]; keep = False
+            for i, ln in enumerate(p[7]):
+                lt = ''.join(s[0] for s in ln)
+                if 'CANAL VIRTUAL' in lt:
+                    keep = True
+                    if i >= 2: p[7][i - 2] = titulo  # "LEGENDA:" desce para logo acima do que ficou
+                if not keep and p[7][i] is not titulo: p[7][i] = []
+            if p[7][0] is titulo and any(l is titulo for l in p[7][1:]): p[7][0] = []
+            return False
+    return (4395 < x < 4600 and 340 < y < 520) or (4580 < x < 4700 and 255 < y < 340)
+static = [p for p in static if not fora_da_prancha(p)]
 out = {'box': [R(X0), R(Y0), R(X1), R(Y1)], 'static': static, 'st': st, 'alab': alab, 'atual': atual}
 json.dump(out, open(REPO + '/data/prancha.json', 'w'), ensure_ascii=False, separators=(',', ':'))
 print('static', len(static), 'estações com símbolo', sum(1 for v in st.values() if v['sym']), 'com rótulo', sum(1 for v in st.values() if v['lab']), 'áreas', len(alab), 'descartados', dropped)
