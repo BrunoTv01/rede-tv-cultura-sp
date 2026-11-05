@@ -63,3 +63,11 @@ INSERT INTO areas (id, nome, responsavel, ordem) VALUES
   (3, 'Área 3', 'Saile Telecom (Elias)', 4),
   (4, 'Área 4', 'Alexandre Cosme', 5)
 ON CONFLICT (id) DO NOTHING;
+
+-- Configurações gerais (ex.: linhas de divisão das áreas ajustadas pelo admin)
+CREATE TABLE IF NOT EXISTS config (
+  chave       TEXT PRIMARY KEY,
+  valor       JSONB NOT NULL,
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_by  TEXT
+);

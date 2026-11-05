@@ -50,6 +50,18 @@ Cada pessoa recebe uma senha provisória e cria a própria senha no primeiro ace
 
 Os nomes das áreas e dos responsáveis também podem ser trocados: use **Editar nomes**, ao lado de “Área / responsável” no painel da esquerda (perfis Editor e Admin). O mapa mostra em cada área só o nome do responsável.
 
+As linhas vermelhas que dividem as áreas podem ser ajustadas pelo **Admin**, no menu do seu nome, em **Ajustar linhas de divisão**. A barra que aparece no mapa tem:
+
+| Botão | O que faz |
+|---|---|
+| Arrastar os pontos brancos | Move a linha. Clique numa linha para criar um ponto; clique duplo num ponto para apagar |
+| **Gerar automático** | Redesenha as linhas a partir da área de cada estação. Depois dá para ajustar os pontos à mão |
+| **Nova linha** | Desenha uma linha nova, clicando ponto a ponto; termine com clique duplo |
+| **Desenho original** | Volta às linhas do DWG |
+| **Salvar** / **Cancelar** | Grava para todos os usuários, ou descarta o que foi feito |
+
+As linhas são só o desenho do mapa: a cor de cada região segue a maioria das estações dentro dela, mas a área de cada estação continua sendo a do campo **Área** da ficha. Cada gravação fica no histórico.
+
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
 
 ## Opções do instalador

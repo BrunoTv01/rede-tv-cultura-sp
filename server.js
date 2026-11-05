@@ -149,7 +149,7 @@ const rowOut = r => ({ id: r.id, ...r.data, upd: r.updated_at, by: r.updated_by 
 app.get('/api/estacoes', async (_req, res, next) => {
   try {
     const { rows } = await pool.query('SELECT * FROM estacoes ORDER BY id');
-    const v = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl IN ('estacoes','areas')");
+    const v = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl IN ('estacoes','areas','divisao')");
     res.json({ versao: v.rows[0].v, estacoes: rows.map(rowOut) });
   } catch (e) { next(e); }
 });
@@ -157,7 +157,7 @@ app.get('/api/estacoes', async (_req, res, next) => {
 // número que muda a cada alteração: a página consulta a cada poucos segundos e recarrega se mudou
 app.get('/api/estacoes/versao', async (_req, res, next) => {
   try {
-    const { rows } = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl IN ('estacoes','areas')");
+    const { rows } = await pool.query("SELECT coalesce(max(id),0)::int AS v FROM audit_log WHERE tbl IN ('estacoes','areas','divisao')");
     res.json({ versao: rows[0].v });
   } catch (e) { next(e); }
 });
@@ -242,12 +242,48 @@ app.put('/api/areas/:id', editor, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/* ---------- linhas de divisão das áreas ---------- */
+// modo "dwg" = desenho original; "manual" = ajustado à mão; "auto" = gerado pelas estações
+app.get('/api/divisao', async (_req, res, next) => {
+  try {
+    const { rows } = await pool.query("SELECT valor, updated_at, updated_by FROM config WHERE chave='divisao'");
+    if (!rows.length) return res.json({ modo: 'dwg' });
+    res.json({ ...rows[0].valor, atualizado: rows[0].updated_at, por: rows[0].updated_by });
+  } catch (e) { next(e); }
+});
+
+const MODOS = { dwg: 'desenho original (DWG)', manual: 'ajuste manual', auto: 'geração automática' };
+app.put('/api/divisao', requireRole('admin'), async (req, res, next) => {
+  const b = req.body || {};
+  const modo = Object.keys(MODOS).includes(b.modo) ? b.modo : null;
+  if (!modo) return res.status(400).json({ error: 'Modo inválido.' });
+  let red = [];
+  if (modo !== 'dwg') {
+    if (!Array.isArray(b.red) || !b.red.length) return res.status(400).json({ error: 'Não há nenhuma linha de divisão para salvar.' });
+    red = b.red.slice(0, 200).map(l => (Array.isArray(l) ? l : []).slice(0, 3000)
+      .map(pt => [Number(pt && pt[0]), Number(pt && pt[1])])
+      .filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y) && x > 4200 && x < 5300 && y > 200 && y < 900)
+      .map(([x, y]) => [Math.round(x * 100) / 100, Math.round(y * 100) / 100]))
+      .filter(l => l.length >= 2);
+    if (!red.length) return res.status(400).json({ error: 'As linhas enviadas estão fora do mapa.' });
+  }
+  try {
+    const cur = await pool.query("SELECT valor FROM config WHERE chave='divisao'");
+    const antes = cur.rows.length ? cur.rows[0].valor.modo : 'dwg';
+    await pool.query(`INSERT INTO config (chave, valor, updated_at, updated_by) VALUES ('divisao', $1, now(), $2)
+      ON CONFLICT (chave) DO UPDATE SET valor=EXCLUDED.valor, updated_at=now(), updated_by=EXCLUDED.updated_by`, [{ modo, red }, req.user.username]);
+    const pts = red.reduce((t, l) => t + l.length, 0);
+    await audit('divisao', '-', 'linhas de divisão', MODOS[antes], MODOS[modo], modo === 'dwg' ? 'Divisão das áreas' : `Divisão das áreas · ${red.length} linhas, ${pts} pontos`);
+    res.json({ ok: true, modo });
+  } catch (e) { next(e); }
+});
+
 app.get('/api/historico', async (req, res, next) => {
   const limit = Math.min(1000, Math.max(1, Number(req.query.limit) || 300));
   const params = [limit];
   let where = '';
   if (req.query.estacao) { where = "WHERE tbl='estacoes' AND row_id=$2"; params.push(String(req.query.estacao)); }
-  else if (req.user.role !== 'admin') where = "WHERE tbl IN ('estacoes','areas')";
+  else if (req.user.role !== 'admin') where = "WHERE tbl IN ('estacoes','areas','divisao')";
   try {
     const { rows } = await pool.query(`SELECT id, at, tbl, row_id, field, old_value, new_value, context, username FROM audit_log ${where} ORDER BY id DESC LIMIT $1`, params);
     res.json(rows.map(r => ({ ...r, old_value: r.field === 'exclusão' ? null : r.old_value, restoravel: r.field === 'exclusão' })));

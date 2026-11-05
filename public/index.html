@@ -195,6 +195,14 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 .uform{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;align-items:end;margin-bottom:14px}
 .tag{font:600 11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--muted)}
 .tag.off{color:var(--div);border-color:rgba(255,90,78,.5)}
+.divbar{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:min(760px,calc(100% - 24px));background:rgba(17,29,49,.97);border:1px solid var(--div);border-radius:10px;padding:10px 12px;display:grid;gap:6px;box-shadow:0 10px 30px rgba(0,0,0,.45);z-index:5}
+.dvinfo{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.dvinfo b{font:700 15px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.dvinfo span{font-size:12.5px;color:var(--accent)}
+.dvhelp{margin:0;font-size:12.5px;color:var(--muted)}
+.dvbtns{display:flex;gap:6px;flex-wrap:wrap}
+.dvbtns .pri{margin-left:auto}
+svg#map.editing .sym{pointer-events:none;opacity:.55}
 .sechead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .sechead h4{margin-bottom:8px}
 .sechead .linkbtn{font-size:12px}
@@ -240,6 +248,7 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
           <div class="menuhead"><b id="uFull"></b><span id="uRole"></span></div>
           <button role="menuitem" id="mHist">Histórico de alterações</button>
           <button role="menuitem" id="mAreas" hidden>Áreas e responsáveis</button>
+          <button role="menuitem" id="mDiv" hidden>Ajustar linhas de divisão</button>
           <button role="menuitem" id="mUsers" hidden>Usuários</button>
           <button role="menuitem" id="mPass">Trocar senha</button>
           <button role="menuitem" id="mOut">Sair</button>
@@ -270,6 +279,17 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
         <button id="zin" aria-label="Aproximar">+</button>
         <button id="zout" aria-label="Afastar">−</button>
         <button id="zreset" aria-label="Ver estado inteiro" style="font-size:13px">⤢</button>
+      </div>
+      <div class="divbar" id="divBar" hidden role="toolbar" aria-label="Editar linhas de divisão">
+        <div class="dvinfo"><b>Linhas de divisão</b><span id="dvMode"></span></div>
+        <p class="dvhelp">Arraste os pontos brancos para mover. Clique numa linha para criar um ponto. Clique duplo num ponto para apagar.</p>
+        <div class="dvbtns">
+          <button class="btn" id="dvAuto" title="Traça as linhas pela área de cada estação">Gerar automático</button>
+          <button class="btn" id="dvNew">Nova linha</button>
+          <button class="btn" id="dvDwg" title="Volta às linhas do arquivo DWG">Desenho original</button>
+          <button class="btn" id="dvCancel">Cancelar</button>
+          <button class="btn pri" id="dvSave">Salvar</button>
+        </div>
       </div>
       <div class="banner" id="banner" hidden><span id="bannerTxt">Clique no mapa onde fica a estação.</span><button id="bannerX">Cancelar</button></div>
       <div class="legend"><button id="lgT" class="lgt" aria-expanded="true">Legenda</button><div id="legend" class="lgb"></div></div>
@@ -370,6 +390,7 @@ let ST=[], byId=new Map(), symEls=new Map(), labEls=new Map();
 let mode='area', areaOn={1:true,2:true,3:true,4:true,5:true}, typeOn={sat:true,ger:true,comp:true}, q='', sel=null, view2='map';
 let sortCol='n', sortDir=1;
 let me=null, canWrite=false, loaded=false, dbMissing=false, versao=0;
+let divEdit=null, dragV=null; // edição das linhas de divisão
 let editing=null, placing=null, confirmDel=false, statusMsg='', statusErr=false;
 try{ const m=localStorage.getItem('tvc-mode'); if(m==='rec'||m==='area') mode=m; }catch(e){}
 
@@ -433,6 +454,7 @@ let view={x:B.x0,y:B.y0,w:W,h:H};
 function fit(){ const r=stage.getBoundingClientRect(); if(!r.width) return; const ar=r.width/Math.max(r.height,1); let w=W*1.06,h=H*1.06; if(w/h<ar) w=h*ar; else h=w/ar; view={x:B.x0+W/2-w/2,y:B.y0+H/2-h/2,w,h}; apply(); }
 const kScale=()=>stage.getBoundingClientRect().width/view.w;
 function apply(){
+  if(divEdit&&!dragV) editRedraw();
   svg.setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`);
   const k=kScale(); const px=Math.max(13,Math.min(26,9+k*3.2)); const sc=px/9.5/k;
   ST.forEach(s=>{ const g=symEls.get(s.id); if(g) g.setAttribute('transform',`translate(${s.x} ${-s.y}) scale(${sc*(s.r==='H'?1.25:1)})`); });
@@ -718,7 +740,7 @@ async function loadStations(){
   ST=j.estacoes.map(o=>{ o.rc=recOf(o); o.n=o.n||'(sem nome)'; o.a=+o.a||1; return o; });
   byId=new Map(ST.map(s=>[s.id,s]));
   if(sel&&!byId.has(sel)) sel=null;
-  loaded=true; dbMissing=false; rebuild(); render();
+  loaded=true; dbMissing=false; await loadDivision(); rebuild(); render();
 }
 // a cada 15 s confere se alguém alterou o cadastro e recarrega
 setInterval(async()=>{
@@ -732,7 +754,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
-  $('mAreas').hidden=!canWrite; $('btnAreas').hidden=!canWrite;
+  $('mAreas').hidden=!canWrite; $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin');
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
@@ -870,6 +892,160 @@ async function openUsers(){
     };
   });
 }
+
+// ---------- linhas de divisão das áreas (admin: ajuste manual ou automático) ----------
+// As cores das áreas são calculadas a partir das linhas: cada região fechada pelas linhas
+// e pelo contorno do estado recebe a área que tem mais estações dentro dela.
+let DIV={modo:'dwg'};            // o que está salvo no servidor
+let divFill=null;                // {1:'path',2:...} quando o modo não é o DWG
+const RX0=4380, RY1=790, RES=1.5; // grade de cálculo: 1 célula = 1,5 unidade do desenho
+const RW=Math.ceil((5182-RX0)/RES), RH=Math.ceil((RY1-258)/RES);
+const toPx=(X,Y)=>[(X-RX0)/RES,(RY1-Y)/RES];
+const fromPx=(px,py)=>[+(RX0+px*RES).toFixed(2),+(RY1-py*RES).toFixed(2)];
+let insideMask=null;
+function stateMask(){
+  if(insideMask) return insideMask;
+  const c=document.createElement('canvas'); c.width=RW; c.height=RH; const x=c.getContext('2d');
+  x.fillStyle='#fff';
+  Object.values(G.areas).forEach(rings=>{ x.beginPath(); rings.forEach(r=>{ r.forEach((p,i)=>{ const [a,b]=toPx(p[0],p[1]); i?x.lineTo(a,b):x.moveTo(a,b); }); x.closePath(); }); x.fill('evenodd'); });
+  const d=x.getImageData(0,0,RW,RH).data; insideMask=new Uint8Array(RW*RH);
+  for(let i=0;i<RW*RH;i++) insideMask[i]=d[i*4+3]>100?1:0;
+  return insideMask;
+}
+const areaGroup=a=>a===5?1:a; // Costa Norte faz parte da Área 1 no desenho
+function stationPixels(){ return ST.filter(s=>s.r!=='F'&&s.r!=='P').map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),a:areaGroup(s.a)}; }).filter(s=>s.px>=0&&s.py>=0&&s.px<RW&&s.py<RH); }
+
+// cores das áreas a partir das linhas
+function fillsFromLines(red){
+  const inside=stateMask();
+  const c=document.createElement('canvas'); c.width=RW; c.height=RH; const x=c.getContext('2d');
+  x.strokeStyle='#fff'; x.lineWidth=2.2; x.lineJoin='round'; x.lineCap='round';
+  red.forEach(l=>{ x.beginPath(); l.forEach((p,i)=>{ const [a,b]=toPx(p[0],p[1]); i?x.lineTo(a,b):x.moveTo(a,b); }); x.stroke(); });
+  const bd=x.getImageData(0,0,RW,RH).data;
+  const N=RW*RH, lab=new Int32Array(N).fill(-1); let nl=0; const q=new Int32Array(N);
+  const free=i=>inside[i]&&bd[i*4+3]<100;
+  for(let i=0;i<N;i++){ if(lab[i]!==-1||!free(i)) continue; let h=0,t=0; q[t++]=i; lab[i]=nl;
+    while(h<t){ const j=q[h++], px=j%RW, py=(j/RW)|0;
+      if(px>0&&lab[j-1]===-1&&free(j-1)){lab[j-1]=nl;q[t++]=j-1;} if(px<RW-1&&lab[j+1]===-1&&free(j+1)){lab[j+1]=nl;q[t++]=j+1;}
+      if(py>0&&lab[j-RW]===-1&&free(j-RW)){lab[j-RW]=nl;q[t++]=j-RW;} if(py<RH-1&&lab[j+RW]===-1&&free(j+RW)){lab[j+RW]=nl;q[t++]=j+RW;} }
+    nl++; }
+  // pixels da própria linha recebem a região vizinha
+  { let h=0,t=0; for(let i=0;i<N;i++) if(lab[i]>=0) q[t++]=i;
+    while(h<t){ const j=q[h++], px=j%RW, py=(j/RW)|0;
+      for(const k of [px>0?j-1:-1,px<RW-1?j+1:-1,py>0?j-RW:-1,py<RH-1?j+RW:-1]) if(k>=0&&lab[k]===-1&&inside[k]){ lab[k]=lab[j]; q[t++]=k; } } }
+  // área de cada região: a que tem mais estações dentro; sem estação, a da estação mais próxima
+  const sp=stationPixels(); const votes=Array.from({length:nl},()=>({}));
+  sp.forEach(s=>{ const l=lab[s.py*RW+s.px]; if(l>=0) votes[l][s.a]=(votes[l][s.a]||0)+1; });
+  const cx=new Float64Array(nl), cy=new Float64Array(nl), cn=new Int32Array(nl);
+  for(let i=0;i<N;i++){ const l=lab[i]; if(l>=0){ cx[l]+=i%RW; cy[l]+=(i/RW)|0; cn[l]++; } }
+  const regA=new Int8Array(nl);
+  for(let l=0;l<nl;l++){ const v=votes[l]; const ks=Object.keys(v);
+    if(ks.length) regA[l]=+ks.sort((a,b)=>v[b]-v[a])[0];
+    else { const mx=cx[l]/cn[l], my=cy[l]/cn[l]; let best=1e18,a=1; sp.forEach(s=>{ const d=(s.px-mx)**2+(s.py-my)**2; if(d<best){best=d;a=s.a;} }); regA[l]=a; } }
+  // caminho SVG por área (faixas horizontais da grade)
+  const paths={1:'',2:'',3:'',4:''};
+  for(let py=0;py<RH;py++){ let run=-1, start=0;
+    for(let px=0;px<=RW;px++){ const i=py*RW+px; const a=px<RW&&lab[i]>=0?regA[lab[i]]:-1;
+      if(a!==run){ if(run>0){ const X=RX0+start*RES, Yt=-(RY1-py*RES); paths[run]+=`M${X.toFixed(1)} ${Yt.toFixed(1)}h${((px-start)*RES).toFixed(1)}v${(RES+0.05).toFixed(2)}h${(-(px-start)*RES).toFixed(1)}z`; } run=a; start=px; } } }
+  return paths;
+}
+
+// linhas geradas automaticamente: fronteira entre as áreas das estações mais próximas
+function autoLines(){
+  const inside=stateMask(), sp=stationPixels(); if(!sp.length) return [];
+  const A=new Int8Array(RW*RH);
+  for(let py=0;py<RH;py++) for(let px=0;px<RW;px++){ const i=py*RW+px; if(!inside[i]) continue; let best=1e18,a=0;
+    for(const s of sp){ const d=(s.px-px)**2+(s.py-py)**2; if(d<best){best=d;a=s.a;} } A[i]=a; }
+  // suaviza a grade (maioria 5x5) para tirar degraus e ilhas pequenas
+  const B=new Int8Array(A);
+  for(let it=0;it<2;it++){ for(let py=2;py<RH-2;py++) for(let px=2;px<RW-2;px++){ const i=py*RW+px; if(!inside[i]) continue; const c={};
+      for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++){ const v=A[i+dy*RW+dx]; if(v) c[v]=(c[v]||0)+1; }
+      let m=A[i],mv=0; for(const k in c) if(c[k]>mv){mv=c[k];m=+k;} B[i]=m; } A.set(B); }
+  // arestas entre células de áreas diferentes
+  const adj=new Map(); const key=(x,y)=>x+','+y;
+  const addE=(a,b)=>{ (adj.get(a)||adj.set(a,[]).get(a)).push(b); (adj.get(b)||adj.set(b,[]).get(b)).push(a); };
+  for(let py=0;py<RH;py++) for(let px=0;px<RW;px++){ const i=py*RW+px, a=A[i]; if(!a) continue;
+    if(px+1<RW&&A[i+1]&&A[i+1]!==a) addE(key(px+1,py),key(px+1,py+1));
+    if(py+1<RH&&A[i+RW]&&A[i+RW]!==a) addE(key(px,py+1),key(px+1,py+1)); }
+  // encadeia as arestas em linhas
+  const used=new Set(), ek=(a,b)=>a<b?a+'|'+b:b+'|'+a, lines=[];
+  const walk=(s,n)=>{ const l=[s,n]; used.add(ek(s,n)); let prev=s,cur=n;
+    while((adj.get(cur)||[]).length===2){ const nx=adj.get(cur).find(v=>v!==prev&&!used.has(ek(cur,v))); if(!nx) break; used.add(ek(cur,nx)); l.push(nx); prev=cur; cur=nx; }
+    return l; };
+  for(const [v,ns] of adj) if(ns.length!==2) for(const n of ns) if(!used.has(ek(v,n))) lines.push(walk(v,n));
+  for(const [v,ns] of adj) for(const n of ns) if(!used.has(ek(v,n))) lines.push(walk(v,n));
+  const dp=(pts,tol)=>{ if(pts.length<3) return pts; const keep=new Uint8Array(pts.length); keep[0]=keep[pts.length-1]=1; const st=[[0,pts.length-1]];
+    while(st.length){ const [i,j]=st.pop(); const [ax,ay]=pts[i],[bx,by]=pts[j]; const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy)||1e-9; let best=0,bi=-1;
+      for(let k=i+1;k<j;k++){ const d=Math.abs(dy*(pts[k][0]-ax)-dx*(pts[k][1]-ay))/L; if(d>best){best=d;bi=k;} } if(best>tol){keep[bi]=1;st.push([i,bi],[bi,j]);} }
+    return pts.filter((_,i)=>keep[i]); };
+  const chaikin=pts=>{ if(pts.length<3) return pts; const o=[pts[0]]; for(let i=0;i<pts.length-1;i++){ const [a,b]=pts[i],[c,d]=pts[i+1]; o.push([a*.75+c*.25,b*.75+d*.25],[a*.25+c*.75,b*.25+d*.75]); } o.push(pts[pts.length-1]); return o; };
+  return lines.map(l=>l.map(k=>k.split(',').map(Number))).filter(l=>l.length>=4)
+    .map(l=>chaikin(chaikin(dp(l,1.3))).map(([px,py])=>fromPx(px,py)));
+}
+
+function currentRed(){ return DIV.modo==='dwg'?G.red:DIV.red; }
+function applyDivision(){
+  divFill=DIV.modo==='dwg'?null:fillsFromLines(DIV.red);
+  areaEls.forEach(el=>{ const k=el.dataset.a; el.setAttribute('d',divFill?divFill[k]:G.areas[k].map(r=>pathOf(r,true)).join('')); el.setAttribute('fill-rule',divFill?'nonzero':'evenodd'); });
+  dvEl.setAttribute('d',currentRed().map(p=>pathOf(p)).join(''));
+}
+async function loadDivision(){
+  try{ DIV=await api('GET','/api/divisao'); if(DIV.modo!=='dwg'&&!(DIV.red&&DIV.red.length)) DIV={modo:'dwg'}; }catch(e){ DIV={modo:'dwg'}; }
+  if(!divEdit) applyDivision();
+}
+
+// ----- modo de edição -----
+// divEdit = {red:[[...]], modo, drawing:null|[...]} enquanto o admin edita
+const gEdit=mk('g',{id:'gEdit'},$('vp'));
+function editRedraw(){
+  gEdit.textContent='';
+  if(!divEdit) return;
+  const k=kScale(), r=5/k, w=Math.max(2.4/k,.5);
+  divEdit.red.forEach((l,li)=>{
+    const hit=mk('path',{d:pathOf(l),fill:'none',stroke:'transparent','stroke-width':12/k,style:'cursor:copy'},gEdit);
+    hit.addEventListener('pointerdown',e=>e.stopPropagation());
+    hit.addEventListener('click',e=>{ e.stopPropagation(); const [X,Y]=evToMap(e); let best=1e18,bi=0;
+      for(let i=0;i<l.length-1;i++){ const d=segDist(X,Y,l[i],l[i+1]); if(d<best){best=d;bi=i;} } l.splice(bi+1,0,[X,Y]); divEdit.modo='manual'; editChanged(); });
+    mk('path',{d:pathOf(l),fill:'none',stroke:'var(--div)','stroke-width':w,'stroke-linejoin':'round','pointer-events':'none'},gEdit);
+    l.forEach((p,vi)=>{
+      const h=mk('circle',{cx:p[0],cy:-p[1],r,fill:'var(--sea)',stroke:'#fff','stroke-width':1.4/k,style:'cursor:grab'},gEdit);
+      h.addEventListener('pointerdown',e=>{ e.stopPropagation(); e.preventDefault(); dragV={li,vi}; h.setPointerCapture&&h.setPointerCapture(e.pointerId); });
+      h.addEventListener('dblclick',e=>{ e.stopPropagation(); if(l.length>2) l.splice(vi,1); else divEdit.red.splice(li,1); divEdit.modo='manual'; editChanged(); });
+    });
+  });
+  if(divEdit.drawing&&divEdit.drawing.length){ const d=divEdit.drawing;
+    mk('path',{d:pathOf(d),fill:'none',stroke:'#fff','stroke-width':w,'stroke-dasharray':`${4/k} ${3/k}`},gEdit);
+    d.forEach(p=>mk('circle',{cx:p[0],cy:-p[1],r:r*.8,fill:'#fff'},gEdit)); }
+}
+function segDist(X,Y,a,b){ const dx=b[0]-a[0],dy=b[1]-a[1]; const t=Math.max(0,Math.min(1,((X-a[0])*dx+(Y-a[1])*dy)/((dx*dx+dy*dy)||1))); return Math.hypot(X-(a[0]+t*dx),Y-(a[1]+t*dy)); }
+function evToMap(e){ const r=stage.getBoundingClientRect(); return [+(view.x+(e.clientX-r.left)/r.width*view.w).toFixed(2), +(-(view.y+(e.clientY-r.top)/r.height*view.h)).toFixed(2)]; }
+let fillT=null;
+window.addEventListener('pointermove',e=>{ if(!dragV||!divEdit) return; const l=divEdit.red[dragV.li]; if(!l) return; l[dragV.vi]=evToMap(e); divEdit.modo='manual'; editRedraw(); });
+window.addEventListener('pointerup',()=>{ if(dragV){ dragV=null; editChanged(); } });
+function editChanged(){ editRedraw(); clearTimeout(fillT); fillT=setTimeout(()=>{ divFill=fillsFromLines(divEdit.red); areaEls.forEach(el=>{ el.setAttribute('d',divFill[el.dataset.a]); el.setAttribute('fill-rule','nonzero'); }); },120); $('dvMode').textContent=divModeTxt(divEdit.modo); }
+const divModeTxt=m=>({dwg:'Desenho original (DWG)',manual:'Ajuste manual',auto:'Gerado pelas estações'}[m]);
+
+function openDivEditor(){
+  if(divEdit) return; closeDetail(); toggleMenu(false);
+  divEdit={red:JSON.parse(JSON.stringify(currentRed())),modo:DIV.modo,drawing:null};
+  dvEl.style.display='none'; $('divBar').hidden=false; $('hint').hidden=true; svg.classList.add('editing');
+  editChanged();
+}
+function closeDivEditor(){ divEdit=null; dragV=null; gEdit.textContent=''; dvEl.style.display=''; $('divBar').hidden=true; svg.classList.remove('editing'); applyDivision(); render(); }
+function finishDrawing(){ const d=divEdit&&divEdit.drawing; if(d&&d.length>=2){ divEdit.red.push(d); divEdit.modo='manual'; } if(divEdit) divEdit.drawing=null; $('dvNew').textContent='Nova linha'; editChanged(); }
+// clique no mapa durante o desenho de uma linha nova
+svg.addEventListener('click',e=>{ if(!divEdit||!divEdit.drawing||moved>=6) return; e.stopImmediatePropagation(); divEdit.drawing.push(evToMap(e)); editRedraw(); },true);
+svg.addEventListener('dblclick',e=>{ if(divEdit&&divEdit.drawing){ e.preventDefault(); finishDrawing(); } });
+$('dvNew').onclick=()=>{ if(divEdit.drawing){ finishDrawing(); return; } divEdit.drawing=[]; $('dvNew').textContent='Terminar linha'; toast('Clique no mapa para marcar os pontos. Clique duplo ou “Terminar linha” para encerrar.'); };
+$('dvAuto').onclick=()=>{ $('dvAuto').disabled=true; $('dvMode').textContent='Calculando…';
+  setTimeout(()=>{ const r=autoLines(); $('dvAuto').disabled=false; if(!r.length){ toast('Não foi possível gerar: as estações estão todas na mesma área.'); editChanged(); return; } divEdit.red=r; divEdit.modo='auto'; editChanged(); toast('Linhas geradas a partir da área de cada estação. Ajuste os pontos se precisar e clique em Salvar.'); },30); };
+$('dvDwg').onclick=()=>{ divEdit.red=JSON.parse(JSON.stringify(G.red)); divEdit.modo='dwg'; editChanged(); };
+$('dvCancel').onclick=closeDivEditor;
+$('dvSave').onclick=async()=>{ if(divEdit.drawing) finishDrawing(); $('dvSave').disabled=true;
+  try{ await api('PUT','/api/divisao',divEdit.modo==='dwg'?{modo:'dwg'}:{modo:divEdit.modo,red:divEdit.red}); DIV=divEdit.modo==='dwg'?{modo:'dwg'}:{modo:divEdit.modo,red:divEdit.red}; closeDivEditor(); toast('Linhas de divisão salvas.'); versao=-1; }
+  catch(e){ toast(e.message); }
+  finally{ $('dvSave').disabled=false; } };
+$('mDiv').onclick=openDivEditor;
 
 // ---------- início ----------
 async function start(){
