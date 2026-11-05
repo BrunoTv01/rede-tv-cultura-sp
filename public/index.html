@@ -1154,153 +1154,144 @@ $('dvSave').onclick=async()=>{ if(divEdit.drawing) finishDrawing(); $('dvSave').
   finally{ $('dvSave').disabled=false; } };
 $('mDiv').onclick=openDivEditor;
 
-// ---------- impressão em prancha, no estilo da planta do AutoCAD ----------
-// A prancha é desenhada em milímetros numa folha A3 deitada (420 × 297) e ampliada ou reduzida para o papel escolhido.
+// ---------- impressão em prancha, igual à planta do AutoCAD ----------
+// O desenho fixo (moldura, título, quadro de cobertura, legenda, Grande São Paulo, carimbo e logotipo) vem do próprio DWG
+// (data/prancha.json). Estações, rótulos, linhas de divisão, nomes das áreas e a data de atualização saem do cadastro atual.
+// A unidade da prancha é o milímetro da folha A1 do DWG; para outros papéis o desenho é ampliado ou reduzido.
 const PAPEIS={A4:[297,210],A3:[420,297],A2:[594,420],A1:[841,594],A0:[1189,841]};
-const PR_COR={R:'#12a312',N:'#ef7d00',J:'#7d7a1c',X:'#111111',G:'#d400d4',F:'#d400d4',L:'#8a1bb0',H:'#12a312',P:'#111111'};
-const PR_TXT={N:'#d76f00',G:'#c000c0',F:'#c000c0',L:'#7a1aa0'};
-const PR_AZUL='#1010c8', PR_VERDE='#16b316', PR_VERM='#e10000';
-function prDefs(){
-  const sym=(id,inner)=>`<g id="${id}"><path d="M-0.47 -6.87 A2.27 2.27 0 0 0 2.95 -3.89 Z" fill="currentColor" stroke="currentColor" stroke-width=".5" stroke-linejoin="round"/>`+
-    `<path d="M0 -4.9 L-4.25 2.5 L4.25 2.5 Z" fill="#fff" stroke="currentColor" stroke-width=".85" stroke-linejoin="round"/>`+
-    `<circle r="1.55" fill="${inner==='full'?'currentColor':'#fff'}" stroke="currentColor" stroke-width=".45"/>`+
-    (inner==='half'?`<path d="M-1.55 0 A1.55 1.55 0 0 1 1.55 0 Z" fill="currentColor"/>`:'')+
-    (inner==='half'||inner==='line'||inner==='cross'?`<line x1="-1.55" x2="1.55" stroke="currentColor" stroke-width=".4"/>`:'')+
-    (inner==='cross'?`<line y1="-1.55" y2="1.55" stroke="currentColor" stroke-width=".4"/>`:'')+`</g>`;
-  return `<defs>${['full','half','line','cross'].map(k=>sym('p-'+k,k)).join('')}
-    <g id="p-H"><circle r="3.6" fill="#fff" stroke="currentColor" stroke-width=".7"/><circle r="1.8" fill="currentColor"/></g>
-    <g id="p-P"><circle r="1.6" fill="#fff" stroke="currentColor" stroke-width=".6"/></g>
-    <g id="p-F"><circle r="1.2" fill="currentColor"/></g></defs>`;
-}
-const prSymId=s=>'#p-'+(s.r==='H'||s.r==='P'||s.r==='F'?s.r:(s.m||'full'));
-// conteúdo do mapa, nas coordenadas do desenho (x, -y)
-function prMapa(win,fs,symK,lw){
-  const inWin=(x,y)=>!win||(x>=win.x0-8&&x<=win.x1+8&&y>=win.y0-8&&y<=win.y1+8);
+const PR_COR={R:'#00cc33',N:'#ff7f00',J:'#727430',X:'#000000',G:'#ff00ff',F:'#ff00ff',L:'#6600cc',H:'#009900',P:'#000000'};
+const PR_LAB={N:'#ff7f00',L:'#6600cc',G:'#ff00ff',F:'#ff00ff'};
+let PRANCHA=null;
+async function loadPrancha(){ if(!PRANCHA) PRANCHA=await api('GET','/api/prancha'); return PRANCHA; }
+function prDraw(list,dx,dy,X0,Y1){
+  const X=x=>(x+dx-X0).toFixed(2), Y=y=>(Y1-(y+dy)).toFixed(2);
+  const flatPath=(f,close)=>{ let d=''; for(let i=0;i<f.length;i+=2) d+=(i?'L':'M')+X(f[i])+' '+Y(f[i+1]); return d+(close?'Z':''); };
   let o='';
-  o+=`<path d="${G.border.map(p=>pathOf(p)).join('')}" fill="none" stroke="#7a7a7a" stroke-width="${2.4*lw}" stroke-linejoin="round" stroke-linecap="round"/>`;
-  o+=`<path d="${currentRed().map(p=>pathOf(p)).join('')}" fill="none" stroke="${PR_VERM}" stroke-width="${1.1*lw}" stroke-linejoin="round" stroke-linecap="round"/>`;
-  if(!win) G.alab.forEach(a=>{ const num=+(a.t[0].match(/\d/)||[0])[0]; const ar=AREAS[num]; if(!ar) return;
-    o+=`<text x="${a.x}" y="${-a.y+7}" font-size="6.5" fill="${PR_VERDE}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" stroke="#fff" stroke-width="1.2" paint-order="stroke" stroke-linejoin="round">`+
-      `<tspan x="${a.x}">${esc(ar.n.toUpperCase())}</tspan><tspan x="${a.x}" dy="7.4">${esc(ar.e.toUpperCase())}</tspan></text>`; });
-  ST.forEach(s=>{ if(!inWin(s.x,s.y)) return; const rc=s.rc||recOf(s);
-    o+=`<use href="${prSymId(s)}" color="${PR_COR[rc]||PR_COR.R}" transform="translate(${s.x} ${-s.y}) scale(${symK*(s.r==='H'?1.25:1)})"/>`; });
-  ST.forEach(s=>{ if(!inWin(s.x,s.y)) return; const rc=s.rc||recOf(s), L=win?{x:s.x+symK*4.6,y:s.y+symK*1.5,lines:[s.n,[s.ch?'cn '+s.ch:'',s.vt?'('+s.vt+')':''].filter(Boolean).join(' ')].filter(Boolean)}:labelLines(s);
-    o+=`<text x="${L.x}" y="${-L.y}" font-size="${fs}" fill="${PR_TXT[rc]||PR_AZUL}" font-family="Arial,Helvetica,sans-serif" stroke="#fff" stroke-width="${fs*.22}" paint-order="stroke" stroke-linejoin="round">`+
-      L.lines.map((ln,j)=>`<tspan x="${L.x}" dy="${j?'1.18em':'0.95em'}"${j===0&&!/^(cn|\(|VT)/i.test(ln)?' font-weight="bold"':''}>${esc(ln)}</tspan>`).join('')+`</text>`; });
+  for(const p of list){
+    const k=p[0];
+    if(k==='p') o+=`<path d="${flatPath(p[4],p[3])}" fill="none" stroke="${p[1]}" stroke-width="${Math.max(p[2],.18)}" stroke-linejoin="round" stroke-linecap="${p[5]?'butt':'round'}"${p[5]?` stroke-dasharray="${p[5].join(' ')}"`:''}/>`;
+    else if(k==='c') o+=`<circle cx="${X(p[3])}" cy="${Y(p[4])}" r="${p[5]}" fill="none" stroke="${p[1]}" stroke-width="${Math.max(p[2],.18)}"/>`;
+    else if(k==='f') o+=`<path d="${p[2].map(r=>flatPath(r,true)).join('')}" fill="${p[1]}" fill-rule="evenodd"/>`;
+    else if(k==='t') o+=prText(+X(p[1]),+Y(p[2]),p[3],p[4],p[5],p[6],p[7],false,p[8]);
+  }
   return o;
 }
-function prCobertura(){
-  const uniq=list=>{ const m=new Map(); list.forEach(s=>(s.cov||[]).forEach(c=>{ const k=nkey(c[0]); if(!m.has(k)) m.set(k,+c[1]||0); })); return {n:m.size,p:[...m.values()].reduce((a,b)=>a+b,0)}; };
-  const ger=ST.filter(s=>s.r==='H'), ret=ST.filter(s=>s.r!=='H'&&s.r!=='X');
-  return {ger:ger.length,gm:uniq(ger),ret:ret.length,rm:uniq(ret),tot:uniq(ST.filter(s=>s.r!=='X'))};
+// texto como o MTEXT do AutoCAD: altura = altura das maiúsculas, espaçamento 5/3 da altura
+// quebra as linhas na largura da caixa do MTEXT, como o AutoCAD
+let prCtx=null;
+function prWidth(t,size,bold){ if(!prCtx) prCtx=document.createElement('canvas').getContext('2d'); prCtx.font=(bold?'bold ':'')+'100px Arial, Helvetica, sans-serif'; return prCtx.measureText(t).width*size/100; }
+function prWrap(lines,h,rw,noBold){
+  if(!(rw>0)) return lines;
+  const out=[];
+  lines.forEach(ln=>{
+    const toks=[]; ln.forEach(sg=>{ String(sg[0]).split(/(\s+)/).forEach(w=>{ if(w!=='') toks.push([w,sg[1],sg[2],sg[3]]); }); });
+    let cur=[], wd=0, cont=false;
+    const push=()=>{ while(cur.length&&/^\s+$/.test(cur[cur.length-1][0])) cur.pop(); out.push(cur); cur=[]; wd=0; cont=true; };
+    toks.forEach(tk=>{ const sp=/^\s+$/.test(tk[0]); if(sp&&!cur.length&&cont) return;
+      const w=prWidth(tk[0],h*(tk[3]||1)*1.38,tk[2]&&!noBold);
+      if(!sp&&cur.length&&wd+w>rw*1.02){ push(); }
+      cur.push(tk); wd+=w; });
+    push();
+  });
+  return out;
+}
+function prText(x,y,h,att,rot,ls,lines,noBold,rw){
+  lines=prWrap(lines,h,rw,noBold);
+  // cada linha ocupa 5/3 da sua maior altura (como o MTEXT do AutoCAD)
+  const n=lines.length, lh=lines.map(ln=>h*Math.max(1,...ln.map(sg=>sg[3]||1))*(ls||1));
+  const base=[]; let acc=lh[0]||h; lines.forEach((ln,i)=>{ if(i) acc+=1.667*lh[i]; base.push(acc); });
+  const tot=base[n-1]||h;
+  const off=att<=3?0:att<=6?-tot/2:-tot;
+  const anchor=[2,5,8].includes(att)?'middle':[3,6,9].includes(att)?'end':'start';
+  let o=`<text x="${x}" y="${y}" text-anchor="${anchor}" font-family="Arial,Helvetica,sans-serif" xml:space="preserve"${rot?` transform="rotate(${(-rot).toFixed(2)} ${x} ${y})"`:''}>`;
+  lines.forEach((ln,i)=>{ if(!ln.length) return;
+    ln.forEach((sg,j)=>{ o+=`<tspan${j===0?` x="${x}" y="${(y+off+base[i]).toFixed(2)}"`:''} fill="${sg[1]}" font-size="${(h*(sg[3]||1)*1.38).toFixed(2)}"${sg[2]&&!noBold?' font-weight="bold"':''}>${esc(sg[0])}</tspan>`; }); });
+  return o+'</text>';
+}
+function prGenSym(s,X0,Y1){
+  const rc=s.rc||recOf(s), col=PR_COR[rc]||PR_COR.R, x=(s.x-X0).toFixed(2), y=(Y1-s.y).toFixed(2);
+  return `<use href="${prSymId(s)}" color="${col}" transform="translate(${x} ${y})${s.r==='H'?' scale(1.25)':''}"/>`;
+}
+const prSymId=s=>'#p-'+(s.r==='H'||s.r==='P'||s.r==='F'?s.r:(s.m||'full'));
+function prDefs(){
+  const sym=(id,inner)=>`<g id="${id}"><path d="M-0.47 -6.87 A2.27 2.27 0 0 0 2.95 -3.89 Z" fill="currentColor" stroke="currentColor" stroke-width=".3" stroke-linejoin="round"/>`+
+    `<path d="M0 -4.9 L-4.25 2.5 L4.25 2.5 Z" fill="#fff" stroke="currentColor" stroke-width=".3" stroke-linejoin="round"/>`+
+    `<circle r="1.55" fill="${inner==='full'?'currentColor':'#fff'}" stroke="currentColor" stroke-width=".3"/>`+
+    (inner==='half'?`<path d="M-1.55 0 A1.55 1.55 0 0 1 1.55 0 Z" fill="currentColor"/>`:'')+
+    (inner==='half'||inner==='line'||inner==='cross'?`<line x1="-1.55" x2="1.55" stroke="currentColor" stroke-width=".3"/>`:'')+
+    (inner==='cross'?`<line y1="-1.55" y2="1.55" stroke="currentColor" stroke-width=".3"/>`:'')+`</g>`;
+  return `<defs>${['full','half','line','cross'].map(k=>sym('p-'+k,k)).join('')}
+    <g id="p-H"><circle r="3" fill="#fff" stroke="currentColor" stroke-width=".4"/><circle r="1.5" fill="currentColor"/></g>
+    <g id="p-P"><circle r="1.6" fill="#fff" stroke="currentColor" stroke-width=".4"/></g>
+    <g id="p-F"><circle r="1.2" fill="currentColor"/></g></defs>`;
 }
 function prFolha(o){
-  const W=420,H=297,F=7, B0={x0:4384,x1:5178,y0:-786,y1:-262};
-  const s=0.462, mw=(B0.x1-B0.x0)*s, ox=(W-mw)/2-4, oy=38;
-  const T=(x,y,t,sz,extra='')=>`<text x="${x}" y="${y}" font-size="${sz}" font-family="Arial,Helvetica,sans-serif" ${extra}>${esc(t)}</text>`;
-  const dots=(a,b,w)=>`${a} ${'.'.repeat(Math.max(3,w))} ${b}`;
-  let g=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}" width="${o.pw}mm" height="${o.ph}mm" style="background:#fff">${prDefs()}`;
-  g+=`<rect width="${W}" height="${H}" fill="#fff"/>`;
-  // moldura com marcas de divisão, como na planta
-  g+=`<rect x="${F}" y="${F}" width="${W-2*F}" height="${H-2*F}" fill="none" stroke="#000" stroke-width=".5"/>`;
-  [W/4,W/2,3*W/4].forEach(x=>{ g+=`<line x1="${x}" y1="0" x2="${x}" y2="${F}" stroke="#000" stroke-width=".35"/><line x1="${x}" y1="${H-F}" x2="${x}" y2="${H}" stroke="#000" stroke-width=".35"/>`; });
-  [H/2].forEach(y=>{ g+=`<line x1="0" y1="${y}" x2="${F}" y2="${y}" stroke="#000" stroke-width=".35"/><line x1="${W-F}" y1="${y}" x2="${W}" y2="${y}" stroke="#000" stroke-width=".35"/>`; });
-  // mapa principal
-  g+=`<g transform="translate(${ox-s*B0.x0} ${oy-s*B0.y0}) scale(${s})">${prMapa(null,3,1,1)}</g>`;
-  // título
-  g+=T(W/2,27,'TV CULTURA',17,'text-anchor="middle" font-weight="bold" letter-spacing="2"');
-  g+=T(W/2,33.5,o.sub,4.2,'text-anchor="middle"');
-  g+=`<rect x="${o.tagX}" y="${o.tagY}" width="62" height="10" fill="#fff" stroke="${PR_VERM}" stroke-width=".5"/>`+T(o.tagX+31,o.tagY+7.3,o.tag,6.2,`text-anchor="middle" fill="${PR_VERM}"`);
-  // quadro de cobertura (canto superior esquerdo)
-  const c=prCobertura(), bx=12, by=12;
-  g+=`<rect x="${bx}" y="${by}" width="86" height="52" fill="#fff" stroke="#000" stroke-width=".4"/>`;
-  g+=T(bx+4,by+7,'COBERTURA  -  REDE  PRÓPRIA',4.2,'text-decoration="underline"');
-  const ln=(y,a,b)=>T(bx+4,y,a,2.5)+T(bx+82,y,b,2.5,'text-anchor="end"');
-  g+=ln(by+14,'Geradora',fmt(c.ger))+ln(by+17.5,'Municípios atendidos (capital)',fmt(c.gm.n))+ln(by+21,'População atendida (estimativa IBGE)',fmt(c.gm.p)+' hab.');
-  g+=ln(by+27,'Retransmissoras (interior)',fmt(c.ret))+ln(by+30.5,'Municípios atendidos (interior)',fmt(c.rm.n))+ln(by+34,'População atendida (estimativa IBGE)',fmt(c.rm.p)+' hab.');
-  g+=T(bx+4,by+40,'TOTAL:',2.5)+ln(by+43.5,'Municípios atendidos (capital + interior)',fmt(c.tot.n))+ln(by+47,'População atendida',fmt(c.tot.p)+' hab.');
-  g+=T(bx+4,by+50.5,'Dados da planilha “Projeto 100%” e do cadastro do sistema',1.8,'fill="#555"');
-  // ampliação da região metropolitana (canto superior direito)
-  const win={x0:4900,x1:4990,y0:388,y1:448}, iw=104, ih=iw*(win.y1-win.y0)/(win.x1-win.x0), ix=W-F-iw-5, iy=12, k=iw/(win.x1-win.x0);
-  g+=`<svg x="${ix}" y="${iy}" width="${iw}" height="${ih}" viewBox="${win.x0} ${-win.y1} ${win.x1-win.x0} ${win.y1-win.y0}" overflow="hidden"><rect x="${win.x0}" y="${-win.y1}" width="${win.x1-win.x0}" height="${win.y1-win.y0}" fill="#fff"/>${prMapa(win,1.55,.42,.45)}</svg>`;
-  g+=`<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="none" stroke="#000" stroke-width=".4"/>`;
-  g+=T(ix+iw/2,iy+ih+6,'REGIÃO METROPOLITANA DE SÃO PAULO',4,'text-anchor="middle" font-weight="bold"');
-  // marca da ampliação no mapa principal
-  const mx=ox+(win.x0-B0.x0)*s, my=oy+(-win.y1-B0.y0)*s;
-  g+=`<rect x="${mx}" y="${my}" width="${(win.x1-win.x0)*s}" height="${(win.y1-win.y0)*s}" fill="none" stroke="#000" stroke-width=".3" stroke-dasharray="1.5 1"/>`;
-  // legenda (canto inferior esquerdo)
-  const lx=14, ly=190, sy=(id,x,y,col,k=.42)=>`<use href="${id}" color="${col}" transform="translate(${x} ${y}) scale(${k})"/>`;
-  g+=T(lx,ly,'LEGENDA:',4,'font-weight="bold" text-decoration="underline"');
-  let y=ly+8; g+=T(lx,y+1,'ESTAÇÕES:',2.6);
-  [['full','Canal FPA  -  Manutenção FPA'],['half','Canal FPA  -  Manutenção PM'],['line','Canal PM  -  Manutenção FPA'],['cross','Canal PM  -  Licença / Manutenção PM']].forEach(([k,t],i)=>{ const yy=y+i*4.6;
-    g+=sy('#p-'+k,lx+25,yy,k==='cross'?PR_COR.L:'#111')+T(lx+29,yy+1,t,2.5,k==='cross'?`fill="${PR_COR.L}"`:''); });
-  y+=20; g+=T(lx,y+1,'OUTRAS:',2.6);
-  [['#p-H',PR_COR.H,'Geradora',.42],['#p-P','#111','Repetidora',.6],['#p-F',PR_COR.F,'Gap filler',.6]].forEach(([id,col,t,kk],i)=>{ g+=sy(id,lx+25,y+i*4.6,col,kk)+T(lx+29,y+i*4.6+1,t,2.5); });
-  y+=16; g+=T(lx,y+1,'VIA SATÉLITE:',2.6);
-  [['R','Recepção via satélite digital  -  Retransmissão'],['N','Recepção via satélite digital  -  Costa Norte Paulista'],['J','Recepção via satélite digital  -  TV Jornal'],['X','Estação sem operação'],['G','Recepção de sinal e complemento de sinal da geradora']].forEach(([r,t],i)=>{ const yy=y+i*5;
-    g+=sy('#p-full',lx+25,yy+.6,PR_COR[r],.48)+T(lx+29,yy+1,t,2.5,`fill="${r==='X'?'#111':PR_COR[r]}"`); });
-  y+=27; g+=`<line x1="${lx}" y1="${y}" x2="${lx+16}" y2="${y}" stroke="${PR_VERM}" stroke-width=".6"/>`+T(lx+20,y+1,'Divisão das áreas de manutenção',2.5);
-  g+=`<line x1="${lx}" y1="${y+4.5}" x2="${lx+16}" y2="${y+4.5}" stroke="#7a7a7a" stroke-width="1.1"/>`+T(lx+20,y+5.5,'Limite do estado',2.5);
-  g+=T(lx+70,y+4,'VT  =  CANAL VIRTUAL',4,`fill="${PR_AZUL}"`);
-  // áreas e quantidade de estações (abaixo do quadro de cobertura)
-  const ax=14, ay=74;
-  g+=T(ax,ay,'ÁREAS DE MANUTENÇÃO',2.8,'font-weight="bold"');
-  AK.forEach((a,i)=>{ const n=ST.filter(s=>s.a===a).length; g+=T(ax,ay+4.8+i*4.2,`${AREAS[a].n} · ${AREAS[a].e}: ${n} estações`,2.4); });
-  // carimbo (canto inferior direito)
-  const cx=W-F-112, cy=H-F-46;
-  g+=`<line x1="${cx}" y1="${cy}" x2="${W-F}" y2="${cy}" stroke="#000" stroke-width=".3"/>`;
-  let tx=cx+6;
-  if(o.logo){ g+=`<image href="${o.logo}" x="${cx+4}" y="${cy+4}" width="24" height="20" preserveAspectRatio="xMidYMid meet"/>`; tx=cx+32; }
-  g+=T(tx,cy+11,o.org,6)+T(tx,cy+18,o.org2,2.6)+T(tx,cy+26,o.setor,4,'text-decoration="underline"')+T(tx,cy+34,o.titulo,3.6);
-  g+=T(W-F-4,cy+42,`Atualização: ${o.autor} ${o.data}`,2.4,'text-anchor="end" font-style="italic"');
-  return g+`</svg>`;
+  const P=PRANCHA, [X0,Y0,X1,Y1]=P.box, W=X1-X0, H=Y1-Y0;
+  // margem branca em volta da moldura, como na plotagem em A3
+  const vw=W*1.086, vh=vw*297/420, mx=(vw-W)/2, my=(vh-H)/2;
+  let g=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${(-mx).toFixed(2)} ${(-my).toFixed(2)} ${vw.toFixed(2)} ${vh.toFixed(2)}" width="${o.pw}mm" height="${o.ph}mm" style="background:#fff">${prDefs()}`;
+  g+=`<rect x="${-mx}" y="${-my}" width="${vw}" height="${vh}" fill="#fff"/>`;
+  g+=prDraw(P.static,0,0,X0,Y1);
+  // linhas de divisão atuais
+  g+=`<path d="${currentRed().map(l=>l.map((q,i)=>(i?'L':'M')+(q[0]-X0).toFixed(2)+' '+(Y1-q[1]).toFixed(2)).join('')).join('')}" fill="none" stroke="#ff0000" stroke-width=".5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  // nomes das áreas (editáveis no sistema)
+  P.alab.forEach(a=>{ const ar=AREAS[a.n]; if(!ar) return;
+    g+=prText(+(a.x-X0).toFixed(2),+(Y1-a.y).toFixed(2),a.s,a.a,0,1,[[[ar.n.toUpperCase().replace(/^ÁREA\s*/,'ÁREA  '),a.c,0,1]],[[ar.e.toUpperCase(),a.c,0,1]]],true); });
+  // estações: símbolo e rótulo originais do DWG quando não mudaram; senão, desenho no mesmo padrão
+  if(!P._nomes) P._nomes=P.static.filter(p=>p[0]==='t').map(p=>nkey(p[7].map(l=>l.map(x=>x[0]).join('')).join(' ')));
+  ST.forEach(s=>{ const t=P.st[s.id];
+    // estação que o DWG já desenha à parte, fora do mapa (ex.: Pedreira Gap Filler Campinas)
+    if(!t&&P._nomes.some(n=>n.startsWith(nkey(s.n)))) return;
+    const same=t&&t.sym.length&&t.r===s.r&&(t.m||'')===(s.m||'')&&(+t.pm||0)===(+s.pm||0);
+    g+=same?prDraw(t.sym,s.x-t.x0,s.y-t.y0,X0,Y1):prGenSym(s,X0,Y1);
+    if(t&&t.lab.length&&s.ll&&s.lx!=null&&t.lx0!=null) g+=prDraw(t.lab,s.lx-t.lx0,s.ly-t.ly0,X0,Y1);
+    else { const rc=s.rc||recOf(s), col=PR_LAB[rc]||'#0000ff';
+      const lines=[[[s.n,col,1,1]]]; if(s.ch) lines.push([['cn '+s.ch,col,0,1]]); if(s.vt) lines.push([['('+s.vt+')',col,0,1]]);
+      g+=prText(+(s.x+4.6-X0).toFixed(2),+(Y1-(s.y+2.2)).toFixed(2),2.5,1,0,1,lines); } });
+  // data e autor da atualização
+  if(P.atual){ const a=P.atual; g+=prText(+(a[1]-X0).toFixed(2),+(Y1-a[2]).toFixed(2),a[3],a[4],a[5],a[6],[[['Atualização.:'+o.autor+' '+o.data,'#000000',0,1]]]); }
+  return g+'</svg>';
 }
 const PR_KEY='tvc-print';
 function prOpcoes(){ let v={}; try{ v=JSON.parse(localStorage.getItem(PR_KEY)||'{}'); }catch(e){}
-  const hoje=new Date().toLocaleDateString('pt-BR');
-  return {papel:v.papel||'A3', sub:v.sub||'SISTEMA DE REPETIÇÃO E RETRANSMISSÃO DE SINAIS', tag:v.tag||'NOVA DIVISÃO 2026',
-    org:v.org||'FUNDAÇÃO PADRE ANCHIETA', org2:v.org2||'CENTRO PAULISTA DE RÁDIO E TV EDUCATIVAS', setor:v.setor||'G.P.  -  Gerência de Projetos',
-    titulo:v.titulo||'TV CULTURA  -  Situação Atual de Cobertura', autor:(me&&(me.name||me.username)||'').toUpperCase(), data:hoje, tagX:300, tagY:96, logo:v.logo||null}; }
+  return {papel:v.papel||'A3', autor:(me&&(me.name||me.username)||'').toUpperCase(), data:new Date().toLocaleDateString('pt-BR')}; }
 function prPagina(o){
   const [pw,ph]=PAPEIS[o.papel]||PAPEIS.A3;
   const svgTxt=prFolha({...o,pw,ph});
-  return {svgTxt,pw,ph,html:`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa TV Cultura · ${esc(o.papel)}</title>
+  return {svgTxt,pw,ph,html:`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa de rotas · Nova Divisão · ${esc(o.papel)}</title>
 <style>@page{size:${o.papel} landscape;margin:0}html,body{margin:0;background:#888}svg{display:block;margin:0 auto;background:#fff}
 @media screen{body{padding:16px}svg{width:min(100%,${pw*3.78}px);height:auto;box-shadow:0 2px 12px rgba(0,0,0,.4)}.bar{font:14px Arial;color:#fff;text-align:center;margin-bottom:10px}}
 @media print{html,body{background:#fff}.bar{display:none}svg{width:${pw}mm;height:${ph}mm}}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>
 <body><div class="bar">Prancha ${esc(o.papel)} deitada. Na janela de impressão, escolha o papel ${esc(o.papel)}, orientação paisagem e margens “Nenhuma”. Para PDF, escolha “Salvar como PDF”.</div>${svgTxt}</body></html>`};
 }
-function openPrint(){
+async function openPrint(){
   const o=prOpcoes();
   openSheet('Imprimir mapa (prancha)');
-  const f=(k,l,ph='')=>`<label class="pf">${l}<input data-k="${k}" value="${esc(o[k])}" placeholder="${esc(ph)}"></label>`;
-  $('sheetBody').innerHTML=`<p class="sub">Monta a prancha no estilo da planta do AutoCAD, com fundo branco, moldura, legenda, quadro de cobertura, ampliação da Grande São Paulo e carimbo. Usa os dados e as linhas de divisão atuais.</p>
+  try{ await loadPrancha(); }catch(e){ $('sheetBody').innerHTML=`<p class="status err">Não foi possível carregar o desenho da prancha: ${esc(e.message)}</p>`; return; }
+  $('sheetBody').innerHTML=`<p class="sub">A prancha é a mesma planta do AutoCAD: moldura, título, quadro de cobertura, legenda, Grande São Paulo e carimbo vêm do DWG. Estações, rótulos, linhas de divisão e nomes das áreas saem do cadastro atual.</p>
   <div class="pgrid">
     <label class="pf">Papel<select data-k="papel">${Object.keys(PAPEIS).map(p=>`<option${p===o.papel?' selected':''}>${p}</option>`).join('')}</select></label>
-    ${f('tag','Destaque em vermelho')}${f('sub','Subtítulo')}${f('titulo','Título do carimbo')}${f('org','Instituição')}${f('org2','Linha abaixo da instituição')}${f('setor','Setor')}
-    ${f('autor','Atualizado por')}${f('data','Data')}
-    <label class="pf">Logotipo (opcional)<input type="file" accept="image/png,image/jpeg,image/svg+xml" id="pLogo"><small id="pLogoTxt">${o.logo?'Logotipo salvo neste navegador. <a href="#" id="pLogoX">Remover</a>':'Imagem PNG, JPG ou SVG para o carimbo.'}</small></label>
+    <label class="pf">Atualizado por<input data-k="autor" value="${esc(o.autor)}"></label>
+    <label class="pf">Data<input data-k="data" value="${esc(o.data)}"></label>
   </div>
   <div class="pprev" id="pPrev"></div>
   <div class="btnrow"><button class="btn pri" id="pGo">Imprimir / salvar PDF</button><button class="btn" id="pSvg">Baixar SVG</button><button class="btn" id="pCancel">Fechar</button></div>
   <div class="status" id="pMsg" role="status"></div>`;
   const read=()=>{ const v={...o}; $('sheetBody').querySelectorAll('[data-k]').forEach(el=>{ v[el.dataset.k]=el.value.trim(); }); return v; };
-  const save=v=>{ try{ const {papel,sub,tag,org,org2,setor,titulo,logo}=v; localStorage.setItem(PR_KEY,JSON.stringify({papel,sub,tag,org,org2,setor,titulo,logo})); }catch(e){} };
-  const prev=()=>{ const v=read(); $('pPrev').innerHTML=prFolha({...v,pw:420,ph:297}).replace(/width="[\d.]+mm" height="[\d.]+mm"/,''); };
+  const save=v=>{ try{ localStorage.setItem(PR_KEY,JSON.stringify({papel:v.papel})); }catch(e){} };
+  const prev=()=>{ $('pPrev').innerHTML=prFolha({...read(),pw:420,ph:297}).replace(/width="[\d.]+mm" height="[\d.]+mm"/,''); };
   let t=null; $('sheetBody').querySelectorAll('[data-k]').forEach(el=>el.addEventListener('input',()=>{ clearTimeout(t); t=setTimeout(prev,250); }));
-  $('pLogo').onchange=()=>{ const file=$('pLogo').files[0]; if(!file) return; if(file.size>1.5e6){ $('pMsg').className='status err'; $('pMsg').textContent='Imagem grande demais (máximo 1,5 MB).'; return; }
-    const r=new FileReader(); r.onload=()=>{ o.logo=r.result; save(read()); prev(); $('pLogoTxt').textContent='Logotipo carregado.'; }; r.readAsDataURL(file); };
-  const lx=$('pLogoX'); if(lx) lx.onclick=e=>{ e.preventDefault(); o.logo=null; save(read()); prev(); $('pLogoTxt').textContent='Logotipo removido.'; };
   $('pCancel').onclick=closeSheet;
   $('pGo').onclick=()=>{ const v=read(); save(v); const p=prPagina(v); const w=window.open('','_blank');
     if(!w){ $('pMsg').className='status err'; $('pMsg').textContent='O navegador bloqueou a janela. Libere pop-ups para este endereço e tente de novo.'; return; }
     w.document.open(); w.document.write(p.html); w.document.close(); setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} },400); };
   $('pSvg').onclick=()=>{ const v=read(); save(v); const p=prPagina(v); const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+p.svgTxt],{type:'image/svg+xml'})); a.download=`mapa-tv-cultura-${v.papel}.svg`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+    a.href=URL.createObjectURL(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+p.svgTxt],{type:'image/svg+xml'})); a.download=`mapa-de-rotas-nova-divisao-${v.papel}.svg`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
   prev();
 }
 $('mPrint').onclick=()=>{ toggleMenu(false); openPrint(); };
 $('btnPrint').onclick=openPrint;
+
 
 // ---------- início ----------
 async function start(){

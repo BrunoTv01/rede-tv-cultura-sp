@@ -138,6 +138,12 @@ app.get('/api/health', async (_req, res) => {
   catch { res.status(503).json({ ok: false }); }
 });
 
+// desenho fixo da prancha de impressão (moldura, legenda, quadros e carimbo do DWG)
+app.get('/api/prancha', requireRole('viewer'), (_req, res) => {
+  res.setHeader('Cache-Control', 'private, max-age=3600');
+  res.sendFile(path.join(DATA_DIR, 'prancha.json'));
+});
+
 // desenho do mapa (contorno, divisão regional, áreas, posição dos municípios)
 app.get('/api/geometria', (_req, res) => {
   res.setHeader('Cache-Control', 'private, max-age=3600');
