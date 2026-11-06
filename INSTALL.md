@@ -50,6 +50,10 @@ Cada pessoa recebe uma senha provisória e cria a própria senha no primeiro ace
 
 Os nomes das áreas e dos responsáveis também podem ser trocados: use **Editar nomes**, ao lado de “Área / responsável” no painel da esquerda (perfis Editor e Admin). O mapa mostra em cada área só o nome do responsável.
 
+Os nomes das estações podem ser reposicionados por quem tem perfil Editor ou Admin. No mapa, clique no botão **Aa**, abaixo do zoom, e arraste cada nome para o lugar certo. Ao soltar, a posição fica gravada. Quando o nome fica longe da estação, aparece uma linha ligando os dois. Clique duplo num nome para ele voltar para perto da estação. Para terminar, clique em **Concluir**.
+
+Se a estação for movida depois, o nome vai junto. Se o canal ou o VT mudarem, o texto se atualiza e a posição continua. A impressão em prancha usa a mesma posição.
+
 As linhas vermelhas que dividem as áreas podem ser ajustadas pelo **Admin**, no menu do seu nome, em **Ajustar linhas de divisão**. A barra que aparece no mapa tem:
 
 | Botão | O que faz |

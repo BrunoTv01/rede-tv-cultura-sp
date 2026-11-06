@@ -75,6 +75,12 @@ button{font:inherit;color:inherit}
 svg#map{position:relative;width:100%;height:100%;display:block;cursor:grab;user-select:none}
 svg#map.drag{cursor:grabbing}
 svg#map.placing{cursor:crosshair}
+svg#map.labmove .lb{pointer-events:all;cursor:move}
+svg#map.labmove .lb:hover{fill:var(--accent)}
+svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
+.tools button.on{background:var(--accent);color:#06111f}
+.lead{stroke:var(--lbl);stroke-opacity:.7;pointer-events:none}
+.lead.off{display:none}
 .land{fill:var(--land)}
 .ar1{fill:var(--a1t)} .ar2{fill:var(--a2t)} .ar3{fill:var(--a3t)} .ar4{fill:var(--a4t)}
 .base{fill:var(--land)}
@@ -291,6 +297,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
         <button id="zin" aria-label="Aproximar">+</button>
         <button id="zout" aria-label="Afastar">−</button>
         <button id="zreset" aria-label="Ver estado inteiro" style="font-size:13px">⤢</button>
+        <button id="zlab" aria-label="Mover nomes das estações" title="Mover nomes das estações" style="font-size:12px" hidden>Aa</button>
       </div>
       <div class="divbar" id="divBar" hidden role="toolbar" aria-label="Editar linhas de divisão">
         <div class="dvinfo"><b>Linhas de divisão</b><span id="dvMode"></span></div>
@@ -398,7 +405,7 @@ if(G.semSinal&&G.semSinal.length) $('semSinal').textContent='Sem estação na pl
 }
 
 // estado
-let ST=[], byId=new Map(), symEls=new Map(), labEls=new Map();
+let ST=[], byId=new Map(), symEls=new Map(), labEls=new Map(), leadEls=new Map(), labMode=false, labDrag=null;
 let mode='area', areaOn={1:true,2:true,3:true,4:true,5:true}, typeOn={sat:true,ger:true,comp:true}, q='', sel=null, view2='map';
 let sortCol='n', sortDir=1;
 let me=null, canWrite=false, loaded=false, dbMissing=false, versao=0;
@@ -412,11 +419,50 @@ function labelLines(s){
   const l2=[s.ch?'cn '+s.ch:'',s.vt?'('+s.vt+')':''].filter(Boolean).join(' ');
   return {x:s.x+5,y:s.y+1.5,lines:[s.n,l2].filter(Boolean)};
 }
+// linha ligando o nome à estação quando ele fica longe do símbolo
+// caixa aproximada do nome (fonte 3) e o ponto dela mais próximo da estação
+function leadInfo(s,L){ const lines=L.lines||labelLines(s).lines; const w=Math.max(...lines.map(l=>l.length))*1.55, h=lines.length*4.5;
+  const px=Math.min(Math.max(s.x,L.x),L.x+w), py=Math.min(Math.max(s.y,L.y-h),L.y);
+  return {far:Math.hypot(px-s.x,py-s.y)>7,x:px,y:py}; }
+function setLead(s,L){ const ld=leadEls.get(s.id); if(!ld) return; const i=leadInfo(s,L);
+  ld.dataset.far=i.far?1:0; if(!i.far) return;
+  ld.setAttribute('x1',s.x); ld.setAttribute('y1',-s.y); ld.setAttribute('x2',i.x); ld.setAttribute('y2',-i.y); }
+// acerta a ponta da linha pela caixa real do texto (o tamanho da letra muda com o zoom)
+function fitLead(s){ const ld=leadEls.get(s.id), t=labEls.get(s.id); if(!ld||!t||ld.dataset.far!=='1'||t.classList.contains('off')) return;
+  let bb; try{ bb=t.getBBox(); }catch(e){ return; } if(!bb.width) return;
+  const px=Math.min(Math.max(s.x,bb.x),bb.x+bb.width), py=Math.min(Math.max(-s.y,bb.y),bb.y+bb.height);
+  ld.setAttribute('x2',px); ld.setAttribute('y2',py); }
+function mapPt(ev){ const r=stage.getBoundingClientRect(); return {x:view.x+(ev.clientX-r.left)/r.width*view.w, y:-(view.y+(ev.clientY-r.top)/r.height*view.h)}; }
+function labDown(ev,s,t){
+  if(!labMode||!canWrite) return; ev.stopPropagation(); ev.preventDefault();
+  const L=labelLines(s), p=mapPt(ev); labDrag={s,t,L,dx:L.x-p.x,dy:L.y-p.y,x:L.x,y:L.y,moved:false}; t.classList.add('dragging');
+  t.setPointerCapture&&t.setPointerCapture(ev.pointerId);
+}
+window.addEventListener('pointermove',ev=>{ if(!labDrag) return; const p=mapPt(ev), D=labDrag;
+  D.x=+(p.x+D.dx).toFixed(2); D.y=+(p.y+D.dy).toFixed(2); D.moved=true;
+  D.t.setAttribute('x',D.x); D.t.setAttribute('y',-D.y); D.t.querySelectorAll('tspan').forEach(ts=>ts.setAttribute('x',D.x));
+  setLead(D.s,{x:D.x,y:D.y,lines:D.L.lines}); const ld=leadEls.get(D.s.id); ld.classList.toggle('off',ld.dataset.far!=='1'); fitLead(D.s); });
+window.addEventListener('pointerup',()=>{ if(!labDrag) return; const D=labDrag; labDrag=null; D.t.classList.remove('dragging');
+  if(D.moved) labSave(D.s,{x:D.x,y:D.y,lines:D.L.lines}); });
+async function labSave(s,pos){
+  const doc={...s}; delete doc.id; delete doc.rc; delete doc.hit; delete doc.upd; delete doc.by;
+  if(pos){ doc.lx=pos.x; doc.ly=pos.y; doc.ll=pos.lines; } else { doc.lx=null; doc.ly=null; doc.ll=null; }
+  try{ await api('PUT','/api/estacoes/'+encodeURIComponent(s.id),doc); await loadStations(); toast(pos?'Nome de '+s.n+' reposicionado.':'Nome de '+s.n+' voltou para perto da estação.'); }
+  catch(e){ toast(e.message); await loadStations(); }
+}
+function setLabMode(on){ labMode=on&&canWrite; svg.classList.toggle('labmove',labMode); $('zlab').classList.toggle('on',labMode);
+  if(labMode){ $('bannerTxt').textContent='Arraste os nomes das estações para o lugar certo. Clique duplo num nome para voltar para perto da estação.'; $('bannerX').textContent='Concluir'; $('banner').hidden=false; }
+  else if(!placing){ $('banner').hidden=true; $('bannerX').textContent='Cancelar'; }
+  apply(); }
 function rebuild(){
-  gSym.textContent=''; gLab.textContent=''; symEls.clear(); labEls.clear();
+  gSym.textContent=''; gLab.textContent=''; symEls.clear(); labEls.clear(); leadEls.clear();
   ST.forEach(s=>{
     const L=labelLines(s);
+    const ld=mk('line',{class:'lead off'},gLab); leadEls.set(s.id,ld); setLead(s,L);
     const t=mk('text',{x:L.x,y:-L.y,class:'lb off','font-size':3},gLab);
+    t.addEventListener('pointerdown',ev=>labDown(ev,s,t));
+    t.addEventListener('click',ev=>{ if(labMode) ev.stopPropagation(); });
+    t.addEventListener('dblclick',ev=>{ if(!labMode) return; ev.stopPropagation(); labSave(s,null); });
     let nameDone=false;
     L.lines.forEach((ln,j)=>{ const isData=/^(cn|\(|VT|\/)/i.test(ln); const ts=mk('tspan',{x:L.x,dy:j?'1.5em':'0.95em'},t); if(!isData&&!nameDone) ts.setAttribute('class','nm'); if(isData) nameDone=true; ts.textContent=ln; });
     labEls.set(s.id,t);
@@ -496,7 +542,8 @@ function apply(){
   ST.forEach(s=>{ const g=symEls.get(s.id); if(g) g.setAttribute('transform',`translate(${s.x} ${-s.y}) scale(${sc*(s.r==='H'?1.25:1)})`); });
   bdEl.setAttribute('stroke-width',Math.max(1.4/k,.3)); dvEl.setAttribute('stroke-width',Math.max(2/k,.45));
   const show=k*3>=8.5;
-  ST.forEach(s=>{ const t=labEls.get(s.id), g=symEls.get(s.id); if(t){ t.classList.toggle('off',!(show||sel===s.id)||(g&&g.classList.contains('off'))); t.style.fontSize=Math.min(3,13/k)+'px'; t.setAttribute('stroke-width',2.4/k); } });
+  ST.forEach(s=>{ const t=labEls.get(s.id), g=symEls.get(s.id), ld=leadEls.get(s.id); if(t){ const off=!(show||labMode||sel===s.id)||(g&&g.classList.contains('off')); t.classList.toggle('off',off); t.style.fontSize=Math.min(3,13/k)+'px'; t.setAttribute('stroke-width',2.4/k);
+    if(ld){ ld.classList.toggle('off',off||ld.dataset.far!=='1'); ld.setAttribute('stroke-width',Math.max(.25,1/k)); if(!off) fitLead(s); } } });
   aLabEls.forEach(t=>{ t.style.fontSize=Math.max(4,14/k)+'px'; t.setAttribute('stroke-width',3/k); });
   gFoot.querySelectorAll('.fp-lab').forEach(t=>{ t.style.display=k<2.2?'none':''; t.style.fontSize=(11.5/k)+'px'; t.setAttribute('stroke-width',2.6/k); });
   gFoot.querySelectorAll('.fp-tag').forEach(t=>{ t.style.fontSize=(15/k)+'px'; t.setAttribute('stroke-width',3/k); });
@@ -717,12 +764,13 @@ async function doDelete(id){
 }
 function startPlacing(kind,id){ if(view2!=='map'){ view2='map'; render(); } placing={kind,id}; $('bannerTxt').textContent=kind==='new'?'Clique no mapa onde fica a nova estação.':'Clique no mapa na nova posição da estação.'; $('banner').hidden=false; svg.classList.add('placing'); }
 function stopPlacing(){ placing=null; $('banner').hidden=true; svg.classList.remove('placing'); }
-$('bannerX').onclick=stopPlacing;
+$('bannerX').onclick=()=>{ if(labMode) setLabMode(false); else stopPlacing(); };
+$('zlab').onclick=()=>setLabMode(!labMode);
 async function placeAt(x,y){
   const p=placing; stopPlacing();
   if(p.kind==='new'){ openEditor(null,{x,y}); return; }
   const s=byId.get(p.id); if(!s) return;
-  const doc={...s,x,y,lx:null,ly:null,ll:null}; delete doc.id; delete doc.rc; delete doc.hit; delete doc.upd; delete doc.by;
+  const doc={...s,x,y}; delete doc.id; delete doc.rc; delete doc.hit; delete doc.upd; delete doc.by;
   try{ await api('PUT','/api/estacoes/'+encodeURIComponent(p.id),doc); statusMsg='Posição atualizada.'; statusErr=false; await loadStations(); }
   catch(e){ statusMsg=e.message; statusErr=true; render(); }
 }
@@ -739,7 +787,7 @@ $('btnExport').onclick=async()=>{
 const lgT=$('lgT'); let lgOpen=window.matchMedia('(min-width: 821px)').matches;
 const setLg=()=>{ lgT.setAttribute('aria-expanded',lgOpen); $('legend').hidden=!lgOpen; };
 lgT.onclick=()=>{lgOpen=!lgOpen; setLg();}; setLg();
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!$('sheet').hidden) closeSheet(); else if(!$('menu').hidden) toggleMenu(false); else if(placing) stopPlacing(); else if(sel&&!editing) closeDetail(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!$('sheet').hidden) closeSheet(); else if(!$('menu').hidden) toggleMenu(false); else if(labMode) setLabMode(false); else if(placing) stopPlacing(); else if(sel&&!editing) closeDetail(); } });
 
 render();
 
@@ -790,7 +838,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
-  $('mAreas').hidden=!canWrite; $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin');
+  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin');
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
@@ -1269,9 +1317,13 @@ function prFolha(o){
     const same=t&&t.sym.length&&t.r===s.r&&(t.m||'')===(s.m||'')&&(+t.pm||0)===(+s.pm||0);
     g+=same?prDraw(t.sym,s.x-t.x0,s.y-t.y0,X0,Y1):prGenSym(s,X0,Y1);
     if(t&&t.lab.length&&s.ll&&s.lx!=null&&t.lx0!=null) g+=prDraw(t.lab,s.lx-t.lx0,s.ly-t.ly0,X0,Y1);
-    else { const rc=s.rc||recOf(s), col=PR_LAB[rc]||'#0000ff';
-      const lines=[[[s.n,col,1,1]]]; if(s.ch) lines.push([['cn '+s.ch,col,0,1]]); if(s.vt) lines.push([['('+s.vt+')',col,0,1]]);
-      g+=prText(+(s.x+4.6-X0).toFixed(2),+(Y1-(s.y+2.2)).toFixed(2),2.5,1,0,1,lines); } });
+    else { const rc=s.rc||recOf(s), col=PR_LAB[rc]||'#0000ff', L=labelLines(s);
+      const lines=L.lines.map((ln,j)=>[[ln,col,j===0&&!/^(cn|\(|VT)/i.test(ln)?1:0,1]]);
+      g+=prText(+(L.x-X0).toFixed(2),+(Y1-L.y).toFixed(2),2.5,1,0,1,lines); }
+    // nome longe da estação: linha de chamada, como na planta
+    // (só para nomes reposicionados no sistema; os do DWG saem como no original)
+    const L=labelLines(s), li=leadInfo(s,L), orig=t&&t.lx0!=null&&s.lx!=null&&Math.abs((s.lx-s.x)-(t.lx0-t.x0))<.05&&Math.abs((s.ly-s.y)-(t.ly0-t.y0))<.05;
+    if(li.far&&!orig) g+=`<line x1="${(s.x-X0).toFixed(2)}" y1="${(Y1-s.y).toFixed(2)}" x2="${(li.x-X0).toFixed(2)}" y2="${(Y1-li.y).toFixed(2)}" stroke="#0000ff" stroke-width=".18"/>`; });
   // data e autor da atualização
   if(P.atual){ const a=P.atual; g+=prText(+(a[1]-X0).toFixed(2),+(Y1-a[2]).toFixed(2),a[3],a[4],a[5],a[6],[[['Atualização.:'+o.autor+' '+o.data,'#000000',0,1]]]); }
   return g+'</svg>';

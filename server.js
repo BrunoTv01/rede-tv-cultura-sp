@@ -26,7 +26,7 @@ const MANUT = ['', 'full', 'half', 'line', 'cross'];
 const LABELS = {
   n: 'nome', mu: 'município', a: 'área/equipe', r: 'recepção', pm: 'canal PM', m: 'canal/manutenção',
   ch: 'canal físico', vt: 'canal virtual', ob: 'observação', pop: 'população', pot: 'potência TX',
-  en: 'energia', ag: 'água', ab: 'abrigo', cov: 'cobertura', pos: 'posição no mapa',
+  en: 'energia', ag: 'água', ab: 'abrigo', cov: 'cobertura', pos: 'posição no mapa', lab: 'posição do nome',
 };
 // nomes das áreas: lidos do banco (tabela areas) e guardados aqui para o texto do histórico
 let AREA_NAME = {};
@@ -38,6 +38,9 @@ async function loadAreaNames() {
 const str = (v, max = 200) => String(v ?? '').trim().slice(0, max);
 const num = v => { const n = Number(v); return Number.isFinite(n) ? n : null; };
 const numOr = (v, d) => { const n = num(v); return n === null ? d : n; };
+
+// texto padrão do rótulo: nome e, embaixo, canal e VT
+const labelText = d => [d.n, [d.ch ? 'cn ' + d.ch : '', d.vt ? '(' + d.vt + ')' : ''].filter(Boolean).join(' ')].filter(Boolean);
 
 // Recebe o que veio da página e devolve só os campos conhecidos, no tipo certo
 function cleanStation(b, prev = {}) {
@@ -57,7 +60,7 @@ function cleanStation(b, prev = {}) {
     cf: str(b.cf ?? prev.cf, 20), cv: str(b.cv ?? prev.cv, 20),
     x: numOr(b.x, prev.x ?? 4780), y: numOr(b.y, prev.y ?? 520),
     lat: numOr(b.lat, prev.lat ?? -23.55), lon: numOr(b.lon, prev.lon ?? -46.63),
-    lx: num(b.lx), ly: num(b.ly),
+    lx: b.lx == null || b.lx === '' ? null : num(b.lx), ly: b.ly == null || b.ly === '' ? null : num(b.ly),
     ll: Array.isArray(b.ll) ? b.ll.slice(0, 8).map(s => str(s, 80)) : null,
     cov: Array.isArray(b.cov)
       ? b.cov.slice(0, 300).map(c => [str(Array.isArray(c) ? c[0] : c, 120), Math.max(0, Math.round(numOr(Array.isArray(c) ? c[1] : 0, 0)))]).filter(c => c[0])
@@ -75,7 +78,8 @@ function stationProblem(d) {
 const show = (k, d) => {
   if (k === 'a') return AREA_NAME[d.a] || String(d.a);
   if (k === 'cov') return (d.cov || []).map(c => c[0]).join(', ');
-  if (k === 'pos') return `${Math.round(d.x)}, ${Math.round(d.y)}`;
+  if (k === 'pos') return `${(+d.x).toFixed(1)}, ${(+d.y).toFixed(1)}`;
+  if (k === 'lab') return d.lx == null ? 'junto da estação' : `${(+d.lx).toFixed(1)}, ${(+d.ly).toFixed(1)}`;
   if (k === 'pm') return d.pm ? 'sim' : 'não';
   return d[k] === null || d[k] === undefined ? '' : String(d[k]);
 };
@@ -187,10 +191,14 @@ app.put('/api/estacoes/:id', editor, async (req, res, next) => {
     const old = cur.rows[0].data;
     const d = cleanStation(req.body || {}, old);
     const p = stationProblem(d); if (p) return res.status(400).json({ error: p });
-    // se o nome, o canal ou o VT mudaram, o rótulo original do DWG deixa de valer
-    if (old.ll && (d.n !== old.n || d.ch !== old.ch || d.vt !== old.vt || d.x !== old.x || d.y !== old.y)) { d.lx = null; d.ly = null; d.ll = null; }
+    // estação movida: o rótulo vai junto, mantendo a mesma distância
+    if (d.lx !== null && old.lx != null && d.lx === old.lx && d.ly === old.ly && (d.x !== old.x || d.y !== old.y)) {
+      d.lx = +(old.lx + d.x - old.x).toFixed(2); d.ly = +(old.ly + d.y - old.y).toFixed(2);
+    }
+    // nome, canal ou VT mudaram: o texto do rótulo é refeito e a posição continua
+    if (d.ll && JSON.stringify(d.ll) === JSON.stringify(old.ll) && (d.n !== old.n || d.ch !== old.ch || d.vt !== old.vt)) d.ll = labelText(d);
     const changes = diff(old, d);
-    if (!changes.length) return res.json(rowOut(cur.rows[0]));
+    if (!changes.length && JSON.stringify(old) === JSON.stringify(d)) return res.json(rowOut(cur.rows[0]));
     const { rows } = await pool.query('UPDATE estacoes SET data=$1, updated_at=now(), updated_by=$2 WHERE id=$3 RETURNING *', [d, req.user.username, id]);
     for (const [f, a, b] of changes) await audit('estacoes', id, f, a.slice(0, 2000), b.slice(0, 2000), d.n);
     res.json(rowOut(rows[0]));
