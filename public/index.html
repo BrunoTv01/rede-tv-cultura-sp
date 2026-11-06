@@ -98,6 +98,7 @@ svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
 @keyframes mpulse{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(2.4)}}
 @media (prefers-reduced-motion:reduce){.mbadge .pulse{animation:none;opacity:0}}
 .man-alert{color:#ff6b62;font-weight:600}
+.chip.glink{text-decoration:none;opacity:1}.chip.glink:hover{border-color:#f46800;background:var(--card2)}
 .mansub{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5}.mansub a{color:var(--accent)}
 .gtab{width:100%;border-collapse:collapse;font-size:11.5px;margin:8px 0 12px}.gtab th,.gtab td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}.gtab th{color:var(--muted);font-weight:600}
 .gwrap{overflow:auto;max-height:220px;border:1px solid var(--line);border-radius:6px}
@@ -292,7 +293,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
     <aside class="side">
       <div class="sec"><div class="sechead"><h4>Área / responsável</h4><button class="linkbtn" id="btnAreas" hidden>Editar nomes</button></div><div class="chips" id="tally"></div></div>
       <div class="sec"><h4>Tipo</h4><div class="chips" id="typeChips"></div></div>
-      <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +120 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div><div class="mansub" id="manLinks"></div></div>
+      <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +120 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div><div class="chips" id="manLinks" style="margin-top:8px"></div></div>
       <div class="countline"><span id="countTxt">Carregando…</span><span id="covTxt"></span></div>
       <div class="list" id="list"></div>
       <div class="note" id="note">Mapa do DWG “Nova Divisão 2026”. Dados iniciais da planilha “Projeto 100%”. A mancha de cobertura liga as cidades atendidas, com posição aproximada. <span id="semSinal"></span> <span id="verTxt"></span></div>
@@ -858,7 +859,8 @@ function manLinha(s){ const it=MANUT.itens&&MANUT.itens[s.id]; if(!it) return ''
   return `<dt>Última visita</dt><dd>${it.dias===null?'—':`Há ${it.dias} dias`}${it.ultima?` (${dataBR(it.ultima)})`:''}${cl}${lk}</dd>`; }
 function manRender(){ const n=Object.keys(MANUT.alertas||{}).length; $('manSec').hidden=!MANUT.configurado&&!n&&!MANUT.linkPainel;
   $('manLbl').textContent=`Sem manutenção +${MANUT.dias||120} dias`; $('cntMan').textContent=n; $('chipMan').setAttribute('aria-pressed',manOnly);
-  const L=[]; if(MANUT.link) L.push(`<a href="${esc(MANUT.link)}" target="_blank" rel="noopener">Estações a visitar no Grafana ↗</a>`); if(MANUT.linkPainel) L.push(`<a href="${esc(MANUT.linkPainel)}" target="_blank" rel="noopener">Painel Manutenções Rede ↗</a>`); $('manLinks').innerHTML=L.join('<br>');
+  const L=[], lk=(u,t)=>`<a class="chip glink" href="${esc(u)}" target="_blank" rel="noopener"><span class="sw" style="background:#f46800"></span>${t}<span class="n">↗</span></a>`;
+  if(MANUT.link) L.push(lk(MANUT.link,'Estações a visitar')); if(MANUT.linkPainel) L.push(lk(MANUT.linkPainel,'Painel Grafana')); $('manLinks').innerHTML=L.join('');
   $('manSub').textContent=MANUT.erro?'Grafana: '+MANUT.erro:(MANUT.atualizado?'Grafana · lido em '+new Date(MANUT.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''); }
 $('chipMan').onclick=()=>{ manOnly=!manOnly; render(); };
 
