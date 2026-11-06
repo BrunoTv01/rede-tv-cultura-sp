@@ -26,7 +26,7 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
       dashboard: process.env.GRAFANA_DASHBOARD || c.dashboard || '7owPaMFvz',
       panel: process.env.GRAFANA_PANEL || c.panel || '',
       colEstacao: c.colEstacao || '', colPrioridade: c.colPrioridade || '', colDias: c.colDias || '', colData: c.colData || '', colStatus: c.colStatus || '',
-      valores: Array.isArray(c.valores) ? c.valores : ['maxima'], dias: +c.dias || 100, nunca: c.nunca !== false,
+      valores: Array.isArray(c.valores) ? c.valores : ['maxima'], dias: +c.dias || 120, nunca: c.nunca !== false,
       apelidos: c.apelidos && typeof c.apelidos === 'object' ? c.apelidos : {},
       envFixo: { url: !!process.env.GRAFANA_URL, token: !!process.env.GRAFANA_TOKEN, dashboard: !!process.env.GRAFANA_DASHBOARD, panel: !!process.env.GRAFANA_PANEL },
     };
@@ -271,7 +271,7 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
         colStatus: b.colStatus !== undefined ? s(b.colStatus, 120) : old.colStatus,
         nunca: b.nunca !== undefined ? !!b.nunca : old.nunca,
         valores: Array.isArray(b.valores) ? b.valores.slice(0, 40).map(v => s(v, 120)) : old.valores,
-        dias: b.dias !== undefined ? Math.min(3650, Math.max(1, Math.round(+b.dias || 100))) : old.dias,
+        dias: b.dias !== undefined ? Math.min(3650, Math.max(1, Math.round(+b.dias || 120))) : old.dias,
       };
       if (novo.url && !/^https?:\/\//i.test(novo.url)) return res.status(400).json({ error: 'O endereço do Grafana precisa começar com http:// ou https://' });
       // o endereço do painel inteiro também serve: tira o código do dashboard dele

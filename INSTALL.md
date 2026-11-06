@@ -91,9 +91,9 @@ Escolha o papel, de A4 a A0, e confira quem atualizou e a data. Depois clique em
 
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
 
-## Manutenções do Grafana (estações sem visita há mais de 100 dias)
+## Manutenções do Grafana (estações sem visita há mais de 120 dias)
 
-O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 100 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +100 dias** mostra só essas estações.
+O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 120 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +120 dias** mostra só essas estações.
 
 Para ligar:
 

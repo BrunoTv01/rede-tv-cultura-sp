@@ -292,7 +292,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
     <aside class="side">
       <div class="sec"><div class="sechead"><h4>Área / responsável</h4><button class="linkbtn" id="btnAreas" hidden>Editar nomes</button></div><div class="chips" id="tally"></div></div>
       <div class="sec"><h4>Tipo</h4><div class="chips" id="typeChips"></div></div>
-      <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +100 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div></div>
+      <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +120 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div></div>
       <div class="countline"><span id="countTxt">Carregando…</span><span id="covTxt"></span></div>
       <div class="list" id="list"></div>
       <div class="note" id="note">Mapa do DWG “Nova Divisão 2026”. Dados iniciais da planilha “Projeto 100%”. A mancha de cobertura liga as cidades atendidas, com posição aproximada. <span id="semSinal"></span> <span id="verTxt"></span></div>
@@ -419,7 +419,7 @@ if(G.semSinal&&G.semSinal.length) $('semSinal').textContent='Sem estação na pl
 }
 
 // estado
-let MANUT={alertas:{},itens:{},dias:100,configurado:false}, manOnly=false;
+let MANUT={alertas:{},itens:{},dias:120,configurado:false}, manOnly=false;
 let ST=[], byId=new Map(), symEls=new Map(), labEls=new Map(), leadEls=new Map(), labMode=false, labDrag=null;
 let mode='area', areaOn={1:true,2:true,3:true,4:true,5:true}, typeOn={sat:true,ger:true,comp:true}, q='', sel=null, view2='map';
 let sortCol='n', sortDir=1;
@@ -856,7 +856,7 @@ function manLinha(s){ const it=MANUT.itens&&MANUT.itens[s.id]; if(!it) return ''
   if(it.alerta) return `<dt>Última visita</dt><dd class="man-alert">⚠ ${it.dias===null?'Nunca teve manutenção':`Sem manutenção há ${it.dias} dias`}${it.ultima?` (última em ${dataBR(it.ultima)})`:''}${cl}</dd>`;
   return `<dt>Última visita</dt><dd>${it.dias===null?'—':`Há ${it.dias} dias`}${it.ultima?` (${dataBR(it.ultima)})`:''}${cl}</dd>`; }
 function manRender(){ const n=Object.keys(MANUT.alertas||{}).length; $('manSec').hidden=!MANUT.configurado&&!n;
-  $('manLbl').textContent=`Sem manutenção +${MANUT.dias||100} dias`; $('cntMan').textContent=n; $('chipMan').setAttribute('aria-pressed',manOnly);
+  $('manLbl').textContent=`Sem manutenção +${MANUT.dias||120} dias`; $('cntMan').textContent=n; $('chipMan').setAttribute('aria-pressed',manOnly);
   $('manSub').textContent=MANUT.erro?'Grafana: '+MANUT.erro:(MANUT.atualizado?'Grafana · lido em '+new Date(MANUT.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''); }
 $('chipMan').onclick=()=>{ manOnly=!manOnly; render(); };
 
@@ -1029,7 +1029,7 @@ async function openGrafana(){
   const fim=async t=>{ await loadManut(); await openGrafana(); toast(t); };
   $('gClose').onclick=closeSheet;
   $('gSave').onclick=async()=>{ $('gSave').disabled=true; msg('Salvando e lendo o Grafana…');
-    const body={url:$('gUrl').value.trim(),dashboard:$('gDash').value.trim(),panel:$('gPanel').value,dias:+$('gDias').value||100,nunca:$('gNunca').checked,
+    const body={url:$('gUrl').value.trim(),dashboard:$('gDash').value.trim(),panel:$('gPanel').value,dias:+$('gDias').value||120,nunca:$('gNunca').checked,
       colEstacao:$('gColE').value,colPrioridade:$('gColP').value,colDias:$('gColN').value,colData:$('gColD').value};
     if($('gTok').value.trim()) body.token=$('gTok').value.trim();
     try{ await api('PUT','/api/grafana/config',body); await api('POST','/api/grafana/sincronizar'); await fim('Configuração salva.'); }catch(e){ msg(e.message,true); $('gSave').disabled=false; } };
