@@ -85,6 +85,11 @@ svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
 .ar1{fill:var(--a1t)} .ar2{fill:var(--a2t)} .ar3{fill:var(--a3t)} .ar4{fill:var(--a4t)}
 .base{fill:var(--land)}
 .bd{fill:none;stroke:var(--border);stroke-linejoin:round;stroke-linecap:round}
+.sfnl{fill:none;stroke:#ff5a4e;stroke-linejoin:round;stroke-linecap:round;opacity:.9}
+.sfnc circle{fill:rgba(10,18,32,.85);stroke:var(--fg);stroke-width:.5}
+.sfnc text{fill:var(--fg);font:600 2.7px/1 var(--mono);text-anchor:middle}
+#gSfn{display:none}svg#map.msfn #gSfn{display:inline}svg#map.msfn .dv,svg#map.msfn #gALab{display:none}
+.sym.dim{opacity:.18}
 .dv{fill:none;stroke:var(--div);stroke-linejoin:round;stroke-linecap:round;opacity:.85}
 .alab{font-family:var(--display);font-weight:700;letter-spacing:.08em;pointer-events:none;opacity:.8;paint-order:stroke;stroke:var(--sea);stroke-linejoin:round}
 .sym{cursor:pointer}
@@ -307,6 +312,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
       <div class="mode" role="group" aria-label="Colorir por">
         <button id="mArea" aria-pressed="true">Área</button>
         <button id="mRec" aria-pressed="false">Recepção</button>
+        <button id="mSfn" aria-pressed="false">SFN</button>
       </div>
       <div class="tools">
         <button id="zin" aria-label="Aproximar">+</button>
@@ -399,7 +405,15 @@ function symDef(id,inner){
 
 // desenho fixo (vem de /api/geometria depois do login)
 const gArea=$('gArea'), areaEls=[], gLine=$('gLine'), gALab=$('gALab'), aLabEls=[];
-let bdEl=mk('path',{class:'bd'},gLine), dvEl=mk('path',{class:'dv'},gLine);
+let bdEl=mk('path',{class:'bd'},gLine), dvEl=mk('path',{class:'dv'},gLine), gSfnEl=mk('g',{id:'gSfn'},gLine);
+// traçado das redes SFN (do mapa de rotas SFN), mostrado no modo "SFN"
+async function loadSfn(){ let j; try{ j=await api('GET','/api/sfn'); }catch(e){ return; }
+  gSfnEl.textContent='';
+  mk('path',{class:'sfnl',d:j.linhas.map(l=>l.map((q,i)=>(i?'L':'M')+q[0]+' '+(-q[1])).join('')).join('')},gSfnEl);
+  j.redes.forEach(r=>r.circulos.forEach(([x,y])=>{ const g=mk('g',{class:'sfnc'},gSfnEl); g.dataset.x=x; g.dataset.y=y; mk('circle',{r:5.6},g);
+    const t1=mk('text',{y:-0.6},g); t1.textContent='CF '+r.cf; const t2=mk('text',{y:2.6},g); t2.textContent='CV'+r.cv;
+    const tt=mk('title',{},g); tt.textContent='Rede SFN '+r.cf+' CV'+r.cv; }));
+  apply(); }
 function drawBase(){ drawBaseShapes(); drawAreaLabels(); semSinalTxt(); }
 function drawBaseShapes(){
 gArea.textContent=''; gALab.textContent=''; areaEls.length=0; aLabEls.length=0;
@@ -427,7 +441,7 @@ let sortCol='n', sortDir=1;
 let me=null, canWrite=false, loaded=false, dbMissing=false, versao=0;
 let divEdit=null, dragV=null; // edição das linhas de divisão
 let editing=null, placing=null, confirmDel=false, statusMsg='', statusErr=false;
-try{ const m=localStorage.getItem('tvc-mode'); if(m==='rec'||m==='area') mode=m; }catch(e){}
+try{ const m=localStorage.getItem('tvc-mode'); if(m==='rec'||m==='area'||m==='sfn') mode=m; }catch(e){}
 
 const gSym=$('gSym'), gLab=$('gLab'), gFoot=$('gFoot');
 function labelLines(s){
@@ -558,6 +572,8 @@ function apply(){
   const k=kScale(); const px=Math.max(13,Math.min(26,9+k*3.2)); const sc=px/9.5/k;
   ST.forEach(s=>{ const g=symEls.get(s.id); if(g) g.setAttribute('transform',`translate(${s.x} ${-s.y}) scale(${sc*(s.r==='H'?1.25:1)})`); });
   bdEl.setAttribute('stroke-width',Math.max(1.4/k,.3)); dvEl.setAttribute('stroke-width',Math.max(2/k,.45));
+  gSfnEl.querySelectorAll('.sfnl').forEach(l=>l.setAttribute('stroke-width',Math.max(1.6/k,.35)));
+  gSfnEl.querySelectorAll('.sfnc').forEach(c=>c.setAttribute('transform',`translate(${c.dataset.x} ${-c.dataset.y}) scale(${sc*1.05})`));
   const show=k*3>=8.5;
   ST.forEach(s=>{ const t=labEls.get(s.id), g=symEls.get(s.id), ld=leadEls.get(s.id); if(t){ const off=!(show||labMode||sel===s.id)||(g&&g.classList.contains('off')); t.classList.toggle('off',off); t.style.fontSize=Math.min(3,13/k)+'px'; t.setAttribute('stroke-width',2.4/k);
     if(ld){ ld.classList.toggle('off',off||ld.dataset.far!=='1'); ld.setAttribute('stroke-width',Math.max(.25,1/k)); if(!off) fitLead(s); } } });
@@ -619,7 +635,7 @@ Object.keys(GRP).forEach(g=>{ const b=document.createElement('button'); b.classN
   b.onclick=()=>{ typeOn[g]=!typeOn[g]; if(!Object.values(typeOn).some(Boolean)) typeOn[g]=true; render(); }; typeChips.appendChild(b); });
 $('q').addEventListener('input',e=>{q=e.target.value; render();});
 const setMode=m=>{ mode=m; try{localStorage.setItem('tvc-mode',m)}catch(e){} render(); };
-$('mArea').onclick=()=>setMode('area'); $('mRec').onclick=()=>setMode('rec');
+$('mArea').onclick=()=>setMode('area'); $('mRec').onclick=()=>setMode('rec'); $('mSfn').onclick=()=>setMode('sfn');
 $('tabMap').onclick=()=>{ view2='map'; render(); };
 $('tabTable').onclick=()=>{ view2='table'; render(); };
 const grpOf=s=>Object.keys(GRP).find(g=>GRP[g].t.includes(s.rc))||'sat';
@@ -628,10 +644,22 @@ function match(s){
   if(!typeOn[grpOf(s)]) return false;
   if(manOnly&&!MANUT.alertas[s.id]) return false;
   s.hit='';
-  if(q){ const n=norm(q).trim(); const hay=norm([s.n,s.mu,s.ob,'cn '+s.ch,s.ch,s.vt,String(s.vt||'').replace('VT','vt '),AREAS[s.a]&&AREAS[s.a].e].join(' ')); if(!hay.includes(n)){ const c=(s.cov||[]).find(x=>norm(x[0]).includes(n)); if(!c) return false; s.hit=c[0]; } }
+  if(q){ const n=norm(q).trim(); const hay=norm([s.n,s.mu,s.ob,s.sfn?'sfn '+s.sfn:'','cn '+s.ch,s.ch,s.vt,String(s.vt||'').replace('VT','vt '),AREAS[s.a]&&AREAS[s.a].e].join(' ')); if(!hay.includes(n)){ const c=(s.cov||[]).find(x=>norm(x[0]).includes(n)); if(!c) return false; s.hit=c[0]; } }
   return true;
 }
-const color=s=> mode==='area' ? `var(--a${s.a})` : `var(--t${s.rc})`;
+// cores das redes SFN: uma por rede, na ordem alfabética
+const SFN_PAL=['#4c8dff','#ffb547','#3fd6b1','#ff5fa2','#b98bff','#7ad151','#ff8a3d','#38c6ff','#f2d15c','#e86bff','#5ce0d8','#ff6b6b'];
+let sfnIdx=new Map();
+// redes vizinhas (estações a menos de 35 unidades) recebem cores diferentes
+function sfnColors(){ const names=[...new Set(ST.map(s=>s.sfn).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt'));
+  const viz=new Map(names.map(n=>[n,new Set()]));
+  for(const a of ST) if(a.sfn) for(const b of ST) if(b.sfn&&b.sfn!==a.sfn&&Math.abs(a.x-b.x)<35&&Math.abs(a.y-b.y)<35&&Math.hypot(a.x-b.x,a.y-b.y)<35){ viz.get(a.sfn).add(b.sfn); }
+  const ord=names.slice().sort((x,y)=>viz.get(y).size-viz.get(x).size); sfnIdx=new Map();
+  const uso=new Array(SFN_PAL.length).fill(0);
+  ord.forEach(n=>{ const usadas=new Set([...viz.get(n)].filter(m=>sfnIdx.has(m)).map(m=>sfnIdx.get(m)));
+    let c=-1; for(let i=0;i<SFN_PAL.length;i++) if(!usadas.has(i)&&(c<0||uso[i]<uso[c])) c=i; if(c<0) c=0; uso[c]++; sfnIdx.set(n,c); }); }
+const sfnColor=n=> n&&sfnIdx.has(n) ? SFN_PAL[sfnIdx.get(n)%SFN_PAL.length] : '#5f708b';
+const color=s=> mode==='area' ? `var(--a${s.a})` : mode==='sfn' ? sfnColor(s.sfn) : `var(--t${s.rc})`;
 function select(id,fly){ if(editing) return; sel=id; confirmDel=false; statusMsg=''; if(view2!=='map'){ view2='map'; } render(); const s=byId.get(id); if(fly&&s) flyTo(s);
   const row=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`); if(row) row.scrollIntoView({block:'nearest'}); }
 function closeDetail(){ sel=null; confirmDel=false; statusMsg=''; editing=null; render(); }
@@ -639,7 +667,7 @@ function legendSym(kind){ return `<svg width="14" height="14" viewBox="-5 -7.5 1
 
 // render
 function render(){
-  $('mArea').setAttribute('aria-pressed',mode==='area'); $('mRec').setAttribute('aria-pressed',mode==='rec');
+  $('mArea').setAttribute('aria-pressed',mode==='area'); $('mRec').setAttribute('aria-pressed',mode==='rec'); $('mSfn').setAttribute('aria-pressed',mode==='sfn'); svg.classList.toggle('msfn',mode==='sfn');
   $('tabMap').setAttribute('aria-selected',view2==='map'); $('tabTable').setAttribute('aria-selected',view2==='table');
   stage.hidden=view2!=='map'; $('tableView').hidden=view2!=='table';
   AK.forEach(a=>{ $('chipA'+a).setAttribute('aria-pressed',areaOn[a]); $('cntA'+a).textContent=ST.filter(s=>s.a===a).length; });
@@ -647,15 +675,20 @@ function render(){
   areaEls.forEach(el=>{ const a=el.dataset.a; el.setAttribute('class', mode==='area'&&(areaOn[a]||(a==='1'&&areaOn[5])) ? 'ar'+a : 'land'); });
   const vis=[];
   manRender();
-  ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
+  const selSfn=mode==='sfn'&&sel&&byId.get(sel)?byId.get(sel).sfn:'';
+  ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.classList.toggle('dim',!!selSfn&&s.sfn!==selSfn); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
   if(sel&&symEls.get(sel)) gSym.appendChild(symEls.get(sel));
   const allA=AK.every(a=>areaOn[a]);
   $('countTxt').innerHTML=loaded?`${allA?'Todas as áreas':'Áreas filtradas'} · <b>${vis.length}</b> estações`:(dbMissing?'Servidor indisponível':'Carregando…');
   const covN=new Set(vis.flatMap(s=>(s.cov||[]).map(c=>c[0]))).size;
   $('covTxt').innerHTML=loaded&&covN?`<b>${covN}</b> municípios`:'';
   const recKeys=Object.keys(REC).filter(t=>ST.some(s=>s.rc===t));
-  let h = mode==='area' ? AK.map(a=>`<div><i style="background:var(--a${a})"></i>${AREAS[a].n} · ${AREAS[a].e}</div>`).join('')
-                        : recKeys.map(t=>`<div><i style="background:var(--t${t})"></i>${REC[t]}</div>`).join('');
+  let h;
+  if(mode==='area') h=AK.map(a=>`<div><i style="background:var(--a${a})"></i>${AREAS[a].n} · ${AREAS[a].e}</div>`).join('');
+  else if(mode==='sfn'){ const ss=sel&&byId.get(sel)&&byId.get(sel).sfn; const nR=sfnIdx.size, sem=ST.filter(s=>!s.sfn).length;
+    h=ss?`<div><i style="background:${sfnColor(ss)}"></i><b>SFN ${esc(ss)}</b></div><div class="mansub">${ST.filter(s=>s.sfn===ss).map(s=>esc(s.n)).join(', ')}</div>`
+       :`<div>Cada cor é uma rede SFN: estações no mesmo canal (CF) e virtual (CV).</div><div class="mansub">${nR} redes · círculos = canal da rede · clique numa estação para ver a rede dela${sem?` · ${sem} sem rede (cinza)`:''}</div>`; }
+  else h=recKeys.map(t=>`<div><i style="background:var(--t${t})"></i>${REC[t]}</div>`).join('');
   h+='<div class="sep"></div>'+Object.keys(MAN).map(k=>`<div>${legendSym(k)}${MAN[k]}</div>`).join('');
   $('legend').innerHTML=h;
   const list=$('list'); let lh='';
@@ -672,11 +705,11 @@ function render(){
   drawFoot();
   apply();
 }
-const COLS=[['n','Estação'],['mu','Município'],['a','Área / equipe'],['ch','Canal'],['vt','Virtual'],['rc','Recepção'],['pop','População',1],['pot','Potência'],['ncov','Cidades',1],['pcov','Pop. coberta',1]];
+const COLS=[['n','Estação'],['mu','Município'],['a','Área / equipe'],['ch','Canal'],['vt','Virtual'],['sfn','Rede SFN'],['rc','Recepção'],['pop','População',1],['pot','Potência'],['ncov','Cidades',1],['pcov','Pop. coberta',1]];
 function renderTable(vis){
   const rows=vis.map(s=>({...s,ncov:(s.cov||[]).length,pcov:(s.cov||[]).reduce((t,c)=>t+(+c[1]||0),0)}));
   rows.sort((a,b)=>{ const x=a[sortCol],y=b[sortCol]; if(typeof x==='number'||typeof y==='number') return ((+x||0)-(+y||0))*sortDir; return String(x||'').localeCompare(String(y||''),'pt')*sortDir; });
-  $('tableView').innerHTML=`<table><thead><tr>${COLS.map(([k,l,num])=>`<th data-k="${k}" class="${num?'num':''}"${sortCol===k?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}>${l}</th>`).join('')}</tr></thead><tbody>${rows.map(s=>`<tr data-id="${esc(s.id)}"><td><span class="sw" style="background:${color(s)}"></span>${esc(s.n)}</td><td>${esc(s.mu)}</td><td>${AREAS[s.a]?esc(AREAS[s.a].n+' · '+AREAS[s.a].e):''}</td><td class="mono">${esc(s.ch)}</td><td class="mono">${esc(s.vt)}</td><td>${esc(REC[s.rc]||'')}</td><td class="num">${s.pop?fmt(s.pop):''}</td><td class="mono">${esc(s.pot&&s.pot!=='-'?s.pot:'')}</td><td class="num">${s.ncov||''}</td><td class="num">${s.pcov?fmt(s.pcov):''}</td></tr>`).join('')}</tbody></table>`;
+  $('tableView').innerHTML=`<table><thead><tr>${COLS.map(([k,l,num])=>`<th data-k="${k}" class="${num?'num':''}"${sortCol===k?` aria-sort="${sortDir>0?'ascending':'descending'}"`:''}>${l}</th>`).join('')}</tr></thead><tbody>${rows.map(s=>`<tr data-id="${esc(s.id)}"><td><span class="sw" style="background:${color(s)}"></span>${esc(s.n)}</td><td>${esc(s.mu)}</td><td>${AREAS[s.a]?esc(AREAS[s.a].n+' · '+AREAS[s.a].e):''}</td><td class="mono">${esc(s.ch)}</td><td class="mono">${esc(s.vt)}</td><td>${esc(s.sfn||'')}</td><td>${esc(REC[s.rc]||'')}</td><td class="num">${s.pop?fmt(s.pop):''}</td><td class="mono">${esc(s.pot&&s.pot!=='-'?s.pot:'')}</td><td class="num">${s.ncov||''}</td><td class="num">${s.pcov?fmt(s.pcov):''}</td></tr>`).join('')}</tbody></table>`;
   $('tableView').querySelectorAll('th').forEach(th=>th.onclick=()=>{ const k=th.dataset.k; if(sortCol===k) sortDir=-sortDir; else { sortCol=k; sortDir=COLS.find(c=>c[0]===k)[2]?-1:1; } render(); });
   $('tableView').querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>select(tr.dataset.id,true));
 }
@@ -698,6 +731,7 @@ function renderDetail(){
     <dl class="kv">
       <dt>Recepção</dt><dd><span class="pill"><i style="background:var(--t${s.rc})"></i>${REC[s.rc]||'—'}</span></dd>
       ${s.m?`<dt>Manutenção</dt><dd>${MAN[s.m]}</dd>`:''}
+      ${s.sfn?`<dt>Rede SFN</dt><dd><span class="pill"><i style="background:${sfnColor(s.sfn)}"></i>${esc(s.sfn)}</span> · ${ST.filter(x=>x.sfn===s.sfn).length} estações${mode!=='sfn'?' · <button class="linkbtn" id="bSfn" type="button">ver no mapa</button>':''}</dd>`:''}
       ${manLinha(s)}
       ${s.pop?`<dt>População</dt><dd class="mono">${fmt(s.pop)} hab.</dd>`:''}
       ${infra?`<dt>Custeio</dt><dd>${infra}</dd>`:''}
@@ -714,6 +748,7 @@ function renderDetail(){
   if(canEditHere){
     $('bEdit').onclick=()=>openEditor(s.id);
     $('bMove').onclick=()=>startPlacing('move',s.id);
+    if($('bSfn')) $('bSfn').onclick=()=>setMode('sfn');
     $('bLab').onclick=()=>{ const L=labelLines(s); closeDetail(); zoomTo((s.x+L.x)/2,-(s.y+L.y)/2,Math.max(110,Math.hypot(L.x-s.x,L.y-s.y)*3)); setLabMode(true); toast('Arraste o nome de '+s.n+' para o lugar certo.'); };
     $('bDel').onclick=()=>{ confirmDel=true; statusMsg=''; render(); };
     if(confirmDel){ $('bDelNo').onclick=()=>{confirmDel=false; render();}; $('bDelYes').onclick=()=>doDelete(s.id); }
@@ -745,6 +780,7 @@ function openEditor(id,pos){
     <label>Canal virtual<input id="f_vt" value="${esc(d.vt||'')}" placeholder="ex.: VT04"></label>
     <label>Recepção<select id="f_r">${opt(REC,rc)}</select></label>
     <label>Canal / manutenção<select id="f_m"><option value="">—</option>${opt(MAN,d.m)}</select></label>
+    <label class="full">Rede SFN<input id="f_sfn" list="sfnList" value="${esc(d.sfn||'')}" placeholder="ex.: 38D CV10.1 – Campinas"><datalist id="sfnList">${[...sfnIdx.keys()].map(n=>`<option value="${esc(n)}">`).join('')}</datalist></label>
     <label class="full">Observação<input id="f_ob" value="${esc(d.ob||'')}"></label>
     <h3>Planilha</h3>
     <label>População<input id="f_pop" inputmode="numeric" value="${esc(d.pop||'')}"></label>
@@ -767,7 +803,7 @@ async function save(){
   const n=v('f_n'); if(!n){ efStatus('Preencha o nome da estação.',true); $('f_n').focus(); return; }
   const rc=$('f_r').value;
   const doc={...d}; delete doc.id; delete doc.rc; delete doc.hit;
-  Object.assign(doc,{n,mu:v('f_mu'),a:+$('f_a').value,ch:v('f_ch'),vt:v('f_vt'),ob:v('f_ob'),r:rc==='L'?'R':rc,pm:rc==='L'?1:0,m:$('f_m').value,
+  Object.assign(doc,{n,mu:v('f_mu'),a:+$('f_a').value,ch:v('f_ch'),vt:v('f_vt'),sfn:v('f_sfn'),ob:v('f_ob'),r:rc==='L'?'R':rc,pm:rc==='L'?1:0,m:$('f_m').value,
     pop:parseInt(v('f_pop').replace(/\D/g,''),10)||0,pot:v('f_pot'),en:v('f_en'),ag:v('f_ag'),ab:v('f_ab'),cov:textToCov($('f_cov').value),
 });
   delete doc.upd; delete doc.by;
@@ -846,7 +882,7 @@ async function loadStations(){
   ST=j.estacoes.map(o=>{ o.rc=recOf(o); o.n=o.n||'(sem nome)'; o.a=+o.a||1; return o; });
   byId=new Map(ST.map(s=>[s.id,s]));
   if(sel&&!byId.has(sel)) sel=null;
-  loaded=true; dbMissing=false; await loadDivision(); rebuild(); render();
+  sfnColors(); loaded=true; dbMissing=false; await loadDivision(); rebuild(); render();
 }
 // ---------- manutenções (Grafana "Manutenções Rede") ----------
 async function loadManut(){ try{ MANUT=await api('GET','/api/manutencao'); }catch(e){ return; } if(loaded) render(); }
@@ -1464,7 +1500,7 @@ $('btnPrint').onclick=openPrint;
 
 // ---------- início ----------
 async function start(){
-  try{ await loadGeometry(); await loadStations(); fit(); loadManut(); }
+  try{ await loadGeometry(); await loadStations(); fit(); loadManut(); loadSfn(); }
   catch(e){ if(e.status!==401&&e.code!=='must_change'){ dbMissing=true; render(); toast(e.message); } }
 }
 fetch('/api/health').then(r=>r.json()).then(j=>{ if(j&&j.version) $('verTxt').textContent='Versão '+j.version+'.'; }).catch(()=>{});

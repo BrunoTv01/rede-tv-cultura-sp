@@ -91,6 +91,18 @@ Escolha o papel, de A4 a A0, e confira quem atualizou e a data. Depois clique em
 
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
 
+## Redes SFN
+
+Cada estação mostra a rede SFN (Single Frequency Network) a que pertence, conforme o “Mapa de rotas – SFN”: canal físico (CF), canal virtual (CV) e a cidade principal da rede, por exemplo “38D CV10.1 – Campinas”.
+
+- **Ficha:** a linha **Rede SFN** mostra a rede e quantas estações ela tem.
+- **Mapa:** o botão **SFN**, ao lado de Área e Recepção, pinta cada rede de uma cor e desenha as divisões e os círculos CF/CV do mapa SFN. Clicando numa estação, as outras redes ficam apagadas e a legenda lista as estações da rede.
+- **Tabela:** tem a coluna **Rede SFN**.
+- **Busca:** aceita, por exemplo, “sfn 38D” ou “sfn Campinas”.
+- **Edição:** o campo **Rede SFN** fica no formulário da estação, com sugestões das redes existentes.
+
+Na primeira vez que o sistema atualizado inicia, ele preenche a rede SFN das estações a partir de `data/sfn.json`, sem apagar o que já tiver sido editado.
+
 ## Manutenções do Grafana (estações sem visita há mais de 120 dias)
 
 O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 120 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +120 dias** mostra só essas estações.

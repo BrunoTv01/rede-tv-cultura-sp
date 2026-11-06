@@ -25,7 +25,7 @@ const RECEPCAO = ['R', 'N', 'J', 'X', 'G', 'H', 'P', 'F'];
 const MANUT = ['', 'full', 'half', 'line', 'cross'];
 const LABELS = {
   n: 'nome', mu: 'município', a: 'área/equipe', r: 'recepção', pm: 'canal PM', m: 'canal/manutenção',
-  ch: 'canal físico', vt: 'canal virtual', ob: 'observação', pop: 'população', pot: 'potência TX',
+  ch: 'canal físico', vt: 'canal virtual', sfn: 'rede SFN', ob: 'observação', pop: 'população', pot: 'potência TX',
   en: 'energia', ag: 'água', ab: 'abrigo', cov: 'cobertura', pos: 'posição no mapa', lab: 'posição do nome',
 };
 // nomes das áreas: lidos do banco (tabela areas) e guardados aqui para o texto do histórico
@@ -53,6 +53,7 @@ function cleanStation(b, prev = {}) {
     m: MANUT.includes(b.m) ? b.m : '',
     ch: str(b.ch, 20),
     vt: str(b.vt, 20),
+    sfn: str(b.sfn, 80),
     ob: str(b.ob, 300),
     pop: Math.max(0, Math.round(numOr(b.pop, 0))),
     pot: str(b.pot, 30),
@@ -113,6 +114,21 @@ async function migrate() {
       await client.query('COMMIT');
       console.log(`Banco populado com ${Object.keys(all).length} estações.`);
     }
+    // rede SFN de cada estação (mapa de rotas SFN): carregada uma vez, sem apagar o que já foi editado
+    const sfnFile = path.join(DATA_DIR, 'sfn.json');
+    const feito = await client.query("SELECT 1 FROM audit_log WHERE tbl='estacoes' AND field='carga SFN' LIMIT 1");
+    if (!feito.rows.length && fs.existsSync(sfnFile)) {
+      const sfn = JSON.parse(fs.readFileSync(sfnFile, 'utf8')).estacoes || {};
+      await client.query('BEGIN');
+      let n = 0;
+      for (const [id, nome] of Object.entries(sfn)) {
+        const r = await client.query("UPDATE estacoes SET data = jsonb_set(data, '{sfn}', to_jsonb($2::text)) WHERE id=$1 AND coalesce(data->>'sfn','')=''", [id, nome]);
+        n += r.rowCount;
+      }
+      await client.query("INSERT INTO audit_log (tbl,row_id,field,context,username) VALUES ('estacoes','-','carga SFN',$1,'servidor')", [`${n} estações com rede SFN (data/sfn.json)`]);
+      await client.query('COMMIT');
+      console.log(`Rede SFN carregada em ${n} estações.`);
+    }
   } catch (e) {
     await client.query('ROLLBACK').catch(() => {});
     throw e;
@@ -149,6 +165,12 @@ app.get('/api/prancha', requireRole('viewer'), (_req, res) => {
 });
 
 // desenho do mapa (contorno, divisão regional, áreas, posição dos municípios)
+// traçado das redes SFN (linhas e círculos do mapa de rotas SFN)
+app.get('/api/sfn', requireRole('viewer'), (_req, res) => {
+  res.setHeader('Cache-Control', 'private, max-age=3600');
+  res.sendFile(path.join(DATA_DIR, 'sfn.json'));
+});
+
 app.get('/api/geometria', (_req, res) => {
   res.setHeader('Cache-Control', 'private, max-age=3600');
   res.sendFile(path.join(DATA_DIR, 'geometria.json'));
