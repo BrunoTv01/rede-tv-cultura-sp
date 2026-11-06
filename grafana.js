@@ -237,7 +237,11 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     try {
       const x = await cruzar();
       const alertas = {}; for (const [id, it] of Object.entries(x.itens)) if (it.alerta) alertas[id] = it;
-      res.json({ atualizado: cache.atualizado, erro: cache.erro, origem: cache.origem, dias: x.dias, alertas, itens: x.itens, total: Object.keys(alertas).length, configurado: !!(cache.linhas && cache.linhas.length) });
+      const c = await lerConfig();
+      // link para abrir o painel no Grafana (cada pessoa entra com o próprio login do Grafana)
+      const painel = c.panel || (cache.painelUsado && cache.painelUsado.id) || '';
+      const link = c.url && c.dashboard ? `${c.url}/d/${encodeURIComponent(c.dashboard)}?orgId=1${painel ? '&viewPanel=' + encodeURIComponent(painel) : ''}` : null;
+      res.json({ atualizado: cache.atualizado, erro: cache.erro, origem: cache.origem, dias: x.dias, alertas, itens: x.itens, total: Object.keys(alertas).length, configurado: !!(cache.linhas && cache.linhas.length), link, linkPainel: c.url && c.dashboard ? `${c.url}/d/${encodeURIComponent(c.dashboard)}?orgId=1` : null });
     } catch (e) { next(e); }
   });
   app.get('/api/grafana/config', requireRole('admin'), async (_req, res, next) => {
