@@ -305,7 +305,31 @@ function rebuild(){
 // mancha de cobertura (footprint)
 function hull(pts){ if(pts.length<3) return pts.slice(); const p=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]); const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
   const lo=[];for(const q of p){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],q)<=0)lo.pop();lo.push(q);} const up=[];for(const q of p.slice().reverse()){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],q)<=0)up.pop();up.push(q);} up.pop();lo.pop();return lo.concat(up); }
-function covPoints(s){ const out=[]; (s.cov||[]).forEach(c=>{ const p=G.cx[nkey(c[0])]; if(p) out.push({n:c[0],p:c[1],x:p[0],y:p[1]}); }); return out; }
+// Posição das cidades acompanhando o desenho do DWG, que é esquemático: a cidade de cada estação fica exatamente
+// na estação, e as outras cidades são deslocadas como as estações vizinhas (média ponderada pela distância).
+let cityCache=null;
+function cityPos(){
+  const sig=ST.map(s=>s.id+':'+s.x+','+s.y+','+(s.mu||'')).join(';');
+  if(cityCache&&cityCache.sig===sig) return cityCache.pos;
+  const grupos=new Map();
+  ST.forEach(s=>{ const k=nkey(s.mu||s.n), g=G.cx[k]; if(!g) return; if(!grupos.has(k)) grupos.set(k,[]); grupos.get(k).push(s); });
+  const anc=[];
+  grupos.forEach((list,k)=>{ const g=G.cx[k];
+    // várias estações na mesma cidade: vale a que tem o nome da cidade (ou a geradora); senão, a média
+    const pref=list.find(s=>nkey(s.n)===k)||list.find(s=>s.r==='H');
+    const x=pref?pref.x:list.reduce((a,s)=>a+s.x,0)/list.length, y=pref?pref.y:list.reduce((a,s)=>a+s.y,0)/list.length;
+    anc.push({k,gx:g[0],gy:g[1],x,y}); });
+  const pos={}, byK=new Map(anc.map(a=>[a.k,a]));
+  for(const k in G.cx){ const [gx,gy]=G.cx[k], a=byK.get(k);
+    if(a){ pos[k]=[a.x,a.y]; continue; }
+    const near=anc.map(a=>({a,d:Math.hypot(a.gx-gx,a.gy-gy)})).sort((p,q)=>p.d-q.d).slice(0,6);
+    let sw=0,dx=0,dy=0; near.forEach(({a,d})=>{ const w=1/(d*d+4); sw+=w; dx+=w*(a.x-a.gx); dy+=w*(a.y-a.gy); });
+    pos[k]=sw?[gx+dx/sw,gy+dy/sw]:[gx,gy]; }
+  cityCache={sig,pos}; return pos;
+}
+function covPoints(s){ const pos=cityPos(), own=nkey(s.mu||s.n), out=[];
+  (s.cov||[]).forEach(c=>{ const k=nkey(c[0]); const p=k===own?[s.x,s.y]:pos[k]; if(p) out.push({n:c[0],p:c[1],x:p[0],y:p[1]}); });
+  return out; }
 function drawFoot(){
   gFoot.textContent='';
   const s=sel&&byId.get(sel); if(!s||view2!=='map') return;
@@ -323,7 +347,7 @@ function drawFoot(){
     mk('circle',{cx:s.x,cy:-s.y,r:6+far*.6,fill:'none',stroke:'currentColor','stroke-width':.6,'stroke-dasharray':'2 1.4'},g);
   }
   cities.forEach(c=>{ if(Math.abs(c.x-s.x)<.5&&Math.abs(c.y-s.y)<.5) return; mk('line',{x1:s.x,y1:-s.y,x2:c.x,y2:-c.y,stroke:'currentColor','stroke-opacity':.35,'stroke-width':.35},g); });
-  cities.forEach(c=>{ mk('circle',{cx:c.x,cy:-c.y,r:.9,class:'fp-city'},g); const t=mk('text',{x:c.x+1.6,y:-c.y+1,class:'fp-lab','font-size':2.6,'stroke-width':.8},g); t.textContent=c.n; });
+  cities.forEach(c=>{ if(Math.abs(c.x-s.x)<.5&&Math.abs(c.y-s.y)<.5) return; mk('circle',{cx:c.x,cy:-c.y,r:.9,class:'fp-city'},g); const t=mk('text',{x:c.x+1.6,y:-c.y+1,class:'fp-lab','font-size':2.6,'stroke-width':.8},g); t.textContent=c.n; });
   const top=pts.reduce((a,b)=>b[1]>a[1]?b:a,pts[0]);
   const tot=(s.cov||[]).reduce((t,c)=>t+(+c[1]||0),0);
   const tag=mk('text',{x:top[0],y:-top[1]-(d?11:9),class:'fp-tag','font-size':4,'text-anchor':'middle',fill:'currentColor','stroke-width':1.2},g);
