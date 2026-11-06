@@ -85,6 +85,8 @@ svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
 .ar1{fill:var(--a1t)} .ar2{fill:var(--a2t)} .ar3{fill:var(--a3t)} .ar4{fill:var(--a4t)}
 .base{fill:var(--land)}
 .bd{fill:none;stroke:var(--border);stroke-linejoin:round;stroke-linecap:round}
+.sfnf{opacity:.13;pointer-events:none}
+.sfnf.on{opacity:.32}
 .sfnl{fill:none;stroke:#ff5a4e;stroke-linejoin:round;stroke-linecap:round;opacity:.9}
 .sfnc circle{fill:rgba(10,18,32,.85);stroke:var(--fg);stroke-width:.5}
 .sfnc text{fill:var(--fg);font:600 2.7px/1 var(--mono);text-anchor:middle}
@@ -407,13 +409,24 @@ function symDef(id,inner){
 const gArea=$('gArea'), areaEls=[], gLine=$('gLine'), gALab=$('gALab'), aLabEls=[];
 let bdEl=mk('path',{class:'bd'},gLine), dvEl=mk('path',{class:'dv'},gLine), gSfnEl=mk('g',{id:'gSfn'},gLine);
 // traçado das redes SFN (do mapa de rotas SFN), mostrado no modo "SFN"
-async function loadSfn(){ let j; try{ j=await api('GET','/api/sfn'); }catch(e){ return; }
+let SFN_PDF=null, sfnFonte='auto';
+try{ if(localStorage.getItem('tvc-sfn-linhas')==='pdf') sfnFonte='pdf'; }catch(e){}
+async function loadSfn(){ try{ SFN_PDF=await api('GET','/api/sfn'); }catch(e){ SFN_PDF=null; } drawSfn(); }
+function drawSfn(){
   gSfnEl.textContent='';
+  if(sfnFonte!=='pdf'||!SFN_PDF){ if(!ST.length||!G) return; const r=sfnAuto();
+    r.fill.forEach(f=>{ if(f.d) { const e=mk('path',{class:'sfnf',d:f.d,fill:sfnColor(f.nome)},gSfnEl); e.dataset.n=f.nome; } });
+    mk('path',{class:'sfnl',d:r.red.map(l=>l.map((q,i)=>(i?'L':'M')+q[0]+' '+(-q[1])).join('')).join('')},gSfnEl);
+    r.rotulos.forEach(o=>{ const m=/^(\S+)\s+CV(\S+)/.exec(o.nome); if(!m) return; const g=mk('g',{class:'sfnc'},gSfnEl); g.dataset.x=o.x; g.dataset.y=o.y; mk('circle',{r:5.6},g);
+      const t1=mk('text',{y:-0.6},g); t1.textContent='CF '+m[1]; const t2=mk('text',{y:2.6},g); t2.textContent='CV'+m[2]; const tt=mk('title',{},g); tt.textContent='Rede SFN '+o.nome; });
+    apply(); return; }
+  const j=SFN_PDF;
   mk('path',{class:'sfnl',d:j.linhas.map(l=>l.map((q,i)=>(i?'L':'M')+q[0]+' '+(-q[1])).join('')).join('')},gSfnEl);
   j.redes.forEach(r=>r.circulos.forEach(([x,y])=>{ const g=mk('g',{class:'sfnc'},gSfnEl); g.dataset.x=x; g.dataset.y=y; mk('circle',{r:5.6},g);
     const t1=mk('text',{y:-0.6},g); t1.textContent='CF '+r.cf; const t2=mk('text',{y:2.6},g); t2.textContent='CV'+r.cv;
     const tt=mk('title',{},g); tt.textContent='Rede SFN '+r.cf+' CV'+r.cv; }));
   apply(); }
+function setSfnFonte(f){ sfnFonte=f; try{ localStorage.setItem('tvc-sfn-linhas',f); }catch(e){} drawSfn(); render(); }
 function drawBase(){ drawBaseShapes(); drawAreaLabels(); semSinalTxt(); }
 function drawBaseShapes(){
 gArea.textContent=''; gALab.textContent=''; areaEls.length=0; aLabEls.length=0;
@@ -677,6 +690,7 @@ function render(){
   manRender();
   const selSfn=mode==='sfn'&&sel&&byId.get(sel)?byId.get(sel).sfn:'';
   ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.classList.toggle('dim',!!selSfn&&s.sfn!==selSfn); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
+  gSfnEl.querySelectorAll('.sfnf').forEach(f=>f.classList.toggle('on',!!selSfn&&f.dataset.n===selSfn));
   if(sel&&symEls.get(sel)) gSym.appendChild(symEls.get(sel));
   const allA=AK.every(a=>areaOn[a]);
   $('countTxt').innerHTML=loaded?`${allA?'Todas as áreas':'Áreas filtradas'} · <b>${vis.length}</b> estações`:(dbMissing?'Servidor indisponível':'Carregando…');
@@ -687,10 +701,12 @@ function render(){
   if(mode==='area') h=AK.map(a=>`<div><i style="background:var(--a${a})"></i>${AREAS[a].n} · ${AREAS[a].e}</div>`).join('');
   else if(mode==='sfn'){ const ss=sel&&byId.get(sel)&&byId.get(sel).sfn; const nR=sfnIdx.size, sem=ST.filter(s=>!s.sfn).length;
     h=ss?`<div><i style="background:${sfnColor(ss)}"></i><b>SFN ${esc(ss)}</b></div><div class="mansub">${ST.filter(s=>s.sfn===ss).map(s=>esc(s.n)).join(', ')}</div>`
-       :`<div>Cada cor é uma rede SFN: estações no mesmo canal (CF) e virtual (CV).</div><div class="mansub">${nR} redes · círculos = canal da rede · clique numa estação para ver a rede dela${sem?` · ${sem} sem rede (cinza)`:''}</div>`; }
+       :`<div>Cada cor é uma rede SFN: estações no mesmo canal (CF) e virtual (CV).</div><div class="mansub">${nR} redes · círculos = canal da rede · clique numa estação para ver a rede dela${sem?` · ${sem} sem rede (cinza)`:''}</div>`;
+    h+=`<div class="mansub">Divisões: <button class="linkbtn" data-sfnf="auto"${sfnFonte==='auto'?' style="font-weight:700;text-decoration:none"':''}>automáticas</button> · <button class="linkbtn" data-sfnf="pdf"${sfnFonte==='pdf'?' style="font-weight:700;text-decoration:none"':''}>do mapa SFN (PDF)</button></div>`; }
   else h=recKeys.map(t=>`<div><i style="background:var(--t${t})"></i>${REC[t]}</div>`).join('');
   h+='<div class="sep"></div>'+Object.keys(MAN).map(k=>`<div>${legendSym(k)}${MAN[k]}</div>`).join('');
   $('legend').innerHTML=h;
+  $('legend').querySelectorAll('[data-sfnf]').forEach(b=>b.onclick=()=>setSfnFonte(b.dataset.sfnf));
   const list=$('list'); let lh='';
   AK.forEach(a=>{ const items=vis.filter(s=>s.a===a).sort((x,y)=>x.n.localeCompare(y.n,'pt')); if(!items.length) return;
     lh+=`<div class="grp"><span style="color:var(--a${a})">${AREAS[a].n} · ${AREAS[a].e}</span><span>${items.length}</span></div>`;
@@ -882,7 +898,7 @@ async function loadStations(){
   ST=j.estacoes.map(o=>{ o.rc=recOf(o); o.n=o.n||'(sem nome)'; o.a=+o.a||1; return o; });
   byId=new Map(ST.map(s=>[s.id,s]));
   if(sel&&!byId.has(sel)) sel=null;
-  sfnColors(); loaded=true; dbMissing=false; await loadDivision(); rebuild(); render();
+  sfnColors(); loaded=true; dbMissing=false; await loadDivision(); rebuild(); render(); if(SFN_PDF!==null||sfnFonte==='auto') drawSfn();
 }
 // ---------- manutenções (Grafana "Manutenções Rede") ----------
 async function loadManut(){ try{ MANUT=await api('GET','/api/manutencao'); }catch(e){ return; } if(loaded) render(); }
@@ -1142,6 +1158,54 @@ const RW=Math.ceil((5182-RX0)/RES), RH=Math.ceil((RY1-258)/RES);
 const toPx=(X,Y)=>[(X-RX0)/RES,(RY1-Y)/RES];
 const fromPx=(px,py)=>[+(RX0+px*RES).toFixed(2),+(RY1-py*RES).toFixed(2)];
 let insideMask=null;
+// ---------- divisões SFN automáticas ----------
+// Cada célula da grade fica com a rede SFN da estação mais próxima; as fronteiras entre redes viram as linhas.
+// Assim as linhas acompanham o cadastro: mudou a rede de uma estação, a divisão muda junto.
+let sfnAutoCache=null;
+function sfnAuto(){
+  const pts=ST.filter(s=>s.sfn).map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),g:s.sfn}; }).filter(p=>p.px>=0&&p.py>=0&&p.px<RW&&p.py<RH);
+  const sig=pts.map(p=>p.px+','+p.py+','+p.g).sort().join(';');
+  if(sfnAutoCache&&sfnAutoCache.sig===sig) return sfnAutoCache;
+  const inside=stateMask(), N=RW*RH, nomes=[...new Set(pts.map(p=>p.g))], gi=new Map(nomes.map((n,i)=>[n,i+1]));
+  const seed=new Int32Array(N).fill(-1), dist=new Float64Array(N).fill(Infinity), q=[]; let h=0;
+  pts.forEach((p,k)=>{ const i=p.py*RW+p.px; if(dist[i]>0){ dist[i]=0; seed[i]=k; q.push(i); } });
+  const nb=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  while(h<q.length){ const i=q[h++], px=i%RW, py=(i/RW)|0, s=pts[seed[i]];
+    for(const [dx,dy] of nb){ const x=px+dx,y=py+dy; if(x<0||y<0||x>=RW||y>=RH) continue; const j=y*RW+x; const d=(s.px-x)**2+(s.py-y)**2; if(d<dist[j]){ dist[j]=d; seed[j]=seed[i]; q.push(j); } } }
+  let A=new Int16Array(N); for(let i=0;i<N;i++) if(inside[i]&&seed[i]>=0) A[i]=gi.get(pts[seed[i]].g);
+  // suaviza (maioria 5x5), sem mexer no entorno de cada estação
+  for(let it=0;it<2;it++){ const B=new Int16Array(A); for(let py=2;py<RH-2;py++) for(let px=2;px<RW-2;px++){ const i=py*RW+px; if(!A[i]||dist[i]<=16) continue; const c={}; let best=A[i],bn=0;
+      for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++){ const v=A[i+dy*RW+dx]; if(!v) continue; c[v]=(c[v]||0)+1; if(c[v]>bn){bn=c[v];best=v;} } B[i]=best; } A=B; }
+  // fronteiras entre redes → linhas
+  const adj=new Map(), key=(x,y)=>x+','+y;
+  const addE=(a,b)=>{ (adj.get(a)||adj.set(a,[]).get(a)).push(b); (adj.get(b)||adj.set(b,[]).get(b)).push(a); };
+  for(let py=0;py<RH;py++) for(let px=0;px<RW;px++){ const i=py*RW+px, a=A[i]; if(!a) continue;
+    if(px+1<RW&&A[i+1]&&A[i+1]!==a) addE(key(px+1,py),key(px+1,py+1));
+    if(py+1<RH&&A[i+RW]&&A[i+RW]!==a) addE(key(px,py+1),key(px+1,py+1)); }
+  const used=new Set(), ek=(a,b)=>a<b?a+'|'+b:b+'|'+a, lines=[];
+  const walk=(s0,n)=>{ const l=[s0,n]; used.add(ek(s0,n)); let prev=s0,cur=n;
+    while((adj.get(cur)||[]).length===2){ const nx=adj.get(cur).find(v=>v!==prev&&!used.has(ek(cur,v))); if(!nx) break; used.add(ek(cur,nx)); l.push(nx); prev=cur; cur=nx; } return l; };
+  for(const [v,ns] of adj) if(ns.length!==2) for(const n of ns) if(!used.has(ek(v,n))) lines.push(walk(v,n));
+  for(const [v,ns] of adj) for(const n of ns) if(!used.has(ek(v,n))) lines.push(walk(v,n));
+  const closed=p=>p.length>=4&&p[0][0]===p[p.length-1][0]&&p[0][1]===p[p.length-1][1];
+  const simp=(P,tol)=>{ if(P.length<3) return P; const keep=new Uint8Array(P.length); keep[0]=keep[P.length-1]=1; const st=[[0,P.length-1]];
+    while(st.length){ const [i,j]=st.pop(); const [ax,ay]=P[i],[bx,by]=P[j]; const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy); let best=0,bi=-1;
+      for(let k=i+1;k<j;k++){ const d=L<1e-6?Math.hypot(P[k][0]-ax,P[k][1]-ay):Math.abs(dy*(P[k][0]-ax)-dx*(P[k][1]-ay))/L; if(d>best){best=d;bi=k;} } if(best>tol){keep[bi]=1;st.push([i,bi],[bi,j]);} }
+    return P.filter((_,i)=>keep[i]); };
+  const dpL=(P,tol)=>{ if(!closed(P)) return simp(P,tol); let far=1,fd=-1; P.forEach(([x,y],i)=>{ const d=Math.hypot(x-P[0][0],y-P[0][1]); if(d>fd){fd=d;far=i;} }); return simp(P.slice(0,far+1),tol).concat(simp(P.slice(far),tol).slice(1)); };
+  const chai=P=>{ if(P.length<3) return P; const c=closed(P), o=c?[]:[P[0]]; for(let i=0;i<P.length-1;i++){ const [a,b]=P[i],[e,d]=P[i+1]; o.push([a*.75+e*.25,b*.75+d*.25],[a*.25+e*.75,b*.25+d*.75]); } o.push(c?o[0]:P[P.length-1]); return o; };
+  const red=lines.map(l=>l.map(k=>k.split(',').map(Number))).filter(l=>l.length>=3).map(l=>chai(chai(dpL(l,1.3))).map(([x,y])=>fromPx(x,y)));
+  // preenchimento fraco de cada rede e um ponto bem no meio de cada uma, para o rótulo CF/CV
+  const paths={}; for(let py=0;py<RH;py++){ let run=0,start=0; for(let px=0;px<=RW;px++){ const a=px<RW?A[py*RW+px]:-1; if(a!==run){ if(run>0){ const [X,Y]=fromPx(start,py); paths[run]=(paths[run]||'')+`M${X} ${-Y}h${((px-start)*RES).toFixed(1)}v${RES+0.05}h${(-(px-start)*RES).toFixed(1)}z`; } run=a; start=px; } } }
+  const db=new Int32Array(N).fill(-1), q2=[]; let h2=0;
+  for(let i=0;i<N;i++){ if(!A[i]) continue; const px=i%RW, py=(i/RW)|0; if(px===0||py===0||px===RW-1||py===RH-1||A[i-1]!==A[i]||A[i+1]!==A[i]||A[i-RW]!==A[i]||A[i+RW]!==A[i]){ db[i]=0; q2.push(i); } }
+  while(h2<q2.length){ const i=q2[h2++]; for(const j of [i-1,i+1,i-RW,i+RW]) if(j>=0&&j<N&&A[j]&&db[j]<0){ db[j]=db[i]+1; q2.push(j); } }
+  const centro={}; for(let i=0;i<N;i++){ const a=A[i]; if(!a) continue; if(!centro[a]||db[i]>centro[a].d) centro[a]={d:db[i],i}; }
+  const rotulos=nomes.map((n,k)=>{ const c=centro[k+1]; if(!c) return null; const [X,Y]=fromPx(c.i%RW+.5,(c.i/RW|0)+.5); return {nome:n,x:X,y:Y}; }).filter(Boolean);
+  const fill=nomes.map((n,k)=>({nome:n,d:paths[k+1]||''}));
+  return sfnAutoCache={sig,red,fill,rotulos};
+}
+
 function stateMask(){
   if(insideMask) return insideMask;
   const c=document.createElement('canvas'); c.width=RW; c.height=RH; const x=c.getContext('2d');
