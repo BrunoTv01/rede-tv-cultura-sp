@@ -376,6 +376,9 @@ app.get('/api/historico', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// manutenções vindas do Grafana ("Manutenções Rede")
+const grafana = require('./grafana')({ app, pool, requireRole, audit });
+
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Endereço não encontrado.' }));
 app.use((err, _req, res, _next) => {
   console.error(err);
@@ -390,7 +393,7 @@ resolveDatabaseUrl()
   .then(migrate)
   .then(loadAreaNames)
   .then(bootstrap)
-  .then(() => app.listen(PORT, HOST, () => console.log(`Rede TV Cultura SP ${VERSION} rodando em ${HOST}:${PORT}`)))
+  .then(() => app.listen(PORT, HOST, () => { console.log(`Rede TV Cultura SP ${VERSION} rodando em ${HOST}:${PORT}`); grafana.iniciar().catch(e => console.error('Grafana:', e.message)); }))
   .catch(e => { console.error(e.friendly ? e.message : 'Falha ao preparar o banco: ' + (e.stack || e)); process.exit(1); });
 
 module.exports = { cleanStation, diff };

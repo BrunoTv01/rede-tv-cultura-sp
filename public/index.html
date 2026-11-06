@@ -90,6 +90,17 @@ svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
 .sym{cursor:pointer}
 .sym .hit{fill:transparent;stroke:none}
 .sym .halo{fill:none;stroke:var(--ring);opacity:0}
+.sym .mbadge{display:none;pointer-events:none}
+.sym.malert .mbadge{display:inline}
+.mbadge circle{fill:#ff3b30;stroke:var(--sea);stroke-width:.6}
+.mbadge text{fill:#fff;font:700 4px/1 var(--body);text-anchor:middle}
+.mbadge .pulse{fill:none;stroke:#ff3b30;stroke-width:.5;animation:mpulse 2s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes mpulse{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(2.4)}}
+@media (prefers-reduced-motion:reduce){.mbadge .pulse{animation:none;opacity:0}}
+.man-alert{color:#ff6b62;font-weight:600}
+.mansub{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.35}
+.gtab{width:100%;border-collapse:collapse;font-size:11.5px;margin:8px 0 12px}.gtab th,.gtab td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}.gtab th{color:var(--muted);font-weight:600}
+.gwrap{overflow:auto;max-height:220px;border:1px solid var(--line);border-radius:6px}
 .sym.sel .halo{opacity:1}
 .sym.off{display:none}
 .lb{font-family:var(--body);fill:var(--lbl);pointer-events:none;paint-order:stroke;stroke:var(--sea);stroke-linejoin:round}
@@ -268,6 +279,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
           <button role="menuitem" id="mLab" hidden>Mover nomes das estações</button>
           <button role="menuitem" id="mDiv" hidden>Ajustar linhas de divisão</button>
           <button role="menuitem" id="mOrig" hidden>Voltar ao mapa original</button>
+          <button role="menuitem" id="mGraf" hidden>Manutenções (Grafana)</button>
           <button role="menuitem" id="mUsers" hidden>Usuários</button>
           <button role="menuitem" id="mPass">Trocar senha</button>
           <button role="menuitem" id="mOut">Sair</button>
@@ -280,6 +292,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
     <aside class="side">
       <div class="sec"><div class="sechead"><h4>Área / responsável</h4><button class="linkbtn" id="btnAreas" hidden>Editar nomes</button></div><div class="chips" id="tally"></div></div>
       <div class="sec"><h4>Tipo</h4><div class="chips" id="typeChips"></div></div>
+      <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +100 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div></div>
       <div class="countline"><span id="countTxt">Carregando…</span><span id="covTxt"></span></div>
       <div class="list" id="list"></div>
       <div class="note" id="note">Mapa do DWG “Nova Divisão 2026”. Dados iniciais da planilha “Projeto 100%”. A mancha de cobertura liga as cidades atendidas, com posição aproximada. <span id="semSinal"></span> <span id="verTxt"></span></div>
@@ -406,6 +419,7 @@ if(G.semSinal&&G.semSinal.length) $('semSinal').textContent='Sem estação na pl
 }
 
 // estado
+let MANUT={alertas:{},itens:{},dias:100,configurado:false}, manOnly=false;
 let ST=[], byId=new Map(), symEls=new Map(), labEls=new Map(), leadEls=new Map(), labMode=false, labDrag=null;
 let mode='area', areaOn={1:true,2:true,3:true,4:true,5:true}, typeOn={sat:true,ger:true,comp:true}, q='', sel=null, view2='map';
 let sortCol='n', sortDir=1;
@@ -470,6 +484,7 @@ function rebuild(){
     const g=mk('g',{class:'sym'},gSym);
     mk('circle',{class:'halo',r:7.5,cy:-1.5,'stroke-width':1},g);
     mk('use',{href:'#s-'+(s.r==='H'||s.r==='P'||s.r==='F'?s.r:(s.m||'full'))},g);
+    const bd=mk('g',{class:'mbadge'},g); mk('circle',{class:'pulse',cx:4.4,cy:-6.6,r:2.4},bd); mk('circle',{cx:4.4,cy:-6.6,r:2.4},bd); const bt=mk('text',{x:4.4,y:-5.2},bd); bt.textContent='!';
     mk('circle',{class:'hit',r:6.5,cy:-1.5},g);
     g.addEventListener('click',ev=>{ if(placing) return; ev.stopPropagation(); if(moved<6) select(s.id,false);});
     g.addEventListener('pointermove',ev=>showTip(ev,s.n+(s.ch?' · cn '+s.ch:'')));
@@ -610,6 +625,7 @@ const grpOf=s=>Object.keys(GRP).find(g=>GRP[g].t.includes(s.rc))||'sat';
 function match(s){
   if(!areaOn[s.a]) return false;
   if(!typeOn[grpOf(s)]) return false;
+  if(manOnly&&!MANUT.alertas[s.id]) return false;
   s.hit='';
   if(q){ const n=norm(q).trim(); const hay=norm([s.n,s.mu,s.ob,'cn '+s.ch,s.ch,s.vt,String(s.vt||'').replace('VT','vt '),AREAS[s.a]&&AREAS[s.a].e].join(' ')); if(!hay.includes(n)){ const c=(s.cov||[]).find(x=>norm(x[0]).includes(n)); if(!c) return false; s.hit=c[0]; } }
   return true;
@@ -629,7 +645,8 @@ function render(){
   Object.keys(GRP).forEach(g=>{ $('chipT'+g).setAttribute('aria-pressed',typeOn[g]); $('cntT'+g).textContent=ST.filter(s=>grpOf(s)===g).length; });
   areaEls.forEach(el=>{ const a=el.dataset.a; el.setAttribute('class', mode==='area'&&(areaOn[a]||(a==='1'&&areaOn[5])) ? 'ar'+a : 'land'); });
   const vis=[];
-  ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
+  manRender();
+  ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
   if(sel&&symEls.get(sel)) gSym.appendChild(symEls.get(sel));
   const allA=AK.every(a=>areaOn[a]);
   $('countTxt').innerHTML=loaded?`${allA?'Todas as áreas':'Áreas filtradas'} · <b>${vis.length}</b> estações`:(dbMissing?'Servidor indisponível':'Carregando…');
@@ -680,6 +697,7 @@ function renderDetail(){
     <dl class="kv">
       <dt>Recepção</dt><dd><span class="pill"><i style="background:var(--t${s.rc})"></i>${REC[s.rc]||'—'}</span></dd>
       ${s.m?`<dt>Manutenção</dt><dd>${MAN[s.m]}</dd>`:''}
+      ${manLinha(s)}
       ${s.pop?`<dt>População</dt><dd class="mono">${fmt(s.pop)} hab.</dd>`:''}
       ${infra?`<dt>Custeio</dt><dd>${infra}</dd>`:''}
       ${difCh?`<dt>Planilha</dt><dd class="mono">cn ${esc(s.cf)} · ${esc(s.cv)}</dd>`:''}
@@ -829,6 +847,19 @@ async function loadStations(){
   if(sel&&!byId.has(sel)) sel=null;
   loaded=true; dbMissing=false; await loadDivision(); rebuild(); render();
 }
+// ---------- manutenções (Grafana "Manutenções Rede") ----------
+async function loadManut(){ try{ MANUT=await api('GET','/api/manutencao'); }catch(e){ return; } if(loaded) render(); }
+setInterval(()=>{ if(me&&!me.mustChange&&!document.hidden) loadManut(); },5*60*1000);
+const dataBR=v=>{ const d=new Date(String(v).replace(' ','T')); return isNaN(d)?String(v):d.toLocaleDateString('pt-BR'); };
+function manLinha(s){ const it=MANUT.itens&&MANUT.itens[s.id]; if(!it) return '';
+  const cl=it.classe?` · prioridade ${esc(it.classe)}`:'';
+  if(it.alerta) return `<dt>Última visita</dt><dd class="man-alert">⚠ ${it.dias===null?'Nunca teve manutenção':`Sem manutenção há ${it.dias} dias`}${it.ultima?` (última em ${dataBR(it.ultima)})`:''}${cl}</dd>`;
+  return `<dt>Última visita</dt><dd>${it.dias===null?'—':`Há ${it.dias} dias`}${it.ultima?` (${dataBR(it.ultima)})`:''}${cl}</dd>`; }
+function manRender(){ const n=Object.keys(MANUT.alertas||{}).length; $('manSec').hidden=!MANUT.configurado&&!n;
+  $('manLbl').textContent=`Sem manutenção +${MANUT.dias||100} dias`; $('cntMan').textContent=n; $('chipMan').setAttribute('aria-pressed',manOnly);
+  $('manSub').textContent=MANUT.erro?'Grafana: '+MANUT.erro:(MANUT.atualizado?'Grafana · lido em '+new Date(MANUT.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''); }
+$('chipMan').onclick=()=>{ manOnly=!manOnly; render(); };
+
 // a cada 15 s confere se alguém alterou o cadastro e recarrega
 setInterval(async()=>{
   if(!me||me.mustChange||document.hidden||editing) return;
@@ -841,7 +872,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
-  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; $('mLab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin');
+  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; $('mLab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin'); $('mGraf').hidden=!(u&&u.role==='admin');
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
@@ -965,6 +996,61 @@ function openRestore(){
   };
 }
 $('mOrig').onclick=()=>{ toggleMenu(false); openRestore(); };
+
+// ---------- integração com o Grafana (admin) ----------
+async function openGrafana(){
+  openSheet('Manutenções (Grafana)');
+  $('sheetBody').innerHTML='<p class="sub">Carregando…</p>';
+  let c; try{ c=await api('GET','/api/grafana/config'); }catch(e){ $('sheetBody').innerHTML=`<p class="status err">${esc(e.message)}</p>`; return; }
+  const opt=(sel)=>`<option value="">(automático)</option>`+c.colunas.map(x=>`<option${x===sel?' selected':''}>${esc(x)}</option>`).join('');
+  const fx=k=>c.envFixo&&c.envFixo[k]?' disabled title="Definido em /etc/rede-tv-cultura.env"':'';
+  const st=c.erro?`<div class="status err">Não foi possível ler o Grafana: ${esc(c.erro)}</div>`
+    :c.atualizado?`<div class="status">Lido em ${new Date(c.atualizado).toLocaleString('pt-BR')} ${c.origem==='csv'?'(arquivo CSV)':c.painelUsado?'· painel “'+esc(c.painelUsado.titulo)+'”':''} · ${c.linhas} linhas · <b>${c.alertas}</b> estações em alerta${c.semEstacao.length?` · sem estação no mapa: ${esc(c.semEstacao.join(', '))}`:''}</div>`
+    :'<div class="status">Ainda não foi lido.</div>';
+  $('sheetBody').innerHTML=`<p class="sub">O servidor lê o painel “Manutenções Rede” do Grafana a cada 15 minutos e marca no mapa, com um <b style="color:#ff6b62">!</b> vermelho, as estações sem manutenção há mais dias que o limite. Precisa de uma chave de API do Grafana com perfil Viewer.</p>
+  ${st}
+  <div class="pgrid">
+    <label class="pf">Endereço do Grafana<input id="gUrl" value="${esc(c.url)}"${fx('url')}></label>
+    <label class="pf">Código do dashboard<input id="gDash" value="${esc(c.dashboard)}"${fx('dashboard')}></label>
+    <label class="pf">Painel<select id="gPanel"${fx('panel')}><option value="">(procurar a tabela com prioridade)</option>${(c.paineis||[]).filter(p=>/table/.test(p.tipo)).map(p=>`<option value="${p.id}"${String(p.id)===String(c.panel)?' selected':''}>${esc(p.titulo)}</option>`).join('')}</select></label>
+    <label class="pf">Chave de API (token)<input id="gTok" type="password" autocomplete="off" placeholder="${c.temToken?'Já cadastrada — deixe em branco para manter':'Cole aqui a chave do Grafana'}"${fx('token')}></label>
+    <label class="pf">Sinalizar sem manutenção há mais de (dias)<input id="gDias" type="number" min="1" max="3650" value="${c.dias}"></label>
+    <label class="pf" style="justify-content:flex-end"><span><input type="checkbox" id="gNunca"${c.nunca?' checked':''}> Sinalizar também as que nunca tiveram manutenção</span></label>
+    <label class="pf">Coluna da estação<select id="gColE">${opt(c.colEstacao)}</select></label>
+    <label class="pf">Coluna da classe de prioridade<select id="gColP">${opt(c.colPrioridade)}</select></label>
+    <label class="pf">Coluna dos dias sem manutenção<select id="gColN">${opt(c.colDias)}</select></label>
+    <label class="pf">Coluna da última manutenção<select id="gColD">${opt(c.colData)}</select></label>
+  </div>
+  ${c.amostra&&c.amostra.length?`<div class="gwrap"><table class="gtab"><tr>${c.colunas.map(x=>`<th>${esc(x)}</th>`).join('')}</tr>${c.amostra.map(r=>`<tr>${c.colunas.map(x=>`<td>${esc(r[x]??'')}</td>`).join('')}</tr>`).join('')}</table></div>`:''}
+  <div class="btnrow"><button class="btn pri" id="gSave">Salvar e ler agora</button><button class="btn" id="gNow">Ler agora</button><label class="btn" style="cursor:pointer">Carregar CSV<input type="file" id="gCsv" accept=".csv,text/csv" hidden></label><button class="btn" id="gClose">Fechar</button></div>
+  <div class="status" id="gMsg" role="status"></div>
+  <details style="margin-top:10px"><summary>Como criar a chave de API no Grafana</summary><p class="sub">No Grafana, entre como administrador e abra <b>Configuration (engrenagem) → API keys → Add API key</b>. Dê um nome (por exemplo, “mapa-rede”), escolha o perfil <b>Viewer</b> e deixe sem validade. Copie a chave e cole no campo acima. Sem a chave, dá para usar o CSV: no painel, <b>Inspect → Data → Download CSV</b>, e carregue o arquivo aqui.</p></details>`;
+  const msg=(t,err)=>{ $('gMsg').className='status'+(err?' err':''); $('gMsg').textContent=t; };
+  const fim=async t=>{ await loadManut(); await openGrafana(); toast(t); };
+  $('gClose').onclick=closeSheet;
+  $('gSave').onclick=async()=>{ $('gSave').disabled=true; msg('Salvando e lendo o Grafana…');
+    const body={url:$('gUrl').value.trim(),dashboard:$('gDash').value.trim(),panel:$('gPanel').value,dias:+$('gDias').value||100,nunca:$('gNunca').checked,
+      colEstacao:$('gColE').value,colPrioridade:$('gColP').value,colDias:$('gColN').value,colData:$('gColD').value};
+    if($('gTok').value.trim()) body.token=$('gTok').value.trim();
+    try{ await api('PUT','/api/grafana/config',body); await api('POST','/api/grafana/sincronizar'); await fim('Configuração salva.'); }catch(e){ msg(e.message,true); $('gSave').disabled=false; } };
+  $('gNow').onclick=async()=>{ msg('Lendo o Grafana…'); try{ await api('POST','/api/grafana/sincronizar'); await fim('Leitura concluída.'); }catch(e){ msg(e.message,true); } };
+  $('gCsv').onchange=async()=>{ const f=$('gCsv').files[0]; if(!f) return; const txt=await f.text(); const t=parseCSV(txt);
+    if(!t.linhas.length){ msg('Não achei linhas nesse arquivo.',true); return; }
+    try{ await api('POST','/api/grafana/csv',t); await fim(`Arquivo carregado: ${t.linhas.length} linhas.`); }catch(e){ msg(e.message,true); } };
+}
+// CSV do Grafana (vírgula ou ponto e vírgula, com aspas)
+function parseCSV(txt){
+  txt=txt.replace(/^\ufeff/,''); const sep=(txt.split('\n')[0].match(/;/g)||[]).length>(txt.split('\n')[0].match(/,/g)||[]).length?';':',';
+  const rows=[]; let row=[], cur='', q=false;
+  for(let i=0;i<txt.length;i++){ const ch=txt[i];
+    if(q){ if(ch==='"'){ if(txt[i+1]==='"'){ cur+='"'; i++; } else q=false; } else cur+=ch; continue; }
+    if(ch==='"') q=true; else if(ch===sep){ row.push(cur); cur=''; } else if(ch==='\n'){ row.push(cur.replace(/\r$/,'')); rows.push(row); row=[]; cur=''; } else cur+=ch; }
+  if(cur!==''||row.length){ row.push(cur.replace(/\r$/,'')); rows.push(row); }
+  const colunas=(rows.shift()||[]).map(c=>c.trim());
+  const linhas=rows.filter(r=>r.some(x=>x.trim())).map(r=>{ const o={}; colunas.forEach((c,i)=>o[c]=r[i]===undefined?null:r[i].trim()); return o; });
+  return {colunas,linhas};
+}
+$('mGraf').onclick=()=>{ toggleMenu(false); openGrafana(); };
 
 const ROLE_OPTS=[['viewer','Leitura'],['editor','Editor'],['admin','Admin']];
 async function openUsers(){
@@ -1374,7 +1460,7 @@ $('btnPrint').onclick=openPrint;
 
 // ---------- início ----------
 async function start(){
-  try{ await loadGeometry(); await loadStations(); fit(); }
+  try{ await loadGeometry(); await loadStations(); fit(); loadManut(); }
   catch(e){ if(e.status!==401&&e.code!=='must_change'){ dbMissing=true; render(); toast(e.message); } }
 }
 fetch('/api/health').then(r=>r.json()).then(j=>{ if(j&&j.version) $('verTxt').textContent='Versão '+j.version+'.'; }).catch(()=>{});

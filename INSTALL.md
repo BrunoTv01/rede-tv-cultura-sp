@@ -91,6 +91,26 @@ Escolha o papel, de A4 a A0, e confira quem atualizou e a data. Depois clique em
 
 Toda alteração fica registrada com o nome de quem fez e a data. Para consultar, use **Histórico de alterações**, no menu do seu nome, ou **Ver histórico desta estação**, na ficha de cada estação.
 
+## Manutenções do Grafana (estações sem visita há mais de 100 dias)
+
+O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 100 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +100 dias** mostra só essas estações.
+
+Para ligar:
+
+1. No Grafana, entre como administrador e abra **Configuration (engrenagem) → API keys → Add API key**. Use o perfil **Viewer** e deixe sem validade. Copie a chave.
+2. No mapa, abra o menu do seu nome e depois **Manutenções (Grafana)**. Esta opção só aparece para o perfil Admin.
+3. O endereço e o código do painel já vêm preenchidos. Cole a chave e clique em **Salvar e ler agora**.
+
+Na mesma tela dá para:
+
+- mudar o limite de dias;
+- escolher as colunas;
+- ver as cidades do Grafana que não têm estação no mapa.
+
+Se não houver chave, exporte a tabela no Grafana (**Inspect → Data → Download CSV**) e use **Carregar CSV**.
+
+O servidor precisa alcançar o Grafana pela rede (`http://monitorrede.tvcultura.com.br:3000`). A chave também pode ficar em `/etc/rede-tv-cultura.env`, como `GRAFANA_TOKEN=...`.
+
 ## Opções do instalador
 
 As opções vão depois de `bash -s --`, por exemplo:

@@ -21,12 +21,12 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     const { rows } = await pool.query("SELECT valor FROM config WHERE chave='grafana'");
     const c = rows.length ? rows[0].valor : {};
     return {
-      url: (process.env.GRAFANA_URL || c.url || '').replace(/\/+$/, ''),
+      url: (process.env.GRAFANA_URL || c.url || 'http://monitorrede.tvcultura.com.br:3000').replace(/\/+$/, ''),
       token: process.env.GRAFANA_TOKEN || c.token || '',
-      dashboard: process.env.GRAFANA_DASHBOARD || c.dashboard || '',
+      dashboard: process.env.GRAFANA_DASHBOARD || c.dashboard || '7owPaMFvz',
       panel: process.env.GRAFANA_PANEL || c.panel || '',
-      colEstacao: c.colEstacao || '', colPrioridade: c.colPrioridade || '', colData: c.colData || '',
-      valores: Array.isArray(c.valores) ? c.valores : [], dias: +c.dias || 100,
+      colEstacao: c.colEstacao || '', colPrioridade: c.colPrioridade || '', colDias: c.colDias || '', colData: c.colData || '', colStatus: c.colStatus || '',
+      valores: Array.isArray(c.valores) ? c.valores : ['maxima'], dias: +c.dias || 100, nunca: c.nunca !== false,
       apelidos: c.apelidos && typeof c.apelidos === 'object' ? c.apelidos : {},
       envFixo: { url: !!process.env.GRAFANA_URL, token: !!process.env.GRAFANA_TOKEN, dashboard: !!process.env.GRAFANA_DASHBOARD, panel: !!process.env.GRAFANA_PANEL },
     };
@@ -53,8 +53,8 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     });
     const txt = await r.text();
     if (!r.ok) {
-      const msg = r.status === 401 ? 'o Grafana recusou o token (401). Confira o token da conta de serviço.'
-        : r.status === 403 ? 'o token não tem permissão para este painel (403). Dê o perfil Viewer à conta de serviço.'
+      const msg = r.status === 401 ? 'o Grafana recusou a chave de API (401). Confira a chave cadastrada.'
+        : r.status === 403 ? 'a chave de API não tem permissão para este painel (403). Crie a chave com o perfil Viewer na mesma organização do painel.'
         : r.status === 404 ? 'endereço não encontrado no Grafana (404). Confira o código do painel.'
         : `o Grafana respondeu ${r.status}: ${txt.slice(0, 200)}`;
       throw new Error(msg);
@@ -81,26 +81,23 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     if (o && typeof o === 'object') { const r = {}; for (const k in o) r[k] = trocaVarsObj(o[k], vars); return r; }
     return o;
   }
-  const dsCache = new Map();
+  // fontes de dados: /api/frontend/settings funciona com chave de perfil Viewer (a API /api/datasources pede Admin)
+  let dsLista = null;
+  async function fontes(c) {
+    if (dsLista) return dsLista;
+    const fs = await gf(c, 'GET', '/api/frontend/settings');
+    dsLista = { porNome: fs.datasources || {}, padrao: fs.defaultDatasource || '' };
+    setTimeout(() => { dsLista = null; }, 3600 * 1000).unref?.();
+    return dsLista;
+  }
   async function dsRef(c, ref, vars) {
-    if (ref && typeof ref === 'object' && ref.uid) {
-      let uid = trocaVars(ref.uid, vars);
-      if (uid.startsWith('$')) uid = (vars[uid.replace(/^\$\{?|\}$/g, '')] || {}).ds || uid;
-      if (!uid.startsWith('$') && !/^-- /.test(uid)) return { uid, type: ref.type };
-      ref = uid;
-    }
-    if (typeof ref === 'string' && ref) {
-      let name = trocaVars(ref, vars);
-      if (name.startsWith('$')) name = (vars[name.replace(/^\$\{?|\}$/g, '')] || {}).ds || name;
-      if (dsCache.has(name)) return dsCache.get(name);
-      let ds;
-      try { ds = await gf(c, 'GET', '/api/datasources/uid/' + encodeURIComponent(name)); }
-      catch { ds = await gf(c, 'GET', '/api/datasources/name/' + encodeURIComponent(name)); }
-      const out = { uid: ds.uid, type: ds.type }; dsCache.set(name, out); return out;
-    }
-    const def = await gf(c, 'GET', '/api/datasources').then(l => l.find(d => d.isDefault) || l[0]);
-    if (!def) throw new Error('não achei nenhuma fonte de dados no Grafana.');
-    return { uid: def.uid, type: def.type };
+    const L = await fontes(c);
+    const resolve = v => { v = trocaVars(String(v || ''), vars); if (v.startsWith('$')) v = (vars[v.replace(/^\$\{?|\}$/g, '')] || {}).ds || v; return v; };
+    let chave = ref && typeof ref === 'object' ? resolve(ref.uid) : resolve(ref);
+    if (!chave || /^default$/i.test(chave)) chave = L.padrao;
+    let ds = L.porNome[chave] || Object.values(L.porNome).find(d => d.uid === chave);
+    if (!ds) throw new Error(`não achei a fonte de dados "${chave}" no Grafana.`);
+    return { uid: ds.uid, type: ds.type, id: ds.id };
   }
   // devolve as colunas e linhas das tabelas (frames) do painel
   async function consultarPainel(c, dash, panel) {
@@ -109,7 +106,7 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     for (const t of panel.targets || []) {
       if (t.hide) continue;
       const ds = await dsRef(c, t.datasource && !(typeof t.datasource === 'object' && /^-- (Mixed|Dashboard) --$/.test(t.datasource.uid)) ? t.datasource : panel.datasource, vars);
-      queries.push({ ...trocaVarsObj(t, vars), datasource: ds, intervalMs: 60000, maxDataPoints: 5000 });
+      queries.push({ ...trocaVarsObj(t, vars), datasource: { uid: ds.uid, type: ds.type }, datasourceId: ds.id, intervalMs: 60000, maxDataPoints: 5000 });
     }
     if (!queries.length) throw new Error(`o painel "${panel.title}" não tem consultas.`);
     const time = dash.time || {};
@@ -150,13 +147,16 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
       if (alvo) tab = await consultarPainel(c, dash, alvo);
       else {
         // sem painel escolhido: o primeiro cuja tabela tem uma coluna de prioridade
-        const cand = ps.filter(p => /table/.test(p.type)).concat(ps.filter(p => !/table/.test(p.type)));
+        const pri = p => (/table/.test(p.type) ? 0 : 2) + (/visit|manuten|priorid/i.test(norm(p.title)) ? 0 : 1);
+        const cand = ps.slice().sort((a, b) => pri(a) - pri(b));
         for (const p of cand.slice(0, 12)) {
           try { const t = await consultarPainel(c, dash, p); if (t.colunas.some(x => /priorid/i.test(norm(x)))) { tab = t; alvo = p; break; } if (!tab && t.linhas.length) { tab = t; alvo = p; } } catch { /* tenta o próximo */ }
         }
         if (!tab) throw new Error('não achei no dashboard um painel com tabela. Escolha o painel na configuração.');
       }
       cache = { ...cache, ...tab, atualizado: new Date().toISOString(), erro: null, origem: 'grafana', painelUsado: alvo ? { id: alvo.id, titulo: alvo.title } : null };
+      // guarda o painel achado, para não procurar de novo a cada leitura
+      if (!c.panel && alvo) { const { rows } = await pool.query("SELECT valor FROM config WHERE chave='grafana'"); const v = rows.length ? rows[0].valor : {}; v.panel = String(alvo.id); await gravarConfig(v, 'servidor'); }
     } catch (e) {
       cache.erro = (e.name === 'TimeoutError' || e.cause) ? `não consegui falar com o Grafana em ${c.url} (${e.cause ? e.cause.code || e.cause.message : 'tempo esgotado'}).` : e.message;
     }
@@ -168,7 +168,11 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
   /* ---------- cruzamento com as estações ---------- */
   function adivinhar(colunas) {
     const acha = re => colunas.find(c => re.test(norm(c))) || '';
-    return { colEstacao: acha(/esta[cç]?ao|estacao|site|localidade|^local|nome|cidade|municipio/), colPrioridade: acha(/priorid/), colData: acha(/ultima|data|manuten|visita/) };
+    return {
+      colEstacao: acha(/^cidade$|^estacao$/) || acha(/esta[cç]?ao|estacao|site|localidade|^local|nome|cidade|municipio/),
+      colPrioridade: acha(/classe.?priorid/) || acha(/priorid/),
+      colDias: acha(/dias/), colStatus: acha(/status/), colData: acha(/ultima|data/),
+    };
   }
   function diasDesde(v) {
     if (v === null || v === undefined || v === '') return null;
@@ -179,36 +183,53 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
   async function cruzar() {
     const c = await lerConfig();
     const g = adivinhar(cache.colunas);
-    const colE = c.colEstacao || g.colEstacao, colP = c.colPrioridade || g.colPrioridade, colD = c.colData || '';
+    const colE = c.colEstacao || g.colEstacao, colP = c.colPrioridade || g.colPrioridade, colN = c.colDias || g.colDias,
+      colS = c.colStatus || g.colStatus, colD = c.colData || g.colData;
     const { rows } = await pool.query('SELECT id, data FROM estacoes');
-    const idx = new Map();
-    for (const r of rows) for (const k of [r.data.n, r.data.mu]) { const kk = nkey(k); if (kk && !idx.has(kk)) idx.set(kk, r.id); }
-    for (const [nome, id] of Object.entries(c.apelidos)) idx.set(nkey(nome), id);
-    const acharEstacao = nome => {
-      const k = nkey(nome); if (!k) return null;
-      if (idx.has(k)) return idx.get(k);
-      // "Campinas - SP", "RTV Campinas", "Campinas (Gap Filler)"...
-      const base = nkey(String(nome).split(/[-–(/|]/)[0]);
-      if (base && idx.has(base)) return idx.get(base);
-      for (const [kk, id] of idx) if (kk.length >= 5 && (k.includes(kk) || kk.includes(k))) return id;
-      return null;
+    const porNome = new Map(), porMun = new Map();
+    for (const r of rows) {
+      const kn = nkey(r.data.n), km = nkey(r.data.mu);
+      if (kn && !porNome.has(kn)) porNome.set(kn, r.id);
+      if (km) { if (!porMun.has(km)) porMun.set(km, []); porMun.get(km).push(r.id); }
+    }
+    for (const [nome, id] of Object.entries(c.apelidos)) porNome.set(nkey(nome), id);
+    // a linha do Grafana vale para a estação com esse nome; se não houver, para as estações desse município
+    const acharEstacoes = nome => {
+      for (const k of [nkey(nome), nkey(String(nome).split(/[-–(/|]/)[0])]) {
+        if (!k) continue;
+        if (porNome.has(k)) return [porNome.get(k)];
+        if (porMun.has(k)) return porMun.get(k);
+      }
+      return [];
     };
     const itens = {}, semEstacao = [];
-    if (!colE) return { itens, semEstacao, colE, colP, colD, dias: c.dias };
+    if (!colE) return { itens, semEstacao, colE, colP, colN, colS, colD, dias: c.dias };
     for (const row of cache.linhas) {
       const nome = row[colE]; if (nome === null || nome === undefined || nome === '') continue;
-      const id = acharEstacao(nome);
-      const prio = colP ? String(row[colP] ?? '').trim() : '';
-      const dias = colD ? diasDesde(row[colD]) : null;
-      const porValor = prio && c.valores.some(v => norm(v) === norm(prio));
-      const porData = dias !== null && dias > c.dias;
-      if (!id) { if (porValor || porData) semEstacao.push(String(nome)); continue; }
-      const it = itens[id] || (itens[id] = { nome: String(nome), prio: '', dias: null, alerta: false });
-      if (prio && !it.prio) it.prio = prio;
-      if (dias !== null && (it.dias === null || dias < it.dias)) it.dias = dias;
-      if (porValor || porData) it.alerta = true;
+      const classe = colP ? String(row[colP] ?? '').trim() : '';
+      let dias = colN && row[colN] !== null && row[colN] !== '' && row[colN] !== undefined && !isNaN(+row[colN]) ? Math.round(+row[colN]) : null;
+      if (dias === null && colD) dias = diasDesde(row[colD]);
+      const status = colS ? String(row[colS] ?? '').trim() : '';
+      const nunca = /nunca/i.test(norm(status)) || (!dias && !row[colD] && /maxima/.test(norm(classe)));
+      const alerta = (dias !== null && dias > c.dias) || (c.nunca && nunca) || (classe && c.valores.some(v => norm(v) === norm(classe)));
+      const ids = acharEstacoes(nome);
+      if (!ids.length) { if (alerta) semEstacao.push(String(nome)); continue; }
+      for (const id of ids) {
+        const it = itens[id] || (itens[id] = { nome: String(nome), classe: '', dias: null, ultima: null, nunca: false, alerta: false });
+        if (classe && !it.classe) it.classe = classe;
+        if (dias !== null && (it.dias === null || dias < it.dias)) it.dias = dias;
+        if (colD && row[colD] && (!it.ultima || String(row[colD]) > it.ultima)) it.ultima = String(row[colD]);
+        if (nunca) it.nunca = true;
+        if (alerta) it.alerta = true;
+      }
     }
-    return { itens, semEstacao: [...new Set(semEstacao)], colE, colP, colD, dias: c.dias };
+    // regra final por estação (a mesma cidade pode aparecer em mais de uma linha, uma por equipe):
+    // vale a manutenção mais recente
+    for (const it of Object.values(itens)) {
+      it.alerta = it.dias !== null ? it.dias > c.dias : (c.nunca && it.nunca);
+      if (!it.alerta && it.dias === null && it.classe && c.valores.some(v => norm(v) === norm(it.classe))) it.alerta = true;
+    }
+    return { itens, semEstacao: [...new Set(semEstacao)], colE, colP, colN, colS, colD, dias: c.dias };
   }
 
   /* ---------- rotas ---------- */
@@ -216,7 +237,7 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     try {
       const x = await cruzar();
       const alertas = {}; for (const [id, it] of Object.entries(x.itens)) if (it.alerta) alertas[id] = it;
-      res.json({ atualizado: cache.atualizado, erro: cache.erro, origem: cache.origem, dias: x.dias, alertas, total: Object.keys(alertas).length });
+      res.json({ atualizado: cache.atualizado, erro: cache.erro, origem: cache.origem, dias: x.dias, alertas, itens: x.itens, total: Object.keys(alertas).length, configurado: !!(cache.linhas && cache.linhas.length) });
     } catch (e) { next(e); }
   });
   app.get('/api/grafana/config', requireRole('admin'), async (_req, res, next) => {
@@ -225,7 +246,7 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
       const valores = x.colP ? [...new Set(cache.linhas.map(r => String(r[x.colP] ?? '').trim()).filter(Boolean))].slice(0, 60) : [];
       res.json({
         url: c.url, dashboard: c.dashboard, panel: c.panel, temToken: !!c.token, envFixo: c.envFixo,
-        colEstacao: x.colE, colPrioridade: x.colP, colData: x.colD, valores: c.valores, dias: c.dias,
+        colEstacao: x.colE, colPrioridade: x.colP, colDias: x.colN, colStatus: x.colS, colData: x.colD, valores: c.valores, dias: c.dias, nunca: c.nunca,
         colunas: cache.colunas, valoresEncontrados: valores, paineis: cache.paineis || [], painelUsado: cache.painelUsado || null,
         amostra: cache.linhas.slice(0, 8), linhas: cache.linhas.length, atualizado: cache.atualizado, erro: cache.erro, origem: cache.origem,
         alertas: Object.values(x.itens).filter(i => i.alerta).length, semEstacao: x.semEstacao,
@@ -246,6 +267,9 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
         colEstacao: b.colEstacao !== undefined ? s(b.colEstacao, 120) : old.colEstacao,
         colPrioridade: b.colPrioridade !== undefined ? s(b.colPrioridade, 120) : old.colPrioridade,
         colData: b.colData !== undefined ? s(b.colData, 120) : old.colData,
+        colDias: b.colDias !== undefined ? s(b.colDias, 120) : old.colDias,
+        colStatus: b.colStatus !== undefined ? s(b.colStatus, 120) : old.colStatus,
+        nunca: b.nunca !== undefined ? !!b.nunca : old.nunca,
         valores: Array.isArray(b.valores) ? b.valores.slice(0, 40).map(v => s(v, 120)) : old.valores,
         dias: b.dias !== undefined ? Math.min(3650, Math.max(1, Math.round(+b.dias || 100))) : old.dias,
       };
