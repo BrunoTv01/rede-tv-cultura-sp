@@ -265,6 +265,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
           <button role="menuitem" id="mPrint">Imprimir mapa (prancha)</button>
           <button role="menuitem" id="mHist">Histórico de alterações</button>
           <button role="menuitem" id="mAreas" hidden>Áreas e responsáveis</button>
+          <button role="menuitem" id="mLab" hidden>Mover nomes das estações</button>
           <button role="menuitem" id="mDiv" hidden>Ajustar linhas de divisão</button>
           <button role="menuitem" id="mOrig" hidden>Voltar ao mapa original</button>
           <button role="menuitem" id="mUsers" hidden>Usuários</button>
@@ -686,7 +687,7 @@ function renderDetail(){
     ${cov.length?`<details class="cov" open><summary>Cobertura · ${cov.length} município${cov.length>1?'s':''} · ${fmt(tot)} hab.</summary><p>${cov.map(c=>esc(c[0])+(c[1]?' <span class="mono">('+fmt(c[1])+')</span>':'')).join(', ')}</p></details>`:(s.r==='G'||s.r==='F'||s.r==='P'?'':'<p class="status">Sem dados de cobertura.</p>')}
     <div style="margin-top:10px"><a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}" target="_blank" rel="noopener">Abrir ${esc(s.mu||s.n)} no Google Maps ↗</a></div>
     <div class="edited" id="editedBy"></div><button class="linkbtn" id="bHist" type="button">Ver histórico desta estação</button>
-    ${canEditHere?`<div class="actions"><button class="btn pri" id="bEdit">Editar</button><button class="btn" id="bMove">Mudar posição</button><button class="btn dan" id="bDel">Excluir</button></div>`:''}
+    ${canEditHere?`<div class="actions"><button class="btn pri" id="bEdit">Editar</button><button class="btn" id="bMove">Mudar posição</button><button class="btn" id="bLab">Mover nome</button><button class="btn dan" id="bDel">Excluir</button></div>`:''}
     ${confirmDel?`<div class="confirm">Excluir “${esc(s.n)}” do cadastro? Isso não pode ser desfeito.<div class="btnrow"><button class="btn dan" id="bDelYes">Excluir</button><button class="btn" id="bDelNo">Cancelar</button></div></div>`:''}
     ${statusHtml()}</div>`;
   $('bClose').onclick=closeDetail;
@@ -694,6 +695,7 @@ function renderDetail(){
   if(canEditHere){
     $('bEdit').onclick=()=>openEditor(s.id);
     $('bMove').onclick=()=>startPlacing('move',s.id);
+    $('bLab').onclick=()=>{ const L=labelLines(s); closeDetail(); zoomTo((s.x+L.x)/2,-(s.y+L.y)/2,Math.max(110,Math.hypot(L.x-s.x,L.y-s.y)*3)); setLabMode(true); toast('Arraste o nome de '+s.n+' para o lugar certo.'); };
     $('bDel').onclick=()=>{ confirmDel=true; statusMsg=''; render(); };
     if(confirmDel){ $('bDelNo').onclick=()=>{confirmDel=false; render();}; $('bDelYes').onclick=()=>doDelete(s.id); }
   }
@@ -766,6 +768,7 @@ function startPlacing(kind,id){ if(view2!=='map'){ view2='map'; render(); } plac
 function stopPlacing(){ placing=null; $('banner').hidden=true; svg.classList.remove('placing'); }
 $('bannerX').onclick=()=>{ if(labMode) setLabMode(false); else stopPlacing(); };
 $('zlab').onclick=()=>setLabMode(!labMode);
+$('mLab').onclick=()=>{ toggleMenu(false); setLabMode(true); };
 async function placeAt(x,y){
   const p=placing; stopPlacing();
   if(p.kind==='new'){ openEditor(null,{x,y}); return; }
@@ -838,7 +841,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
-  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin');
+  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; $('mLab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin');
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
