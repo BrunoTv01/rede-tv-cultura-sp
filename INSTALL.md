@@ -110,7 +110,7 @@ Na primeira vez que o sistema atualizado inicia, ele preenche a rede SFN das est
 
 O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 120 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +120 dias** mostra só essas estações.
 
-Na instalação e em cada atualização, o instalador pergunta o endereço do Grafana e a chave de API (Enter mantém o que já está configurado; sem resposta em 60 segundos ele segue), testa o acesso e grava em `/etc/rede-tv-cultura.env`. Para refazer só essa parte: `sudo /opt/rede-tv-cultura/deploy/grafana-setup.sh`. Em instalação sem terminal, use `bash -s -- --grafana-url URL --grafana-token CHAVE` (ou `--sem-grafana` para pular).
+Na instalação e em cada atualização, o instalador já coloca sozinho o endereço do painel (`http://monitorrede.tvcultura.com.br:3000/d/7owPaMFvz/manutencoes-rede?orgId=1`), testa o acesso e grava em `/etc/rede-tv-cultura.env`. A chave de API só é pedida se o Grafana exigir login. Para refazer só essa parte: `sudo /opt/rede-tv-cultura/deploy/grafana-setup.sh`. Em instalação sem terminal, use `bash -s -- --grafana-url URL --grafana-token CHAVE` (ou `--sem-grafana` para pular).
 
 Desde a versão 2.10.4 isso funciona **sem chave**: o Grafana da rede libera leitura sem login, e o servidor lê o painel como visitante assim que inicia. Se o Grafana passar a exigir login, ou para usar uma chave mesmo assim:
 
@@ -143,7 +143,7 @@ curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/i
 | `--nginx` | Publica na porta 80 por meio do nginx, para acessar só por `http://IP-DO-SERVIDOR` |
 | `--dominio NOME` | Nome do site no nginx, por exemplo `mapa.empresa.local` |
 | `--sem-banco` | Não instala PostgreSQL; usa o banco informado em `DATABASE_URL` |
-| `--grafana-url URL` | Endereço do Grafana (padrão `http://monitorrede.tvcultura.com.br:3000`), sem perguntar |
+| `--grafana-url URL` | Outro endereço do Grafana ou do painel (padrão `http://monitorrede.tvcultura.com.br:3000/d/7owPaMFvz`) |
 | `--grafana-token CHAVE` | Chave de API do Grafana (perfil Viewer), sem perguntar |
 | `--sem-grafana` | Não pergunta nem testa o acesso ao Grafana |
 
