@@ -89,6 +89,14 @@ svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
 .sfnf.on{opacity:.32}
 .sfnl{fill:none;stroke:#ff5a4e;stroke-linejoin:round;stroke-linecap:round;opacity:.9}
 .sfnc circle{fill:rgba(10,18,32,.85);stroke:var(--fg);stroke-width:.5}
+.sfnc .sfnq{fill:rgba(10,18,32,.9);stroke:var(--fg);stroke-width:.3}
+.sfnc text.sfnqt{font:700 3px/1 var(--mono)}
+.lgb>.sfnlst{display:grid;width:760px;max-width:100%;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:2px 10px;margin-top:8px;max-height:190px;overflow:auto}
+.sfnlst button{all:unset;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;padding:3px 4px;border-radius:4px}
+.sfnlst button:hover{background:rgba(255,255,255,.06)}
+.sfnlst button span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sfnlst button i{width:9px;height:9px;border-radius:50%;flex:none}
+.sfnlst button b{font-family:var(--mono);color:var(--fg)}
 .sfnc text{fill:var(--fg);font:600 2.7px/1 var(--mono);text-anchor:middle}
 #gSfn{display:none}svg#map.msfn #gSfn{display:inline}svg#map.msfn .dv,svg#map.msfn #gALab{display:none}
 .sym.dim{opacity:.18}
@@ -418,13 +426,13 @@ function drawSfn(){
     r.fill.forEach(f=>{ if(f.d) { const e=mk('path',{class:'sfnf',d:f.d,fill:sfnColor(f.nome)},gSfnEl); e.dataset.n=f.nome; } });
     mk('path',{class:'sfnl',d:r.red.map(l=>l.map((q,i)=>(i?'L':'M')+q[0]+' '+(-q[1])).join('')).join('')},gSfnEl);
     r.rotulos.forEach(o=>{ const m=/^(\S+)\s+CV(\S+)/.exec(o.nome); if(!m) return; const g=mk('g',{class:'sfnc'},gSfnEl); g.dataset.x=o.x; g.dataset.y=o.y; mk('circle',{r:5.6},g);
-      const t1=mk('text',{y:-0.6},g); t1.textContent='CF '+m[1]; const t2=mk('text',{y:2.6},g); t2.textContent='CV'+m[2]; const tt=mk('title',{},g); tt.textContent='Rede SFN '+o.nome; });
+      const t1=mk('text',{y:-0.6},g); t1.textContent='CF '+m[1]; const t2=mk('text',{y:2.6},g); t2.textContent='CV'+m[2]; const tt=mk('title',{},g); tt.textContent='Rede SFN '+o.nome+' · '+sfnConta(o.nome)+' estações'; sfnBadge(g,o.nome); });
     apply(); return; }
   const j=SFN_PDF;
   mk('path',{class:'sfnl',d:j.linhas.map(l=>l.map((q,i)=>(i?'L':'M')+q[0]+' '+(-q[1])).join('')).join('')},gSfnEl);
   j.redes.forEach(r=>r.circulos.forEach(([x,y])=>{ const g=mk('g',{class:'sfnc'},gSfnEl); g.dataset.x=x; g.dataset.y=y; mk('circle',{r:5.6},g);
     const t1=mk('text',{y:-0.6},g); t1.textContent='CF '+r.cf; const t2=mk('text',{y:2.6},g); t2.textContent='CV'+r.cv;
-    const tt=mk('title',{},g); tt.textContent='Rede SFN '+r.cf+' CV'+r.cv; }));
+    const tt=mk('title',{},g); tt.textContent='Rede SFN '+r.nome+' · '+sfnConta(r.nome)+' estações'; sfnBadge(g,r.nome); }));
   apply(); }
 function setSfnFonte(f){ sfnFonte=f; try{ localStorage.setItem('tvc-sfn-linhas',f); }catch(e){} drawSfn(); render(); }
 function drawBase(){ drawBaseShapes(); drawAreaLabels(); semSinalTxt(); }
@@ -671,6 +679,10 @@ function sfnColors(){ const names=[...new Set(ST.map(s=>s.sfn).filter(Boolean))]
   const uso=new Array(SFN_PAL.length).fill(0);
   ord.forEach(n=>{ const usadas=new Set([...viz.get(n)].filter(m=>sfnIdx.has(m)).map(m=>sfnIdx.get(m)));
     let c=-1; for(let i=0;i<SFN_PAL.length;i++) if(!usadas.has(i)&&(c<0||uso[i]<uso[c])) c=i; if(c<0) c=0; uso[c]++; sfnIdx.set(n,c); }); }
+let sfnFoco='';
+const sfnConta=n=>ST.filter(s=>s.sfn===n).length;
+function sfnRedes(){ const m=new Map(); ST.forEach(s=>{ if(s.sfn) m.set(s.sfn,(m.get(s.sfn)||0)+1); }); return [...m].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'pt')); }
+function sfnBadge(g,nome){ const n=sfnConta(nome); if(!n) return; mk('rect',{class:'sfnq',x:-5.4,y:6.1,width:10.8,height:4.6,rx:2.3},g); const t=mk('text',{class:'sfnqt',y:9.5},g); t.textContent=n+' est.'; }
 const sfnColor=n=> n&&sfnIdx.has(n) ? SFN_PAL[sfnIdx.get(n)%SFN_PAL.length] : '#5f708b';
 const color=s=> mode==='area' ? `var(--a${s.a})` : mode==='sfn' ? sfnColor(s.sfn) : `var(--t${s.rc})`;
 function select(id,fly){ if(editing) return; sel=id; confirmDel=false; statusMsg=''; if(view2!=='map'){ view2='map'; } render(); const s=byId.get(id); if(fly&&s) flyTo(s);
@@ -688,7 +700,7 @@ function render(){
   areaEls.forEach(el=>{ const a=el.dataset.a; el.setAttribute('class', mode==='area'&&(areaOn[a]||(a==='1'&&areaOn[5])) ? 'ar'+a : 'land'); });
   const vis=[];
   manRender();
-  const selSfn=mode==='sfn'&&sel&&byId.get(sel)?byId.get(sel).sfn:'';
+  const selSfn=mode!=='sfn'?'':(sel&&byId.get(sel)?byId.get(sel).sfn:sfnFoco);
   ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.classList.toggle('dim',!!selSfn&&s.sfn!==selSfn); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
   gSfnEl.querySelectorAll('.sfnf').forEach(f=>f.classList.toggle('on',!!selSfn&&f.dataset.n===selSfn));
   if(sel&&symEls.get(sel)) gSym.appendChild(symEls.get(sel));
@@ -699,16 +711,21 @@ function render(){
   const recKeys=Object.keys(REC).filter(t=>ST.some(s=>s.rc===t));
   let h;
   if(mode==='area') h=AK.map(a=>`<div><i style="background:var(--a${a})"></i>${AREAS[a].n} · ${AREAS[a].e}</div>`).join('');
-  else if(mode==='sfn'){ const ss=sel&&byId.get(sel)&&byId.get(sel).sfn; const nR=sfnIdx.size, sem=ST.filter(s=>!s.sfn).length;
-    h=ss?`<div><i style="background:${sfnColor(ss)}"></i><b>SFN ${esc(ss)}</b></div><div class="mansub">${ST.filter(s=>s.sfn===ss).map(s=>esc(s.n)).join(', ')}</div>`
-       :`<div>Cada cor é uma rede SFN: estações no mesmo canal (CF) e virtual (CV).</div><div class="mansub">${nR} redes · círculos = canal da rede · clique numa estação para ver a rede dela${sem?` · ${sem} sem rede (cinza)`:''}</div>`;
+  else if(mode==='sfn'){ const ss=(sel&&byId.get(sel)&&byId.get(sel).sfn)||sfnFoco; const redes=sfnRedes(), sem=ST.filter(s=>!s.sfn).length;
+    h=ss?`<div><i style="background:${sfnColor(ss)}"></i><b>SFN ${esc(ss)}</b> · <b>${sfnConta(ss)}</b> estações${!sel?` <button class="linkbtn" data-sfnr="">ver todas</button>`:''}</div><div class="mansub">${ST.filter(s=>s.sfn===ss).map(s=>esc(s.n)).sort((a,b)=>a.localeCompare(b,'pt')).join(', ')}</div>`
+       :`<div>Cada cor é uma rede SFN: estações no mesmo canal (CF) e virtual (CV). <b>${redes.length}</b> redes${sem?` · ${sem} estações sem rede (cinza)`:''}.</div><div class="sfnlst">${redes.map(([n,c])=>`<button data-sfnr="${esc(n)}" title="Ver as estações da rede ${esc(n)}"><i style="background:${sfnColor(n)}"></i><span>${esc(n)}</span><b>${c}</b></button>`).join('')}</div>`;
     h+=`<div class="mansub">Divisões: <button class="linkbtn" data-sfnf="auto"${sfnFonte==='auto'?' style="font-weight:700;text-decoration:none"':''}>automáticas</button> · <button class="linkbtn" data-sfnf="pdf"${sfnFonte==='pdf'?' style="font-weight:700;text-decoration:none"':''}>do mapa SFN (PDF)</button></div>`; }
   else h=recKeys.map(t=>`<div><i style="background:var(--t${t})"></i>${REC[t]}</div>`).join('');
   h+='<div class="sep"></div>'+Object.keys(MAN).map(k=>`<div>${legendSym(k)}${MAN[k]}</div>`).join('');
   $('legend').innerHTML=h;
   $('legend').querySelectorAll('[data-sfnf]').forEach(b=>b.onclick=()=>setSfnFonte(b.dataset.sfnf));
+  $('legend').querySelectorAll('[data-sfnr]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); sfnFoco=b.dataset.sfnr; render(); });
   const list=$('list'); let lh='';
-  AK.forEach(a=>{ const items=vis.filter(s=>s.a===a).sort((x,y)=>x.n.localeCompare(y.n,'pt')); if(!items.length) return;
+  if(mode==='sfn'){ const grupos=[...sfnRedes().map(([n])=>n),''];
+    grupos.forEach(g=>{ const items=vis.filter(s=>(s.sfn||'')===g).sort((x,y)=>x.n.localeCompare(y.n,'pt')); if(!items.length) return;
+      lh+=`<div class="grp"><span style="color:${sfnColor(g)}">${g?'SFN '+esc(g):'Sem rede SFN'}</span><span>${items.length}</span></div>`;
+      items.forEach(s=>{ lh+=`<button class="row${sel===s.id?' sel':''}" data-id="${esc(s.id)}"><i style="background:${color(s)};color:${color(s)}"></i><span class="nm">${esc(s.n)}${s.hit?`<small> · cobre ${esc(s.hit)}</small>`:''}</span><span class="c">${s.ch?esc(s.ch):'—'}${s.vt?' · '+esc(s.vt):''}</span></button>`; }); }); }
+  else AK.forEach(a=>{ const items=vis.filter(s=>s.a===a).sort((x,y)=>x.n.localeCompare(y.n,'pt')); if(!items.length) return;
     lh+=`<div class="grp"><span style="color:var(--a${a})">${AREAS[a].n} · ${AREAS[a].e}</span><span>${items.length}</span></div>`;
     items.forEach(s=>{ lh+=`<button class="row${sel===s.id?' sel':''}" data-id="${esc(s.id)}"><i style="background:${color(s)};color:${color(s)}"></i><span class="nm">${esc(s.n)}${s.hit?`<small> · cobre ${esc(s.hit)}</small>`:''}</span><span class="c">${s.ch?esc(s.ch):'—'}${s.vt?' · '+esc(s.vt):''}</span></button>`; }); });
   list.innerHTML=lh||(loaded?'<div class="note">Nenhuma estação com esses filtros.</div>':(dbMissing?'<div class="note">Não foi possível falar com o servidor. Verifique a conexão e recarregue a página.</div>':''));

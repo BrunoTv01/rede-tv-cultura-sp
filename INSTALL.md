@@ -98,6 +98,7 @@ Cada estação mostra a rede SFN (Single Frequency Network) a que pertence, conf
 - **Ficha:** a linha **Rede SFN** mostra a rede e quantas estações ela tem.
 - **Mapa:** o botão **SFN**, ao lado de Área e Recepção, pinta cada rede de uma cor e desenha as divisões e os círculos CF/CV do mapa SFN. Clicando numa estação, as outras redes ficam apagadas e a legenda lista as estações da rede.
 - **Divisões SFN:** as linhas vermelhas são calculadas a partir das estações: cada ponto do estado fica com a rede da estação mais próxima, e a fronteira entre duas redes vira linha. As linhas fecham na divisa do estado, cada rede ganha um fundo da sua cor e o círculo CF/CV fica no meio da região dela. Quando uma estação muda de rede ou de posição, as linhas mudam sozinhas. Na legenda dá para trocar para as linhas originais do mapa SFN (PDF).
+- **Quantas estações em cada rede:** no modo SFN a legenda lista todas as redes com o número de estações, da maior para a menor; clicar numa rede destaca ela no mapa e mostra os nomes. O círculo CF/CV de cada rede mostra também “N est.”, e a lista da esquerda fica agrupada por rede, com o total de cada uma.
 - **Tabela:** tem a coluna **Rede SFN**.
 - **Busca:** aceita, por exemplo, “sfn 38D” ou “sfn Campinas”.
 - **Edição:** o campo **Rede SFN** fica no formulário da estação, com sugestões das redes existentes.
