@@ -82,7 +82,7 @@ gravarEnv GRAFANA_DASHBOARD "$PAINEL"
 gravarEnv GRAFANA_TOKEN "$TOKEN"
 
 case "$COD" in
-  200) ok "Grafana acessível em $URL ($([ -n "$TOKEN" ] && echo 'com chave de API' || echo 'sem login')). As manutenções são lidas a cada 15 minutos.";;
+  200) ok "Grafana acessível em $URL ($([ -n "$TOKEN" ] && echo 'com chave de API' || echo 'sem login')). As manutenções são lidas a cada hora.";;
   000) warn "Grafana: não consegui falar com $URL. O servidor está na rede que alcança o Grafana? Ajuste depois com: sudo /opt/$APP/deploy/grafana-setup.sh";;
   401|403) warn "Grafana: acesso negado ($COD). Crie uma chave de API (perfil Viewer) e rode: sudo /opt/$APP/deploy/grafana-setup.sh";;
   404) warn "Grafana: painel $PAINEL não encontrado em $URL. Rode de novo: sudo /opt/$APP/deploy/grafana-setup.sh";;

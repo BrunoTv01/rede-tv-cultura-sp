@@ -108,7 +108,7 @@ Na primeira vez que o sistema atualizado inicia, ele preenche a rede SFN das est
 
 ## Manutenções do Grafana (estações sem visita há mais de 120 dias)
 
-O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 120 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +120 dias** mostra só essas estações.
+O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, uma vez por hora (e logo que o sistema inicia). Para ler na hora, use **Salvar e ler agora** em Manutenções (Grafana). As estações sem manutenção há mais de 120 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +120 dias** mostra só essas estações.
 
 Na instalação e em cada atualização, o instalador já coloca sozinho o endereço do painel (`http://monitorrede.tvcultura.com.br:3000/d/7owPaMFvz/manutencoes-rede?orgId=1`), testa o acesso e grava em `/etc/rede-tv-cultura.env`. A chave de API só é pedida se o Grafana exigir login. Para refazer só essa parte: `sudo /opt/rede-tv-cultura/deploy/grafana-setup.sh`. Em instalação sem terminal, use `bash -s -- --grafana-url URL --grafana-token CHAVE` (ou `--sem-grafana` para pular).
 

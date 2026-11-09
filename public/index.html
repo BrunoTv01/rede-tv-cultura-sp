@@ -919,7 +919,7 @@ async function loadStations(){
 }
 // ---------- manutenções (Grafana "Manutenções Rede") ----------
 async function loadManut(){ try{ MANUT=await api('GET','/api/manutencao'); }catch(e){ return; } if(loaded) render(); }
-setInterval(()=>{ if(me&&!me.mustChange&&!document.hidden) loadManut(); },5*60*1000);
+setInterval(()=>{ if(me&&!me.mustChange&&!document.hidden) loadManut(); },10*60*1000);
 const dataBR=v=>{ const d=new Date(String(v).replace(' ','T')); return isNaN(d)?String(v):d.toLocaleDateString('pt-BR'); };
 function manLinha(s){ const it=MANUT.itens&&MANUT.itens[s.id]; if(!it) return '';
   const cl=it.classe?` · prioridade ${esc(it.classe)}`:'';
@@ -1080,7 +1080,7 @@ async function openGrafana(){
   const st=c.erro?`<div class="status err">Não foi possível ler o Grafana: ${esc(c.erro)}</div>`
     :c.atualizado?`<div class="status">Lido em ${new Date(c.atualizado).toLocaleString('pt-BR')} ${c.origem==='csv'?'(arquivo CSV)':c.painelUsado?'· painel “'+esc(c.painelUsado.titulo)+'”':''} · ${c.linhas} linhas · <b>${c.alertas}</b> estações em alerta${c.semEstacao.length?` · sem estação no mapa: ${esc(c.semEstacao.join(', '))}`:''}</div>`
     :'<div class="status">Ainda não foi lido.</div>';
-  $('sheetBody').innerHTML=`<p class="sub">O servidor lê o painel “Manutenções Rede” do Grafana a cada 15 minutos e marca no mapa, com um <b style="color:#ff6b62">!</b> vermelho, as estações sem manutenção há mais dias que o limite. O Grafana da rede permite leitura sem login, então a chave de API é opcional: sem ela, o sistema lê o painel como visitante.</p>
+  $('sheetBody').innerHTML=`<p class="sub">O servidor lê o painel “Manutenções Rede” do Grafana a cada hora e marca no mapa, com um <b style="color:#ff6b62">!</b> vermelho, as estações sem manutenção há mais dias que o limite. O Grafana da rede permite leitura sem login, então a chave de API é opcional: sem ela, o sistema lê o painel como visitante.</p>
   ${st}
   <div class="pgrid">
     <label class="pf">Endereço do Grafana<input id="gUrl" value="${esc(c.url)}"${fx('url')}></label>

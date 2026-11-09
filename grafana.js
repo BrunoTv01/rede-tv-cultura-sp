@@ -8,7 +8,7 @@
 // Configuração: tabela config, chave 'grafana'. Variáveis de ambiente (em /etc/rede-tv-cultura.env)
 // têm prioridade: GRAFANA_URL, GRAFANA_TOKEN, GRAFANA_DASHBOARD, GRAFANA_PANEL.
 
-const INTERVALO_MS = 15 * 60 * 1000;
+const INTERVALO_MS = 60 * 60 * 1000; // lê o Grafana uma vez por hora
 
 const norm = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const nkey = s => norm(s).replace(/[^a-z0-9]/g, '');
