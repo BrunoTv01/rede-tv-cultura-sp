@@ -12,6 +12,8 @@ const INTERVALO_MS = 15 * 60 * 1000;
 
 const norm = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const nkey = s => norm(s).replace(/[^a-z0-9]/g, '');
+// segunda chance para grafias diferentes: Luiz/Luís, Sta./Santa, Sto./Santo
+const nkey2 = s => nkey(String(s ?? '').replace(/\bSta\.?\s/gi, 'Santa ').replace(/\bSto\.?\s/gi, 'Santo ')).replace(/z/g, 's').replace(/y/g, 'i');
 
 module.exports = function grafana({ app, pool, requireRole, audit }) {
   let cache = { atualizado: null, erro: null, origem: null, colunas: [], linhas: [], paineis: [] };
@@ -46,14 +48,19 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
   }
 
   /* ---------- API do Grafana ---------- */
+  // usa a chave de API quando houver; se não houver (ou se o Grafana recusar a chave), tenta o acesso
+  // anônimo, que o Grafana da rede libera para leitura dos painéis
+  let anonimo = false;
   async function gf(c, method, p, body) {
-    const r = await fetch(c.url + p, {
-      method, headers: { Authorization: 'Bearer ' + c.token, 'Content-Type': 'application/json', Accept: 'application/json' },
+    const ir = auth => fetch(c.url + p, {
+      method, headers: { ...(auth ? { Authorization: 'Bearer ' + c.token } : {}), 'Content-Type': 'application/json', Accept: 'application/json' },
       body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000),
     });
+    let r = await ir(!!c.token && !anonimo);
+    if ((r.status === 401 || r.status === 403) && c.token && !anonimo) { const r2 = await ir(false); if (r2.ok) { anonimo = true; r = r2; } }
     const txt = await r.text();
     if (!r.ok) {
-      const msg = r.status === 401 ? 'o Grafana recusou a chave de API (401). Confira a chave cadastrada.'
+      const msg = r.status === 401 ? (c.token ? 'o Grafana recusou a chave de API (401). Confira a chave cadastrada.' : 'o Grafana pediu login (401). Cadastre uma chave de API (perfil Viewer).')
         : r.status === 403 ? 'a chave de API não tem permissão para este painel (403). Crie a chave com o perfil Viewer na mesma organização do painel.'
         : r.status === 404 ? 'endereço não encontrado no Grafana (404). Confira o código do painel.'
         : `o Grafana respondeu ${r.status}: ${txt.slice(0, 200)}`;
@@ -135,7 +142,8 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
   /* ---------- sincronização ---------- */
   async function sincronizar() {
     const c = await lerConfig();
-    if (!c.url || !c.token || !c.dashboard) { if (cache.origem !== 'csv') cache.erro = null; return cache; }
+    if (!c.url || !c.dashboard) { if (cache.origem !== 'csv') cache.erro = null; return cache; }
+    anonimo = false;
     try {
       const d = await gf(c, 'GET', '/api/dashboards/uid/' + encodeURIComponent(c.dashboard));
       const dash = d.dashboard || {};
@@ -186,11 +194,14 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
     const colE = c.colEstacao || g.colEstacao, colP = c.colPrioridade || g.colPrioridade, colN = c.colDias || g.colDias,
       colS = c.colStatus || g.colStatus, colD = c.colData || g.colData;
     const { rows } = await pool.query('SELECT id, data FROM estacoes');
-    const porNome = new Map(), porMun = new Map();
+    const porNome = new Map(), porMun = new Map(), porNome2 = new Map(), porMun2 = new Map();
     for (const r of rows) {
       const kn = nkey(r.data.n), km = nkey(r.data.mu);
       if (kn && !porNome.has(kn)) porNome.set(kn, r.id);
       if (km) { if (!porMun.has(km)) porMun.set(km, []); porMun.get(km).push(r.id); }
+      const kn2 = nkey2(r.data.n), km2 = nkey2(r.data.mu);
+      if (kn2 && !porNome2.has(kn2)) porNome2.set(kn2, r.id);
+      if (km2) { if (!porMun2.has(km2)) porMun2.set(km2, []); porMun2.get(km2).push(r.id); }
     }
     for (const [nome, id] of Object.entries(c.apelidos)) porNome.set(nkey(nome), id);
     // a linha do Grafana vale para a estação com esse nome; se não houver, para as estações desse município
@@ -199,6 +210,11 @@ module.exports = function grafana({ app, pool, requireRole, audit }) {
         if (!k) continue;
         if (porNome.has(k)) return [porNome.get(k)];
         if (porMun.has(k)) return porMun.get(k);
+      }
+      for (const k of [nkey2(nome), nkey2(String(nome).split(/[-–(/|]/)[0])]) {
+        if (!k) continue;
+        if (porNome2.has(k)) return [porNome2.get(k)];
+        if (porMun2.has(k)) return porMun2.get(k);
       }
       return [];
     };

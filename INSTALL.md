@@ -110,7 +110,7 @@ Na primeira vez que o sistema atualizado inicia, ele preenche a rede SFN das est
 
 O sistema pode ler o painel **Manutenções Rede** do Grafana, a tabela “Estações - Efetuar Visitadas”, a cada 15 minutos. As estações sem manutenção há mais de 120 dias, ou que nunca tiveram manutenção, ganham um **!** vermelho no mapa. A ficha mostra os dias, a data da última visita e a classe de prioridade. No painel da esquerda, o filtro **Sem manutenção +120 dias** mostra só essas estações.
 
-Para ligar:
+Desde a versão 2.10.4 isso funciona **sem chave**: o Grafana da rede libera leitura sem login, e o servidor lê o painel como visitante assim que inicia. Se o Grafana passar a exigir login, ou para usar uma chave mesmo assim:
 
 1. No Grafana, entre como administrador e abra **Configuration (engrenagem) → API keys → Add API key**. Use o perfil **Viewer** e deixe sem validade. Copie a chave.
 2. No mapa, abra o menu do seu nome e depois **Manutenções (Grafana)**. Esta opção só aparece para o perfil Admin.
