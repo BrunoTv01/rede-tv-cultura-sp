@@ -55,7 +55,9 @@ module.exports = function telemetria({ app, pool, requireRole, audit }) {
     const txt = await r.text();
     if (!r.ok) {
       const msg = (r.status === 401 || r.status === 403)
-        ? (c.token ? `o Grafana recusou a chave (${r.status}). Confira a chave cadastrada.` : `o Grafana pede login (${r.status}). Cadastre uma chave de conta de serviço (perfil Viewer).`)
+        ? (!c.token ? `o Grafana pede login (${r.status}). Cadastre uma chave de conta de serviço (perfil Viewer).`
+          : r.status === 401 ? 'o Grafana recusou a chave (401): token inválido ou incompleto. Gere outro e cole de novo.'
+          : 'a chave foi aceita, mas a conta de serviço não tem permissão para ver este painel (403). No Grafana, mude o perfil da conta de serviço para Editor ou Admin, ou dê permissão de ver no painel.')
         : r.status === 404 ? 'painel não encontrado no Grafana (404). Confira o código do dashboard.'
         : `o Grafana respondeu ${r.status}: ${txt.slice(0, 200)}`;
       throw new Error(msg);
