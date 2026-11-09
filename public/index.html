@@ -1181,7 +1181,7 @@ let insideMask=null;
 let sfnAutoCache=null;
 function sfnAuto(){
   const pts=ST.filter(s=>s.sfn).map(s=>{ const [px,py]=toPx(s.x,s.y); return {px:Math.round(px),py:Math.round(py),g:s.sfn}; }).filter(p=>p.px>=0&&p.py>=0&&p.px<RW&&p.py<RH);
-  const sig=pts.map(p=>p.px+','+p.py+','+p.g).sort().join(';');
+  const sig=pts.map(p=>p.px+','+p.py+','+p.g).sort().join(';')+'|'+ST.map(s=>{ const L=labelLines(s); return Math.round(L.x)+','+Math.round(L.y)+','+L.lines.length+','+Math.max(...L.lines.map(l=>l.length)); }).join(';');
   if(sfnAutoCache&&sfnAutoCache.sig===sig) return sfnAutoCache;
   const inside=stateMask(), N=RW*RH, nomes=[...new Set(pts.map(p=>p.g))], gi=new Map(nomes.map((n,i)=>[n,i+1]));
   const seed=new Int32Array(N).fill(-1), dist=new Float64Array(N).fill(Infinity), q=[]; let h=0;
@@ -1217,7 +1217,15 @@ function sfnAuto(){
   const db=new Int32Array(N).fill(-1), q2=[]; let h2=0;
   for(let i=0;i<N;i++){ if(!A[i]) continue; const px=i%RW, py=(i/RW)|0; if(px===0||py===0||px===RW-1||py===RH-1||A[i-1]!==A[i]||A[i+1]!==A[i]||A[i-RW]!==A[i]||A[i+RW]!==A[i]){ db[i]=0; q2.push(i); } }
   while(h2<q2.length){ const i=q2[h2++]; for(const j of [i-1,i+1,i-RW,i+RW]) if(j>=0&&j<N&&A[j]&&db[j]<0){ db[j]=db[i]+1; q2.push(j); } }
-  const centro={}; for(let i=0;i<N;i++){ const a=A[i]; if(!a) continue; if(!centro[a]||db[i]>centro[a].d) centro[a]={d:db[i],i}; }
+  // o círculo CF/CV vai num lugar livre da região: longe da divisa, dos símbolos e dos nomes das estações
+  const dob=new Int32Array(N).fill(-1), q3=[]; let h3=0;
+  const marca=(x0,y0,x1,y1)=>{ const [a0,b0]=toPx(x0,y1), [a1,b1]=toPx(x1,y0);
+    for(let py=Math.max(0,Math.floor(b0));py<=Math.min(RH-1,Math.ceil(b1));py++) for(let px=Math.max(0,Math.floor(a0));px<=Math.min(RW-1,Math.ceil(a1));px++){ const i=py*RW+px; if(dob[i]<0){ dob[i]=0; q3.push(i); } } };
+  ST.forEach(s=>{ marca(s.x-4.5,s.y-3,s.x+4.5,s.y+7.5); const L=labelLines(s); const w=Math.max(...L.lines.map(l=>l.length))*1.8, hh=L.lines.length*4.2; marca(L.x-0.5,L.y-hh,L.x+w,L.y+1); });
+  while(h3<q3.length){ const i=q3[h3++]; for(const j of [i-1,i+1,i-RW,i+RW]) if(j>=0&&j<N&&dob[j]<0){ dob[j]=dob[i]+1; q3.push(j); } }
+  const centro={}; for(let i=0;i<N;i++){ const a=A[i]; if(!a) continue; const b=db[i]*RES, o=(dob[i]<0?99:dob[i])*RES;
+    const sc=(b>=7?100:0)+Math.min(o,10)*2+Math.min(b,16)*0.5;
+    if(!centro[a]||sc>centro[a].sc) centro[a]={sc,i}; }
   const rotulos=nomes.map((n,k)=>{ const c=centro[k+1]; if(!c) return null; const [X,Y]=fromPx(c.i%RW+.5,(c.i/RW|0)+.5); return {nome:n,x:X,y:Y}; }).filter(Boolean);
   const fill=nomes.map((n,k)=>({nome:n,d:paths[k+1]||''}));
   return sfnAutoCache={sig,red,fill,rotulos};
@@ -1513,11 +1521,27 @@ function prFolha(o){
   const vw=W*1.086, vh=vw*297/420, mx=(vw-W)/2, my=(vh-H)/2;
   let g=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${(-mx).toFixed(2)} ${(-my).toFixed(2)} ${vw.toFixed(2)} ${vh.toFixed(2)}" width="${o.pw}mm" height="${o.ph}mm" style="background:#fff">${prDefs()}`;
   g+=`<rect x="${-mx}" y="${-my}" width="${vw}" height="${vh}" fill="#fff"/>`;
-  g+=prDraw(P.static,0,0,X0,Y1);
+  const sfn=o.tipo==='sfn';
+  // no mapa SFN o título e o quadro mudam, como no "Mapa de rotas – SFN"
+  const stat=!sfn?P.static:P.static.map(p=>{ if(p[0]!=='t') return p; const t=p[7].map(l=>l.map(x=>x[0]).join('')).join(' ').trim();
+    const troca=t==='SISTEMA DE REPETIÇÃO E RETRANSMISSÃO DE SINAIS'?t+' ( SFN )':/^NOVA DIVISÃO/.test(t)?'REDES SFN':null;
+    if(!troca) return p; const q=p.slice(); q[7]=[[[troca,p[7][0][0][1],p[7][0][0][2],p[7][0][0][3]]]]; return q; });
+  g+=prDraw(stat,0,0,X0,Y1);
+  const lin=l=>l.map((q,i)=>(i?'L':'M')+(q[0]-X0).toFixed(2)+' '+(Y1-q[1]).toFixed(2)).join('');
+  if(sfn){
+    // divisões das redes SFN e o círculo CF/CV de cada rede
+    const auto=sfnFonte!=='pdf'||!SFN_PDF, r=auto?sfnAuto():null;
+    const linhas=auto?r.red:SFN_PDF.linhas.filter(l=>l.every(([x,y])=>x>=X0&&x<=X1&&y>=Y0&&y<=Y1));
+    g+=`<path d="${linhas.map(lin).join('')}" fill="none" stroke="#ff0000" stroke-width=".5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const circ=auto?r.rotulos.map(c=>{ const m=/^(\S+)\s+CV(\S+)/.exec(c.nome); return m&&{x:c.x,y:c.y,cf:m[1],cv:m[2]}; }).filter(Boolean)
+      :SFN_PDF.redes.flatMap(rd=>rd.circulos.map(([x,y])=>({x,y,cf:rd.cf,cv:rd.cv}))).filter(c=>c.x>=X0&&c.x<=X1&&c.y>=Y0&&c.y<=Y1);
+    circ.forEach(c=>{ const x=(c.x-X0).toFixed(2), y=(Y1-c.y).toFixed(2);
+      g+=`<circle cx="${x}" cy="${y}" r="6" fill="#fff" stroke="#000" stroke-width=".45"/><text x="${x}" y="${y}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="2.9" fill="#000"><tspan x="${x}" dy="-0.9">CF ${esc(c.cf)}</tspan><tspan x="${x}" dy="3.9">CV${esc(c.cv)}</tspan></text>`; });
+  } else
   // linhas de divisão atuais
   g+=`<path d="${currentRed().map(l=>l.map((q,i)=>(i?'L':'M')+(q[0]-X0).toFixed(2)+' '+(Y1-q[1]).toFixed(2)).join('')).join('')}" fill="none" stroke="#ff0000" stroke-width=".5" stroke-linejoin="round" stroke-linecap="round"/>`;
   // nomes das áreas (editáveis no sistema)
-  P.alab.forEach(a=>{ const ar=AREAS[a.n]; if(!ar) return;
+  if(!sfn) P.alab.forEach(a=>{ const ar=AREAS[a.n]; if(!ar) return;
     g+=prText(+(a.x-X0).toFixed(2),+(Y1-a.y).toFixed(2),a.s,a.a,0,1,[[[ar.n.toUpperCase().replace(/^ÁREA\s*/,'ÁREA  '),a.c,0,1]],[[ar.e.toUpperCase(),a.c,0,1]]],true); });
   // estações: símbolo e rótulo originais do DWG quando não mudaram; senão, desenho no mesmo padrão
   if(!P._nomes) P._nomes=P.static.filter(p=>p[0]==='t').map(p=>nkey(p[7].map(l=>l.map(x=>x[0]).join('')).join(' ')));
@@ -1540,11 +1564,11 @@ function prFolha(o){
 }
 const PR_KEY='tvc-print';
 function prOpcoes(){ let v={}; try{ v=JSON.parse(localStorage.getItem(PR_KEY)||'{}'); }catch(e){}
-  return {papel:v.papel||'A3', autor:(me&&(me.name||me.username)||'').toUpperCase(), data:new Date().toLocaleDateString('pt-BR')}; }
+  return {papel:v.papel||'A3', tipo:mode==='sfn'?'sfn':'div', autor:(me&&(me.name||me.username)||'').toUpperCase(), data:new Date().toLocaleDateString('pt-BR')}; }
 function prPagina(o){
   const [pw,ph]=PAPEIS[o.papel]||PAPEIS.A3;
   const svgTxt=prFolha({...o,pw,ph});
-  return {svgTxt,pw,ph,html:`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa de rotas · Nova Divisão · ${esc(o.papel)}</title>
+  return {svgTxt,pw,ph,html:`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Mapa de rotas · ${o.tipo==='sfn'?'SFN':'Nova Divisão'} · ${esc(o.papel)}</title>
 <style>@page{size:${o.papel} landscape;margin:0}html,body{margin:0;background:#888}svg{display:block;margin:0 auto;background:#fff}
 @media screen{body{padding:16px}svg{width:min(100%,${pw*3.78}px);height:auto;box-shadow:0 2px 12px rgba(0,0,0,.4)}.bar{font:14px Arial;color:#fff;text-align:center;margin-bottom:10px}}
 @media print{html,body{background:#fff}.bar{display:none}svg{width:${pw}mm;height:${ph}mm}}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>
@@ -1554,8 +1578,9 @@ async function openPrint(){
   const o=prOpcoes();
   openSheet('Imprimir mapa (prancha)');
   try{ await loadPrancha(); }catch(e){ $('sheetBody').innerHTML=`<p class="status err">Não foi possível carregar o desenho da prancha: ${esc(e.message)}</p>`; return; }
-  $('sheetBody').innerHTML=`<p class="sub">A prancha é a mesma planta do AutoCAD: moldura, título, quadro de cobertura, legenda, Grande São Paulo e carimbo vêm do DWG. Estações, rótulos, linhas de divisão e nomes das áreas saem do cadastro atual.</p>
+  $('sheetBody').innerHTML=`<p class="sub">A prancha é a mesma planta do AutoCAD: moldura, título, quadro de cobertura, legenda, Grande São Paulo e carimbo vêm do DWG. Estações, rótulos, linhas de divisão e nomes das áreas saem do cadastro atual. No mapa <b>Redes SFN</b>, as linhas e os círculos CF/CV são os das redes SFN (as mesmas divisões escolhidas na legenda do modo SFN).</p>
   <div class="pgrid">
+    <label class="pf">Mapa<select data-k="tipo"><option value="div"${o.tipo!=='sfn'?' selected':''}>Nova Divisão (áreas)</option><option value="sfn"${o.tipo==='sfn'?' selected':''}>Redes SFN</option></select></label>
     <label class="pf">Papel<select data-k="papel">${Object.keys(PAPEIS).map(p=>`<option${p===o.papel?' selected':''}>${p}</option>`).join('')}</select></label>
     <label class="pf">Atualizado por<input data-k="autor" value="${esc(o.autor)}"></label>
     <label class="pf">Data<input data-k="data" value="${esc(o.data)}"></label>
@@ -1572,7 +1597,7 @@ async function openPrint(){
     if(!w){ $('pMsg').className='status err'; $('pMsg').textContent='O navegador bloqueou a janela. Libere pop-ups para este endereço e tente de novo.'; return; }
     w.document.open(); w.document.write(p.html); w.document.close(); setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} },400); };
   $('pSvg').onclick=()=>{ const v=read(); save(v); const p=prPagina(v); const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+p.svgTxt],{type:'image/svg+xml'})); a.download=`mapa-de-rotas-nova-divisao-${v.papel}.svg`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+    a.href=URL.createObjectURL(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+p.svgTxt],{type:'image/svg+xml'})); a.download=`mapa-de-rotas-${v.tipo==='sfn'?'sfn':'nova-divisao'}-${v.papel}.svg`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
   prev();
 }
 $('mPrint').onclick=()=>{ toggleMenu(false); openPrint(); };
