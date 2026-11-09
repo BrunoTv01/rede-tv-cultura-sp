@@ -98,6 +98,7 @@ svg#map.labmove .lb.dragging{fill:var(--accent);opacity:.9}
 .sfnlst button i{width:9px;height:9px;border-radius:50%;flex:none}
 .sfnlst button b{font-family:var(--mono);color:var(--fg)}
 .sfnc text{fill:var(--fg);font:600 2.7px/1 var(--mono);text-anchor:middle}
+svg#map.mtel #gALab{display:none}
 #gSfn{display:none}svg#map.msfn #gSfn{display:inline}svg#map.msfn .dv,svg#map.msfn #gALab{display:none}
 .sym.dim{opacity:.18}
 .dv{fill:none;stroke:var(--div);stroke-linejoin:round;stroke-linecap:round;opacity:.85}
@@ -213,7 +214,7 @@ td .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:
 .sheetbody{padding:14px 16px;overflow:auto;min-height:0}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px 12px;margin:12px 0}
 .pf{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
-.pf input,.pf select{font:13px var(--body);background:var(--card2);color:var(--fg);border:1px solid var(--line2);border-radius:6px;padding:7px 9px}
+.pf input,.pf select,.pf textarea{font:13px var(--body);background:var(--card2);color:var(--fg);border:1px solid var(--line2);border-radius:6px;padding:7px 9px}
 .pf small{font-size:11.5px}.pf a{color:var(--accent)}
 .pprev{background:#7d8590;padding:10px;border-radius:8px;margin-bottom:12px}.pprev svg{display:block;width:100%;height:auto;box-shadow:0 2px 10px rgba(0,0,0,.35)}
 .optlist{display:flex;flex-direction:column;gap:10px;margin:12px 0 16px}
@@ -296,6 +297,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
           <button role="menuitem" id="mDiv" hidden>Ajustar linhas de divisão</button>
           <button role="menuitem" id="mOrig" hidden>Voltar ao mapa original</button>
           <button role="menuitem" id="mGraf" hidden>Manutenções (Grafana)</button>
+          <button role="menuitem" id="mTele" hidden>Telemetria (estações no ar)</button>
           <button role="menuitem" id="mUsers" hidden>Usuários</button>
           <button role="menuitem" id="mPass">Trocar senha</button>
           <button role="menuitem" id="mOut">Sair</button>
@@ -309,6 +311,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
       <div class="sec"><div class="sechead"><h4>Área / responsável</h4><button class="linkbtn" id="btnAreas" hidden>Editar nomes</button></div><div class="chips" id="tally"></div></div>
       <div class="sec"><h4>Tipo</h4><div class="chips" id="typeChips"></div></div>
       <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +120 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div><div class="chips" id="manLinks" style="margin-top:8px"></div></div>
+      <div class="sec" id="telSec" hidden><h4>Transmissores · telemetria</h4><div class="chips" id="telChips"></div><div class="mansub" id="telSub"></div><div class="chips" id="telLinks" style="margin-top:8px"></div></div>
       <div class="countline"><span id="countTxt">Carregando…</span><span id="covTxt"></span></div>
       <div class="list" id="list"></div>
       <div class="note" id="note">Mapa do DWG “Nova Divisão 2026”. Dados iniciais da planilha “Projeto 100%”. A mancha de cobertura liga as cidades atendidas, com posição aproximada. <span id="semSinal"></span> <span id="verTxt"></span></div>
@@ -323,6 +326,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
         <button id="mArea" aria-pressed="true">Área</button>
         <button id="mRec" aria-pressed="false">Recepção</button>
         <button id="mSfn" aria-pressed="false">SFN</button>
+        <button id="mTel" aria-pressed="false">No ar</button>
       </div>
       <div class="tools">
         <button id="zin" aria-label="Aproximar">+</button>
@@ -456,13 +460,18 @@ if(G.semSinal&&G.semSinal.length) $('semSinal').textContent='Sem estação na pl
 
 // estado
 let MANUT={alertas:{},itens:{},dias:120,configurado:false}, manOnly=false;
+let TELE={estacoes:{},resumo:{},semEstacao:[],configurado:false}, telFiltro=new Set();
+const TEL_ORD=['ar','atencao','baixo','semdados','visita','instalar','nenhum'];
+const TEL_COR={ar:'#34c759',atencao:'#ffb547',baixo:'#ff3b30',semdados:'#ff5fa2',visita:'#b98bff',instalar:'#7d8ba3',nenhum:'#4a5568'};
+const TEL_ROT={ar:'No ar',atencao:'Atenção',baixo:'Potência baixa',semdados:'Sem dados',visita:'Visita técnica',instalar:'Telemetria a instalar',nenhum:'Sem telemetria'};
+const telSt=s=>{ const t=TELE.estacoes&&TELE.estacoes[s.id]; return t?t.st:'nenhum'; };
 let ST=[], byId=new Map(), symEls=new Map(), labEls=new Map(), leadEls=new Map(), labMode=false, labDrag=null;
 let mode='area', areaOn={1:true,2:true,3:true,4:true,5:true}, typeOn={sat:true,ger:true,comp:true}, q='', sel=null, view2='map';
 let sortCol='n', sortDir=1;
 let me=null, canWrite=false, loaded=false, dbMissing=false, versao=0;
 let divEdit=null, dragV=null; // edição das linhas de divisão
 let editing=null, placing=null, confirmDel=false, statusMsg='', statusErr=false;
-try{ const m=localStorage.getItem('tvc-mode'); if(m==='rec'||m==='area'||m==='sfn') mode=m; }catch(e){}
+try{ const m=localStorage.getItem('tvc-mode'); if(m==='rec'||m==='area'||m==='sfn'||m==='tel') mode=m; }catch(e){}
 
 const gSym=$('gSym'), gLab=$('gLab'), gFoot=$('gFoot');
 function labelLines(s){
@@ -656,7 +665,7 @@ Object.keys(GRP).forEach(g=>{ const b=document.createElement('button'); b.classN
   b.onclick=()=>{ typeOn[g]=!typeOn[g]; if(!Object.values(typeOn).some(Boolean)) typeOn[g]=true; render(); }; typeChips.appendChild(b); });
 $('q').addEventListener('input',e=>{q=e.target.value; render();});
 const setMode=m=>{ mode=m; try{localStorage.setItem('tvc-mode',m)}catch(e){} render(); };
-$('mArea').onclick=()=>setMode('area'); $('mRec').onclick=()=>setMode('rec'); $('mSfn').onclick=()=>setMode('sfn');
+$('mArea').onclick=()=>setMode('area'); $('mRec').onclick=()=>setMode('rec'); $('mSfn').onclick=()=>setMode('sfn'); $('mTel').onclick=()=>setMode('tel');
 $('tabMap').onclick=()=>{ view2='map'; render(); };
 $('tabTable').onclick=()=>{ view2='table'; render(); };
 const grpOf=s=>Object.keys(GRP).find(g=>GRP[g].t.includes(s.rc))||'sat';
@@ -664,6 +673,7 @@ function match(s){
   if(!areaOn[s.a]) return false;
   if(!typeOn[grpOf(s)]) return false;
   if(manOnly&&!MANUT.alertas[s.id]) return false;
+  if(telFiltro.size&&!telFiltro.has(telSt(s))) return false;
   s.hit='';
   if(q){ const n=norm(q).trim(); const hay=norm([s.n,s.mu,s.ob,s.sfn?'sfn '+s.sfn:'','cn '+s.ch,s.ch,s.vt,String(s.vt||'').replace('VT','vt '),AREAS[s.a]&&AREAS[s.a].e].join(' ')); if(!hay.includes(n)){ const c=(s.cov||[]).find(x=>norm(x[0]).includes(n)); if(!c) return false; s.hit=c[0]; } }
   return true;
@@ -684,7 +694,7 @@ const sfnConta=n=>ST.filter(s=>s.sfn===n).length;
 function sfnRedes(){ const m=new Map(); ST.forEach(s=>{ if(s.sfn) m.set(s.sfn,(m.get(s.sfn)||0)+1); }); return [...m].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'pt')); }
 function sfnBadge(g,nome){ const n=sfnConta(nome); if(!n) return; mk('rect',{class:'sfnq',x:-5.4,y:6.1,width:10.8,height:4.6,rx:2.3},g); const t=mk('text',{class:'sfnqt',y:9.5},g); t.textContent=n+' est.'; }
 const sfnColor=n=> n&&sfnIdx.has(n) ? SFN_PAL[sfnIdx.get(n)%SFN_PAL.length] : '#5f708b';
-const color=s=> mode==='area' ? `var(--a${s.a})` : mode==='sfn' ? sfnColor(s.sfn) : `var(--t${s.rc})`;
+const color=s=> mode==='area' ? `var(--a${s.a})` : mode==='sfn' ? sfnColor(s.sfn) : mode==='tel' ? TEL_COR[telSt(s)] : `var(--t${s.rc})`;
 function select(id,fly){ if(editing) return; sel=id; confirmDel=false; statusMsg=''; if(view2!=='map'){ view2='map'; } render(); const s=byId.get(id); if(fly&&s) flyTo(s);
   const row=document.querySelector(`.row[data-id="${CSS.escape(id)}"]`); if(row) row.scrollIntoView({block:'nearest'}); }
 function closeDetail(){ sel=null; confirmDel=false; statusMsg=''; editing=null; render(); }
@@ -692,14 +702,14 @@ function legendSym(kind){ return `<svg width="14" height="14" viewBox="-5 -7.5 1
 
 // render
 function render(){
-  $('mArea').setAttribute('aria-pressed',mode==='area'); $('mRec').setAttribute('aria-pressed',mode==='rec'); $('mSfn').setAttribute('aria-pressed',mode==='sfn'); svg.classList.toggle('msfn',mode==='sfn');
+  $('mArea').setAttribute('aria-pressed',mode==='area'); $('mRec').setAttribute('aria-pressed',mode==='rec'); $('mSfn').setAttribute('aria-pressed',mode==='sfn'); $('mTel').setAttribute('aria-pressed',mode==='tel'); svg.classList.toggle('msfn',mode==='sfn'); svg.classList.toggle('mtel',mode==='tel');
   $('tabMap').setAttribute('aria-selected',view2==='map'); $('tabTable').setAttribute('aria-selected',view2==='table');
   stage.hidden=view2!=='map'; $('tableView').hidden=view2!=='table';
   AK.forEach(a=>{ $('chipA'+a).setAttribute('aria-pressed',areaOn[a]); $('cntA'+a).textContent=ST.filter(s=>s.a===a).length; });
   Object.keys(GRP).forEach(g=>{ $('chipT'+g).setAttribute('aria-pressed',typeOn[g]); $('cntT'+g).textContent=ST.filter(s=>grpOf(s)===g).length; });
   areaEls.forEach(el=>{ const a=el.dataset.a; el.setAttribute('class', mode==='area'&&(areaOn[a]||(a==='1'&&areaOn[5])) ? 'ar'+a : 'land'); });
   const vis=[];
-  manRender();
+  manRender(); telRender();
   const selSfn=mode!=='sfn'?'':(sel&&byId.get(sel)?byId.get(sel).sfn:sfnFoco);
   ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.classList.toggle('dim',!!selSfn&&s.sfn!==selSfn); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
   gSfnEl.querySelectorAll('.sfnf').forEach(f=>f.classList.toggle('on',!!selSfn&&f.dataset.n===selSfn));
@@ -715,6 +725,9 @@ function render(){
     h=ss?`<div><i style="background:${sfnColor(ss)}"></i><b>SFN ${esc(ss)}</b> · <b>${sfnConta(ss)}</b> estações${!sel?` <button class="linkbtn" data-sfnr="">ver todas</button>`:''}</div><div class="mansub">${ST.filter(s=>s.sfn===ss).map(s=>esc(s.n)).sort((a,b)=>a.localeCompare(b,'pt')).join(', ')}</div>`
        :`<div>Cada cor é uma rede SFN: estações no mesmo canal (CF) e virtual (CV). <b>${redes.length}</b> redes${sem?` · ${sem} estações sem rede (cinza)`:''}.</div><div class="sfnlst">${redes.map(([n,c])=>`<button data-sfnr="${esc(n)}" title="Ver as estações da rede ${esc(n)}"><i style="background:${sfnColor(n)}"></i><span>${esc(n)}</span><b>${c}</b></button>`).join('')}</div>`;
     h+=`<div class="mansub">Divisões: <button class="linkbtn" data-sfnf="auto"${sfnFonte==='auto'?' style="font-weight:700;text-decoration:none"':''}>automáticas</button> · <button class="linkbtn" data-sfnf="pdf"${sfnFonte==='pdf'?' style="font-weight:700;text-decoration:none"':''}>do mapa SFN (PDF)</button></div>`; }
+  else if(mode==='tel'){ const cnt={}; ST.forEach(s=>{ const k=telSt(s); cnt[k]=(cnt[k]||0)+1; });
+    h=`<div>Situação do transmissor pela telemetria (potência direta no Zabbix).</div>`+TEL_ORD.filter(k=>cnt[k]).map(k=>`<div><i style="background:${TEL_COR[k]}"></i>${TEL_ROT[k]} · <b>${cnt[k]}</b></div>`).join('')
+      +`<div class="mansub">${TELE.atualizado?'Lido em '+new Date(TELE.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''}${TELE.erro?' · Grafana: '+esc(TELE.erro):''}</div>`; }
   else h=recKeys.map(t=>`<div><i style="background:var(--t${t})"></i>${REC[t]}</div>`).join('');
   h+='<div class="sep"></div>'+Object.keys(MAN).map(k=>`<div>${legendSym(k)}${MAN[k]}</div>`).join('');
   $('legend').innerHTML=h;
@@ -765,6 +778,7 @@ function renderDetail(){
       <dt>Recepção</dt><dd><span class="pill"><i style="background:var(--t${s.rc})"></i>${REC[s.rc]||'—'}</span></dd>
       ${s.m?`<dt>Manutenção</dt><dd>${MAN[s.m]}</dd>`:''}
       ${s.sfn?`<dt>Rede SFN</dt><dd><span class="pill"><i style="background:${sfnColor(s.sfn)}"></i>${esc(s.sfn)}</span> · ${ST.filter(x=>x.sfn===s.sfn).length} estações${mode!=='sfn'?' · <button class="linkbtn" id="bSfn" type="button">ver no mapa</button>':''}</dd>`:''}
+      ${telLinha(s)}
       ${manLinha(s)}
       ${s.pop?`<dt>População</dt><dd class="mono">${fmt(s.pop)} hab.</dd>`:''}
       ${infra?`<dt>Custeio</dt><dd>${infra}</dd>`:''}
@@ -933,6 +947,52 @@ function manRender(){ const n=Object.keys(MANUT.alertas||{}).length; $('manSec')
   $('manSub').textContent=MANUT.erro?'Grafana: '+MANUT.erro:(MANUT.atualizado?'Grafana · lido em '+new Date(MANUT.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''); }
 $('chipMan').onclick=()=>{ manOnly=!manOnly; render(); };
 
+// ---------- estações no ar (Grafana "Dashboard Estações", telemetria) ----------
+async function loadTele(){ try{ TELE=await api('GET','/api/telemetria'); }catch(e){ return; } if(loaded) render(); }
+setInterval(()=>{ if(me&&!me.mustChange&&!document.hidden) loadTele(); },2*60*1000);
+const fmtW=(v,u)=>{ if(v===null||v===undefined) return ''; if(u==='watt'||!u) return v>=1000?(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:2})+' kW':v.toLocaleString('pt-BR',{maximumFractionDigits:1})+' W'; if(u==='dBm') return v+' dBm'; return v.toLocaleString('pt-BR'); };
+const haMin=iso=>{ if(!iso) return ''; const m=Math.round((Date.now()-Date.parse(iso))/60000); return m<1?'agora':m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} dias`; };
+function telLinha(s){ const t=TELE.estacoes&&TELE.estacoes[s.id]; if(!t) return '';
+  const lk=TELE.link?` · <a href="${esc(TELE.link)}${t.id?'&viewPanel='+t.id:''}" target="_blank" rel="noopener">ver no Grafana ↗</a>`:'';
+  const val=t.v!==null?` · ${fmtW(t.v,t.unidade)}${t.em?` (${haMin(t.em)})`:''}`:'';
+  return `<dt>Transmissor</dt><dd><span class="pill"><i style="background:${TEL_COR[t.st]}"></i><b${t.st!=='ar'?' class="man-alert"':''}>${TEL_ROT[t.st]}</b></span>${val}${lk}</dd>`; }
+function telRender(){ const on=TELE.configurado||TELE.erro; $('telSec').hidden=!on; if(!on) return;
+  const cnt={}; ST.forEach(s=>{ const k=telSt(s); cnt[k]=(cnt[k]||0)+1; });
+  $('telChips').innerHTML=TEL_ORD.filter(k=>cnt[k]).map(k=>`<button class="chip" data-tel="${k}" aria-pressed="${telFiltro.has(k)}"><span class="sw" style="background:${TEL_COR[k]}"></span>${TEL_ROT[k]}<span class="n">${cnt[k]}</span></button>`).join('');
+  $('telChips').querySelectorAll('[data-tel]').forEach(b=>b.onclick=()=>{ const k=b.dataset.tel; telFiltro.has(k)?telFiltro.delete(k):telFiltro.add(k); render(); });
+  $('telLinks').innerHTML=TELE.link?`<a class="chip glink" href="${esc(TELE.link)}" target="_blank" rel="noopener"><span class="sw" style="background:#f46800"></span>Dashboard Estações<span class="n">↗</span></a>`:'';
+  $('telSub').textContent=TELE.erro?'Grafana: '+TELE.erro:(TELE.atualizado?'Lido em '+new Date(TELE.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})+' · atualiza a cada 5 min':''); }
+async function openTele(){
+  openSheet('Telemetria (estações no ar)');
+  $('sheetBody').innerHTML='<p class="sub">Carregando…</p>';
+  let c; try{ c=await api('GET','/api/telemetria/config'); }catch(e){ $('sheetBody').innerHTML=`<p class="status err">${esc(e.message)}</p>`; return; }
+  const fx=k=>c.envFixo&&c.envFixo[k]?' disabled title="Definido em /etc/rede-tv-cultura.env"':'';
+  const res=Object.entries(c.resumo||{}).map(([k,n])=>`${TEL_ROT[k]||k}: <b>${n}</b>`).join(' · ');
+  const st=c.erro?`<div class="status err">Não foi possível ler o Grafana: ${esc(c.erro)}</div>`
+    :c.atualizado?`<div class="status">Lido em ${new Date(c.atualizado).toLocaleString('pt-BR')} · ${c.paineis} medidores · ${res}${c.semEstacao.length?`<br>Medidores sem estação no mapa: ${esc(c.semEstacao.join(', '))}`:''}</div>`:'<div class="status">Ainda não foi lido.</div>';
+  const ap=Object.entries(c.apelidos||{}).map(([t,id])=>{ const e=byId.get(id); return `${t} = ${e?e.n:id}`; }).join('\n');
+  $('sheetBody').innerHTML=`<p class="sub">O servidor lê o “Dashboard Estações” do Grafana (potência direta dos transmissores, pelo Zabbix) a cada 5 minutos. Cada estação fica <b style="color:${TEL_COR.ar}">no ar</b> quando o medidor está na faixa verde, <b style="color:${TEL_COR.baixo}">potência baixa</b> na faixa vermelha, ou com o aviso que o painel mostra quando não há valor (sem dados, visita técnica, instalar). No mapa, use o botão <b>No ar</b>.</p>
+  ${st}
+  <div class="pgrid">
+    <label class="pf">Endereço do Grafana<input id="tUrl" value="${esc(c.url)}"${fx('url')}></label>
+    <label class="pf">Código do dashboard<input id="tDash" value="${esc(c.dashboard)}"${fx('dashboard')}></label>
+    <label class="pf">Chave (token de conta de serviço)<input id="tTok" type="password" autocomplete="off" placeholder="${c.temToken?'Já cadastrada — deixe em branco para manter':'Cole aqui o token do Grafana'}"${fx('token')}></label>
+  </div>
+  <label class="pf" style="margin-top:8px">Medidor com outro nome (um por linha: título do medidor = estação)<textarea id="tAp" rows="3" placeholder="PICO DO JARAGUÁ - GAP = Jaraguá">${esc(ap)}</textarea></label>
+  <div class="btnrow"><button class="btn pri" id="tSave">Salvar e ler agora</button><button class="btn" id="tNow">Ler agora</button><button class="btn" id="tClose">Fechar</button></div>
+  <div class="status" id="tMsg" role="status"></div>
+  <details style="margin-top:10px"><summary>Como criar o token no Grafana</summary><p class="sub">Este Grafana pede login. Entre como administrador e abra <b>Administration (engrenagem) → Service accounts → Add service account</b>. Dê um nome (por exemplo, “mapa-rede”), perfil <b>Viewer</b>, e depois <b>Add service account token</b>, sem validade. Copie o token e cole no campo acima.</p></details>`;
+  const msg=(t,err)=>{ $('tMsg').className='status'+(err?' err':''); $('tMsg').textContent=t; };
+  const fim=async t=>{ await loadTele(); await openTele(); toast(t); };
+  $('tClose').onclick=closeSheet;
+  $('tSave').onclick=async()=>{ $('tSave').disabled=true; msg('Salvando e lendo o Grafana…');
+    const apelidos={}; $('tAp').value.split('\n').forEach(l=>{ const m=l.split('='); if(m.length<2) return; const t=m[0].trim(), n=norm(m.slice(1).join('=').trim()); const e=ST.find(x=>norm(x.n)===n)||ST.find(x=>x.id===m.slice(1).join('=').trim()); if(t&&e) apelidos[t]=e.id; });
+    const body={url:$('tUrl').value.trim(),dashboard:$('tDash').value.trim(),apelidos}; if($('tTok').value.trim()) body.token=$('tTok').value.trim();
+    try{ const r=await api('PUT','/api/telemetria/config',body); await fim(r.ok?'Configuração salva.':'Salvo, mas o Grafana respondeu com erro.'); }catch(e){ msg(e.message,true); $('tSave').disabled=false; } };
+  $('tNow').onclick=async()=>{ msg('Lendo o Grafana…'); try{ await api('POST','/api/telemetria/sincronizar'); await fim('Leitura concluída.'); }catch(e){ msg(e.message,true); } };
+}
+$('mTele').onclick=()=>{ toggleMenu(false); openTele(); };
+
 // a cada 15 s confere se alguém alterou o cadastro e recarrega
 setInterval(async()=>{
   if(!me||me.mustChange||document.hidden||editing) return;
@@ -945,7 +1005,7 @@ function setUser(u){
   me=u; canWrite=!!u&&(u.role==='editor'||u.role==='admin');
   $('userMenu').hidden=!u;
   if(u){ $('uName').textContent=u.name.split(' ')[0]; $('uAvatar').textContent=(u.name||u.username).trim()[0].toUpperCase(); $('uFull').textContent=u.name+' ('+u.username+')'; $('uRole').textContent='Perfil: '+u.roleLabel; $('mUsers').hidden=u.role!=='admin'; }
-  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; $('mLab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin'); $('mGraf').hidden=!(u&&u.role==='admin');
+  $('mAreas').hidden=!canWrite; $('zlab').hidden=!canWrite; $('mLab').hidden=!canWrite; if(!canWrite&&labMode) setLabMode(false); $('btnAreas').hidden=!canWrite; $('mDiv').hidden=!(u&&u.role==='admin'); $('mOrig').hidden=!(u&&u.role==='admin'); $('mGraf').hidden=!(u&&u.role==='admin'); $('mTele').hidden=!(u&&u.role==='admin');
 }
 function showLogin(msg){
   setUser(null); $('loginBox').hidden=false; $('loginFields').hidden=false; $('changeFields').hidden=true; $('changeCancel').hidden=true; $('loginHelp').hidden=false;
@@ -1606,7 +1666,7 @@ $('btnPrint').onclick=openPrint;
 
 // ---------- início ----------
 async function start(){
-  try{ await loadGeometry(); await loadStations(); fit(); loadManut(); loadSfn(); }
+  try{ await loadGeometry(); await loadStations(); fit(); loadManut(); loadTele(); loadSfn(); }
   catch(e){ if(e.status!==401&&e.code!=='must_change'){ dbMissing=true; render(); toast(e.message); } }
 }
 fetch('/api/health').then(r=>r.json()).then(j=>{ if(j&&j.version) $('verTxt').textContent='Versão '+j.version+'.'; }).catch(()=>{});

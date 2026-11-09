@@ -3,7 +3,7 @@ WORKDIR /app
 ENV NODE_ENV=production PORT=3100 HOST=0.0.0.0
 COPY package.json ./
 RUN npm install --omit=dev --no-audit --no-fund --loglevel=error
-COPY server.js auth.js ./
+COPY server.js auth.js grafana.js telemetria.js ./
 COPY tools ./tools
 COPY db ./db
 COPY data ./data

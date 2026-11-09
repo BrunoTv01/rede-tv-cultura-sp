@@ -1,6 +1,6 @@
 {
   "name": "rede-tv-cultura-sp",
-  "version": "2.10.7",
+  "version": "2.11.0",
   "description": "Mapa e cadastro das estações de repetição e retransmissão da TV Cultura em SP, com PostgreSQL e login",
   "main": "server.js",
   "private": true,

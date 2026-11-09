@@ -128,6 +128,19 @@ Se não houver chave, exporte a tabela no Grafana (**Inspect → Data → Downlo
 
 O servidor precisa alcançar o Grafana pela rede (`http://monitorrede.tvcultura.com.br:3000`). A chave também pode ficar em `/etc/rede-tv-cultura.env`, como `GRAFANA_TOKEN=...`.
 
+## Estações no ar (telemetria do Grafana)
+
+O sistema lê o **Dashboard Estações** do Grafana (`http://172.20.0.250:3000/d/fKcYfojvz/dashboard-estacoes`), que mostra a potência direta de cada transmissor pelo Zabbix, a cada 5 minutos. Cada estação fica:
+
+- **No ar:** medidor na faixa verde;
+- **Potência baixa:** medidor na faixa vermelha;
+- **Sem dados**, **Visita técnica** ou **Telemetria a instalar:** o aviso que o painel mostra quando não há valor;
+- **Sem telemetria:** a estação não tem medidor no painel.
+
+No mapa, o botão **No ar** pinta as estações por essa situação. O painel da esquerda tem a seção **Transmissores · telemetria**, com a contagem de cada situação (clique para filtrar) e o link para o Dashboard Estações. A ficha da estação mostra a linha **Transmissor**, com a potência e há quanto tempo foi lida.
+
+Esse Grafana pede login, então o servidor precisa de um **token de conta de serviço** com perfil Viewer: no Grafana, **Administration → Service accounts → Add service account** (perfil Viewer) e depois **Add service account token**. O instalador pede esse token (e já coloca o endereço sozinho); também dá para colar em **Telemetria (estações no ar)**, no menu do seu nome (perfil Admin). Medidores com nome diferente da estação podem ser ligados nessa mesma tela (“título do medidor = estação”). O Raspberry precisa estar na rede que alcança `172.20.0.250`.
+
 ## Opções do instalador
 
 As opções vão depois de `bash -s --`, por exemplo:
@@ -145,7 +158,9 @@ curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/i
 | `--sem-banco` | Não instala PostgreSQL; usa o banco informado em `DATABASE_URL` |
 | `--grafana-url URL` | Outro endereço do Grafana ou do painel (padrão `http://monitorrede.tvcultura.com.br:3000/d/7owPaMFvz`) |
 | `--grafana-token CHAVE` | Chave de API do Grafana (perfil Viewer), sem perguntar |
-| `--sem-grafana` | Não pergunta nem testa o acesso ao Grafana |
+| `--sem-grafana` | Não pergunta nem testa o acesso ao Grafana das manutenções |
+| `--telemetria-token T` | Token do Grafana do Dashboard Estações (172.20.0.250), sem perguntar |
+| `--sem-telemetria` | Não configura o Dashboard Estações (estações no ar) |
 
 Se o BTS Compress estiver no mesmo servidor, não há conflito: ele usa a porta 3000 e este sistema usa a 3100. Se os dois forem usar o nginx na porta 80, informe um `--dominio` diferente para cada um.
 

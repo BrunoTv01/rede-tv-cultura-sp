@@ -15,6 +15,8 @@
 #   --grafana-url URL      endereço do Grafana (padrão: http://monitorrede.tvcultura.com.br:3000)
 #   --grafana-token CHAVE  chave de API do Grafana (opcional)
 #   --sem-grafana          não pergunta nem testa o acesso ao Grafana
+#   --telemetria-token T   token do Grafana do Dashboard Estações (172.20.0.250), para não perguntar
+#   --sem-telemetria       não configura o Dashboard Estações (estações no ar)
 set -euo pipefail
 
 APP=rede-tv-cultura
@@ -40,9 +42,9 @@ while [ $# -gt 0 ]; do
     --nginx)        NGINX=1; shift;;
     --dominio)      DOMINIO="$2"; shift 2;;
     --sem-banco)    SEM_BANCO=1; shift;;
-    --grafana-url|--grafana-token|--grafana-painel) GRAFANA_ARGS+=("$1" "${2:-}"); shift 2;;
-    --sem-grafana)  GRAFANA_ARGS+=("$1"); shift;;
-    -h|--help)      sed -n '2,21p' "$0"; exit 0;;
+    --grafana-url|--grafana-token|--grafana-painel|--telemetria-url|--telemetria-token|--telemetria-painel) GRAFANA_ARGS+=("$1" "${2:-}"); shift 2;;
+    --sem-grafana|--sem-telemetria)  GRAFANA_ARGS+=("$1"); shift;;
+    -h|--help)      sed -n '2,23p' "$0"; exit 0;;
     *) echo "Opção desconhecida: $1 (use --help)"; exit 1;;
   esac
 done
