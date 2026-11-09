@@ -50,13 +50,20 @@ testar() { # url painel token
   local h=(); [ -n "$3" ] && h=(-H "Authorization: Bearer $3")
   local c; c="$(curl -s -o /dev/null -m 15 -w '%{http_code}' "${h[@]}" "$1/api/dashboards/uid/$2" 2>/dev/null)"; echo "${c:-000}"
 }
+# chave/token que foi colado pela página do mapa (fica no banco, tabela config)
+tokenDoBanco() { # chave da config: grafana | telemetria
+  local db; db="$(lerEnv DATABASE_URL)"; [ -n "$db" ] && command -v psql >/dev/null || return 0
+  psql "$db" -tAc "SELECT coalesce(valor->>'token','') FROM config WHERE chave='$1'" 2>/dev/null | head -1 | tr -d '[:space:]'
+}
 # pergunta só se houver alguém no terminal (o "curl | sudo bash" usa o /dev/tty)
 temTTY() { [ -r /dev/tty ] && [ -w /dev/tty ] && { : </dev/tty; } 2>/dev/null; }
 REFAZER="sudo /opt/$APP/deploy/grafana-setup.sh"
 
-# configurar TÍTULO PREFIXO URL_PADRÃO PAINEL_PADRÃO SLUG URL_NOVA TOKEN_NOVO PAINEL_NOVO "o que faz" "tipo de chave"
+# configurar TÍTULO PREFIXO URL_PADRÃO PAINEL_PADRÃO SLUG URL_NOVA TOKEN_NOVO PAINEL_NOVO "o que faz" "tipo de chave" CHAVE_CONFIG
 configurar() {
   local titulo="$1" pre="$2" url="${6:-$3}" painel="${8:-$4}" slug="$5" token="${7:-$(lerEnv "${2}_TOKEN")}" faz="$9" chave="${10}"
+  # sem token no arquivo: aproveita o que foi colado na página do mapa
+  [ -z "$token" ] && token="$(tokenDoBanco "${11}")"
   local perguntar=0; [ -z "$7" ] && temTTY && perguntar=1
   echo
   info "Grafana · $titulo"
@@ -86,10 +93,10 @@ configurar() {
 
 if [ "$G_PULAR" -eq 1 ]; then info "Grafana · Manutenções Rede: pulado"; else
   configurar "Manutenções Rede (estações sem visita)" GRAFANA "http://monitorrede.tvcultura.com.br:3000" "7owPaMFvz" "manutencoes-rede" \
-    "$G_URL" "$G_TOKEN" "$G_PAINEL" "As manutenções são lidas a cada hora." "a chave de API"
+    "$G_URL" "$G_TOKEN" "$G_PAINEL" "As manutenções são lidas a cada hora." "a chave de API" grafana
 fi
 if [ "$T_PULAR" -eq 1 ]; then info "Grafana · Dashboard Estações: pulado"; else
   configurar "Dashboard Estações (transmissores no ar)" TELEMETRIA "http://172.20.0.250:3000" "fKcYfojvz" "dashboard-estacoes" \
-    "$T_URL" "$T_TOKEN" "$T_PAINEL" "A situação dos transmissores é lida a cada 5 minutos." "o token de conta de serviço"
+    "$T_URL" "$T_TOKEN" "$T_PAINEL" "A situação dos transmissores é lida a cada 5 minutos." "o token de conta de serviço" telemetria
 fi
 exit 0

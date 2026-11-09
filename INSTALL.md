@@ -139,7 +139,7 @@ O sistema lê o **Dashboard Estações** do Grafana (`http://172.20.0.250:3000/d
 
 No mapa, o botão **No ar** pinta as estações por essa situação. O painel da esquerda tem a seção **Transmissores · telemetria**, com a contagem de cada situação (clique para filtrar) e o link para o Dashboard Estações. A ficha da estação mostra a linha **Transmissor**, com a potência e há quanto tempo foi lida.
 
-Esse Grafana pede login, então o servidor precisa de um **token de conta de serviço** com perfil Viewer: no Grafana, **Administration → Service accounts → Add service account** (perfil Viewer) e depois **Add service account token**. O instalador pede esse token (e já coloca o endereço sozinho); também dá para colar em **Telemetria (estações no ar)**, no menu do seu nome (perfil Admin). Medidores com nome diferente da estação podem ser ligados nessa mesma tela (“título do medidor = estação”). O Raspberry precisa estar na rede que alcança `172.20.0.250`.
+Esse Grafana pede login, então o servidor precisa de um **token de conta de serviço** com perfil Viewer: no Grafana, **Administration → Service accounts → Add service account** (perfil Viewer) e depois **Add service account token**. O instalador pede esse token (e já coloca o endereço sozinho). Se o token já tiver sido colado na página do mapa, o instalador aproveita ele e grava também em `/etc/rede-tv-cultura.env`, então reinstalar ou atualizar não perde a configuração; também dá para colar em **Telemetria (estações no ar)**, no menu do seu nome (perfil Admin). Medidores com nome diferente da estação podem ser ligados nessa mesma tela (“título do medidor = estação”). O Raspberry precisa estar na rede que alcança `172.20.0.250`.
 
 ## Opções do instalador
 
