@@ -12,6 +12,9 @@
 #   --nginx                instala nginx como proxy na porta 80
 #   --dominio NOME         nome do servidor no nginx (padrão: _ , qualquer nome)
 #   --sem-banco            não instala PostgreSQL; use DATABASE_URL já existente (variável de ambiente)
+#   --grafana-url URL      endereço do Grafana (padrão: http://monitorrede.tvcultura.com.br:3000)
+#   --grafana-token CHAVE  chave de API do Grafana (opcional)
+#   --sem-grafana          não pergunta nem testa o acesso ao Grafana
 set -euo pipefail
 
 APP=rede-tv-cultura
@@ -28,6 +31,7 @@ SEM_BANCO=0
 NODE_MIN=20
 FIRST=0
 RESET_ADMIN=0
+GRAFANA_ARGS=()
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -36,7 +40,9 @@ while [ $# -gt 0 ]; do
     --nginx)        NGINX=1; shift;;
     --dominio)      DOMINIO="$2"; shift 2;;
     --sem-banco)    SEM_BANCO=1; shift;;
-    -h|--help)      sed -n '2,18p' "$0"; exit 0;;
+    --grafana-url|--grafana-token|--grafana-painel) GRAFANA_ARGS+=("$1" "${2:-}"); shift 2;;
+    --sem-grafana)  GRAFANA_ARGS+=("$1"); shift;;
+    -h|--help)      sed -n '2,21p' "$0"; exit 0;;
     *) echo "Opção desconhecida: $1 (use --help)"; exit 1;;
   esac
 done
@@ -195,6 +201,9 @@ if [ "$SEM_BANCO" -eq 0 ]; then
   systemctl reload postgresql >/dev/null 2>&1 || true
   ok "Banco '$DB_NAME' pronto"
 fi
+
+# ---------- acesso ao Grafana (manutenções) ----------
+bash "$APP_DIR/deploy/grafana-setup.sh" "${GRAFANA_ARGS[@]}" || true
 
 # ---------- serviço systemd ----------
 install -m 644 "$APP_DIR/deploy/$APP.service" /etc/systemd/system/$APP.service

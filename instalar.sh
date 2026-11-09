@@ -51,7 +51,7 @@ main() {
 
   if [ -f /etc/systemd/system/rede-tv-cultura.service ] && [ -f /etc/rede-tv-cultura.env ] && [ -d /opt/rede-tv-cultura ]; then
     info "Rede TV Cultura SP já instalada: atualizando"
-    exec /opt/rede-tv-cultura-src/deploy/update.sh </dev/null
+    exec /opt/rede-tv-cultura-src/deploy/update.sh "$@" </dev/null
   else
     exec /opt/rede-tv-cultura-src/deploy/install.sh "$@" </dev/null
   fi

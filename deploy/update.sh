@@ -3,7 +3,7 @@
 # Faz backup do banco antes. A configuração (/etc/rede-tv-cultura.env) e os dados são mantidos.
 #
 # Uso: baixe a versão nova (git pull ou novo .tar.gz) e, de dentro da pasta:
-#   sudo ./deploy/update.sh
+#   sudo ./deploy/update.sh [--grafana-url URL] [--grafana-token CHAVE] [--sem-grafana]
 set -euo pipefail
 APP=rede-tv-cultura; APP_USER=redetv; APP_DIR=/opt/$APP
 
@@ -21,6 +21,8 @@ fi
 echo "→ Dependências"
 ( cd "$APP_DIR" && npm install --omit=dev --no-audit --no-fund --loglevel=error )
 chown -R "$APP_USER":"$APP_USER" "$APP_DIR"
+# acesso ao Grafana: pergunta de novo (Enter mantém o que já está configurado) e testa
+bash "$APP_DIR/deploy/grafana-setup.sh" "$@" || true
 install -m 644 "$APP_DIR/deploy/$APP.service" /etc/systemd/system/$APP.service
 systemctl daemon-reload
 systemctl restart "$APP"
