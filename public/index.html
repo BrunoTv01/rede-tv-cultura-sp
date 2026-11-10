@@ -58,9 +58,12 @@ button{font:inherit;color:inherit}
 .chip[aria-pressed="false"]{opacity:.55}
 .countline{font-size:12px;color:var(--muted);padding:9px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
 .countline b{color:var(--fg);font-family:var(--mono);font-weight:500}
-.list{flex:1;overflow:auto;min-height:0}
-.grp{font:700 11.5px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;padding:12px 14px 6px;display:flex;justify-content:space-between;position:sticky;top:0;background:var(--side);z-index:1}
-.grp span:last-child{color:var(--muted);font:400 11px/1 var(--mono)}
+.side{overflow-y:auto}
+.list{flex:1 0 auto;overflow:auto;min-height:260px;height:0}
+.grp{--gc:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:1;margin:6px 8px 2px;padding:8px 10px;border-radius:7px;border-left:3px solid var(--gc);background:linear-gradient(90deg,color-mix(in srgb,var(--gc) 16%,var(--side)),var(--side) 85%);box-shadow:0 2px 0 var(--side)}
+.grp .gn{min-width:0;display:flex;align-items:baseline;gap:6px;font:700 12px/1.2 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--gc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grp .gn em{font-style:normal;font-weight:600;letter-spacing:.03em;text-transform:none;color:var(--fg);font-size:12.5px;overflow:hidden;text-overflow:ellipsis}
+.grp .gc{flex:none;font:600 11px/1 var(--mono);color:var(--fg);background:color-mix(in srgb,var(--gc) 22%,transparent);border-radius:999px;padding:3px 8px}
 .row{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-left:2px solid transparent;background:transparent;padding:7px 14px 7px 12px;cursor:pointer}
 .row:hover{background:var(--card)}
 .row.sel{background:var(--card2);border-left-color:var(--accent)}
@@ -68,7 +71,19 @@ button{font:inherit;color:inherit}
 .row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row small{color:var(--muted)}
 .row .c{font:500 11.5px/1 var(--mono);color:var(--muted);background:var(--base);border:1px solid var(--line);border-radius:4px;padding:3px 5px}
-.note{padding:10px 14px;font-size:11.5px;color:var(--dim);border-top:1px solid var(--line)}
+.note{padding:8px 14px;font-size:11.5px;color:var(--dim);border-top:1px solid var(--line)}
+.note summary{cursor:pointer;list-style:none;display:flex;gap:6px;align-items:center}
+.note summary::-webkit-details-marker{display:none}
+.note .ninfo{margin-left:auto;color:var(--muted);text-decoration:underline dotted}
+.note[open] .ninfo{display:none}
+.note div{margin-top:6px;line-height:1.45}
+.colh{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none}
+.colh::after{content:'▾';margin-left:auto;color:var(--muted);font-size:11px;transition:transform .15s}
+.colh .sum{display:none;text-transform:none;letter-spacing:0;font:500 11.5px/1 var(--body);color:var(--muted)}
+.sec.col>:not(.colh){display:none}
+.sec.col .colh{margin-bottom:0}
+.sec.col .colh .sum{display:inline}
+.sec.col .colh::after{transform:rotate(-90deg)}
 /* mapa */
 .stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:var(--sea);touch-action:none}
 .stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;pointer-events:none}
@@ -309,12 +324,12 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
   <div class="body">
     <aside class="side">
       <div class="sec"><div class="sechead"><h4>Área / responsável</h4><button class="linkbtn" id="btnAreas" hidden>Editar nomes</button></div><div class="chips" id="tally"></div></div>
-      <div class="sec"><h4>Tipo</h4><div class="chips" id="typeChips"></div></div>
-      <div class="sec" id="manSec" hidden><h4>Manutenção</h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +120 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div><div class="chips" id="manLinks" style="margin-top:8px"></div></div>
-      <div class="sec" id="telSec" hidden><h4>Transmissores · telemetria</h4><div class="chips" id="telChips"></div><div class="mansub" id="telSub"></div><div class="chips" id="telLinks" style="margin-top:8px"></div></div>
+      <div class="sec" id="typeSec"><h4 class="colh" data-col="typeSec">Tipo<span class="sum" id="typeSum"></span></h4><div class="chips" id="typeChips"></div></div>
+      <div class="sec" id="manSec" hidden><h4 class="colh" data-col="manSec">Manutenção<span class="sum" id="manSum"></span></h4><div class="chips"><button class="chip" id="chipMan" aria-pressed="false"><span class="sw" style="background:#ff3b30"></span><span id="manLbl">Sem manutenção +120 dias</span><span class="n" id="cntMan">0</span></button></div><div class="mansub" id="manSub"></div><div class="chips" id="manLinks" style="margin-top:8px"></div></div>
+      <div class="sec" id="telSec" hidden><h4 class="colh" data-col="telSec">No ar · telemetria<span class="sum" id="telSum"></span></h4><div class="chips" id="telChips"></div><div class="mansub" id="telSub"></div><div class="chips" id="telLinks" style="margin-top:8px"></div></div>
       <div class="countline"><span id="countTxt">Carregando…</span><span id="covTxt"></span></div>
       <div class="list" id="list"></div>
-      <div class="note" id="note">Mapa do DWG “Nova Divisão 2026”. Dados iniciais da planilha “Projeto 100%”. A mancha de cobertura liga as cidades atendidas, com posição aproximada. <span id="semSinal"></span> <span id="verTxt"></span></div>
+      <details class="note" id="note"><summary>Nova Divisão 2026 <span id="verTxt"></span><span class="ninfo">sobre os dados</span></summary><div>Mapa do DWG “Nova Divisão 2026” e dados iniciais da planilha “Projeto 100%”. A cobertura liga as cidades atendidas (posição aproximada). <span id="semSinal"></span></div></details>
     </aside>
 
     <div class="stage" id="stage">
@@ -709,7 +724,7 @@ function render(){
   Object.keys(GRP).forEach(g=>{ $('chipT'+g).setAttribute('aria-pressed',typeOn[g]); $('cntT'+g).textContent=ST.filter(s=>grpOf(s)===g).length; });
   areaEls.forEach(el=>{ const a=el.dataset.a; el.setAttribute('class', mode==='area'&&(areaOn[a]||(a==='1'&&areaOn[5])) ? 'ar'+a : 'land'); });
   const vis=[];
-  manRender(); telRender();
+  manRender(); telRender(); secSums();
   const selSfn=mode!=='sfn'?'':(sel&&byId.get(sel)?byId.get(sel).sfn:sfnFoco);
   ST.forEach(s=>{ const ok=match(s); const g=symEls.get(s.id); if(!g) return; g.classList.toggle('off',!ok); g.classList.toggle('malert',!!MANUT.alertas[s.id]); g.classList.toggle('dim',!!selSfn&&s.sfn!==selSfn); g.style.color=color(s); g.classList.toggle('sel',sel===s.id); if(ok) vis.push(s); });
   gSfnEl.querySelectorAll('.sfnf').forEach(f=>f.classList.toggle('on',!!selSfn&&f.dataset.n===selSfn));
@@ -736,10 +751,10 @@ function render(){
   const list=$('list'); let lh='';
   if(mode==='sfn'){ const grupos=[...sfnRedes().map(([n])=>n),''];
     grupos.forEach(g=>{ const items=vis.filter(s=>(s.sfn||'')===g).sort((x,y)=>x.n.localeCompare(y.n,'pt')); if(!items.length) return;
-      lh+=`<div class="grp"><span style="color:${sfnColor(g)}">${g?'SFN '+esc(g):'Sem rede SFN'}</span><span>${items.length}</span></div>`;
+      lh+=`<div class="grp" style="--gc:${sfnColor(g)}"><span class="gn">${g?'SFN <em>'+esc(g)+'</em>':'<em>Sem rede SFN</em>'}</span><span class="gc">${items.length}</span></div>`;
       items.forEach(s=>{ lh+=`<button class="row${sel===s.id?' sel':''}" data-id="${esc(s.id)}"><i style="background:${color(s)};color:${color(s)}"></i><span class="nm">${esc(s.n)}${s.hit?`<small> · cobre ${esc(s.hit)}</small>`:''}</span><span class="c">${s.ch?esc(s.ch):'—'}${s.vt?' · '+esc(s.vt):''}</span></button>`; }); }); }
   else AK.forEach(a=>{ const items=vis.filter(s=>s.a===a).sort((x,y)=>x.n.localeCompare(y.n,'pt')); if(!items.length) return;
-    lh+=`<div class="grp"><span style="color:var(--a${a})">${AREAS[a].n} · ${AREAS[a].e}</span><span>${items.length}</span></div>`;
+    lh+=`<div class="grp" style="--gc:var(--a${a})" title="${esc(AREAS[a].n+' · '+AREAS[a].e)}"><span class="gn">${esc(AREAS[a].n)} <em>${esc(AREAS[a].e)}</em></span><span class="gc">${items.length}</span></div>`;
     items.forEach(s=>{ lh+=`<button class="row${sel===s.id?' sel':''}" data-id="${esc(s.id)}"><i style="background:${color(s)};color:${color(s)}"></i><span class="nm">${esc(s.n)}${s.hit?`<small> · cobre ${esc(s.hit)}</small>`:''}</span><span class="c">${s.ch?esc(s.ch):'—'}${s.vt?' · '+esc(s.vt):''}</span></button>`; }); });
   list.innerHTML=lh||(loaded?'<div class="note">Nenhuma estação com esses filtros.</div>':(dbMissing?'<div class="note">Não foi possível falar com o servidor. Verifique a conexão e recarregue a página.</div>':''));
   list.querySelectorAll('.row').forEach(b=>b.onclick=()=>select(b.dataset.id,true));
@@ -946,6 +961,15 @@ function manRender(){ const n=Object.keys(MANUT.alertas||{}).length; $('manSec')
   if(MANUT.link) L.push(lk(MANUT.link,'Estações a visitar')); if(MANUT.linkPainel) L.push(lk(MANUT.linkPainel,'Painel Grafana')); $('manLinks').innerHTML=L.join('');
   $('manSub').textContent=MANUT.erro?'Grafana: '+MANUT.erro:(MANUT.atualizado?'Grafana · lido em '+new Date(MANUT.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):''); }
 $('chipMan').onclick=()=>{ manOnly=!manOnly; render(); };
+// seções da lateral que recolhem (lembra no navegador)
+document.querySelectorAll('.colh').forEach(h=>{ const id=h.dataset.col, sec=$(id);
+  try{ if(localStorage.getItem('tvc-col-'+id)==='1') sec.classList.add('col'); }catch(e){}
+  h.onclick=e=>{ if(e.target.closest('a,button')) return; const c=sec.classList.toggle('col'); try{ localStorage.setItem('tvc-col-'+id,c?'1':'0'); }catch(e){} }; });
+function secSums(){
+  const off=Object.keys(typeOn).filter(k=>!typeOn[k]).length; $('typeSum').textContent=off?`${off} oculto${off>1?'s':''}`:'todos';
+  const n=Object.keys(MANUT.alertas||{}).length; $('manSum').textContent=`${n} sem visita +${MANUT.dias||120}d`;
+  const c={}; ST.forEach(s=>{ const k=telSt(s); c[k]=(c[k]||0)+1; }); const fora=(c.baixo||0)+(c.semdados||0)+(c.atencao||0);
+  $('telSum').textContent=`${c.ar||0} no ar${fora?` · ${fora} com problema`:''}`; }
 
 // ---------- estações no ar (Grafana "Dashboard Estações", telemetria) ----------
 async function loadTele(){ try{ TELE=await api('GET','/api/telemetria'); }catch(e){ return; } if(loaded) render(); }
@@ -1669,7 +1693,7 @@ async function start(){
   try{ await loadGeometry(); await loadStations(); fit(); loadManut(); loadTele(); loadSfn(); }
   catch(e){ if(e.status!==401&&e.code!=='must_change'){ dbMissing=true; render(); toast(e.message); } }
 }
-fetch('/api/health').then(r=>r.json()).then(j=>{ if(j&&j.version) $('verTxt').textContent='Versão '+j.version+'.'; }).catch(()=>{});
+fetch('/api/health').then(r=>r.json()).then(j=>{ if(j&&j.version) $('verTxt').textContent='· v'+j.version; }).catch(()=>{});
 (async()=>{
   try{ const u=await api('GET','/api/auth/me'); setUser(u); if(u.mustChange){ showChange(true); return; } await start(); }
   catch(e){ if(e.status===401) showLogin(); else if(e.code!=='must_change'){ dbMissing=true; render(); } }
