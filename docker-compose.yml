@@ -32,6 +32,13 @@ services:
       ADMIN_TOKEN: ${ADMIN_TOKEN:-}
       # opcional: redefine a senha do admin ao iniciar (uma vez por valor)
       ADMIN_RESET_PASSWORD: ${ADMIN_RESET_PASSWORD:-}
+      # opcional: Grafana (também dá para configurar pela página, no menu do admin)
+      GRAFANA_URL: ${GRAFANA_URL:-}
+      GRAFANA_TOKEN: ${GRAFANA_TOKEN:-}
+      GRAFANA_DASHBOARD: ${GRAFANA_DASHBOARD:-}
+      TELEMETRIA_URL: ${TELEMETRIA_URL:-}
+      TELEMETRIA_TOKEN: ${TELEMETRIA_TOKEN:-}
+      TELEMETRIA_DASHBOARD: ${TELEMETRIA_DASHBOARD:-}
     ports:
       - "${PORT:-3100}:3100"
 
