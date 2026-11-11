@@ -247,7 +247,10 @@ if [ "$RESET_ADMIN" -eq 1 ]; then
   bash "$APP_DIR/deploy/reset-senha.sh" admin "$SENHA" || fail "Senha recusada: use 8 caracteres ou mais, com letras e números."
 fi
 
-IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+# IP da máquina na rede: o da rota padrão; senão, o primeiro que não seja do Docker
+IP="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<NF;i++) if($i=="src"){print $(i+1); exit}}')"
+[ -n "$IP" ] || IP="$(ip -4 -o addr show scope global 2>/dev/null | grep -Ev ' (docker|br-|veth|virbr)' | awk '{split($4,a,"/"); print a[1]; exit}')"
+[ -n "$IP" ] || IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
 URL="http://${IP:-SEU-SERVIDOR}$([ "$NGINX" -eq 1 ] && echo "" || echo ":$PUB_PORT")"
 echo
 ok "Rede TV Cultura SP instalada"

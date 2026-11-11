@@ -148,7 +148,10 @@ main() {
   dc up -d >/dev/null 2>&1 || true   # aplica o que mudou no .env (endereços e tokens do Grafana)
 
   docker image prune -f >/dev/null 2>&1 || true
-  IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  # IP da máquina na rede: o da rota padrão; senão, o primeiro que não seja do Docker
+  IP="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<NF;i++) if($i=="src"){print $(i+1); exit}}')"
+  [ -n "$IP" ] || IP="$(ip -4 -o addr show scope global 2>/dev/null | grep -Ev ' (docker|br-|veth|virbr)' | awk '{split($4,a,"/"); print a[1]; exit}')"
+  [ -n "$IP" ] || IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
   echo
   ok "Pronto! Abra http://${IP:-IP-DA-VM}:$PORT"
   [ "$JA" -eq 0 ] && [ -z "$RESTAURAR" ] && info "Primeiro acesso: usuário admin, senha admin (o sistema pede para trocar)."
