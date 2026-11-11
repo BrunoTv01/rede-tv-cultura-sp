@@ -1,4 +1,6 @@
-# Rede TV Cultura SP com PostgreSQL. Não precisa configurar nada:
+# Rede TV Cultura SP com PostgreSQL. Jeito mais fácil (instala o Docker, cria o .env, configura o Grafana):
+#   curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/instalar-docker.sh | sudo bash
+# Ou, com o código já baixado:
 #   docker compose up -d
 # Abra http://IP-DO-SERVIDOR:3100  ·  login admin / senha admin (troca no 1º acesso)
 #
@@ -7,6 +9,9 @@ services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
+    logging: &logs
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
     environment:
       POSTGRES_DB: redetv
       POSTGRES_USER: redetv
@@ -22,7 +27,9 @@ services:
 
   app:
     build: .
+    image: rede-tv-cultura-app
     restart: unless-stopped
+    logging: *logs
     depends_on:
       db:
         condition: service_healthy
@@ -44,3 +51,11 @@ services:
 
 volumes:
   redetv-db:
+
+# rede interna fixa: o Docker escolheria uma faixa 172.x, que pode bater com a rede da FPA
+# (o Grafana da telemetria fica em 172.20.0.250). Mude no .env com REDETV_SUBNET se precisar.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${REDETV_SUBNET:-192.168.203.0/24}

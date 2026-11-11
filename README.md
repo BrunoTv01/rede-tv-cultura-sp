@@ -18,6 +18,12 @@ A versão completa roda num servidor próprio, com banco PostgreSQL, login (perf
 curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/instalar.sh | sudo bash
 ```
 
+Em Docker (recomendado para VM), também num comando — instala o Docker se faltar:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/instalar-docker.sh | sudo bash
+```
+
 Depois abra `http://IP-DO-SERVIDOR:3100` e entre com **admin** / **admin**. O sistema pede uma senha nova no primeiro acesso. O passo a passo completo, com backup, atualização, Docker e instalação sem internet, está em **[INSTALL.md](INSTALL.md)**.
 
 ## Versão só para consulta (sem servidor)
@@ -38,6 +44,7 @@ Para abrir no próprio computador, use um servidor local (`python3 -m http.serve
 | `db/` | Esquema do banco e descoberta automática do PostgreSQL |
 | `deploy/` | Instalador, atualização, backup, recuperação de senha, remoção, serviço systemd e nginx |
 | `instalar.sh` | Instalação e atualização num comando só (baixa do GitHub) |
+| `instalar-docker.sh` | O mesmo, em Docker: instala o Docker, sobe banco e mapa, backup antes de atualizar |
 | `Dockerfile`, `docker-compose.yml` | Instalação com Docker |
 | `data/estacoes.json` | Carga inicial das estações (usada quando o banco está vazio) |
 | `data/geometria.json` | Desenho do mapa extraído do DWG: contorno, linhas de divisão, áreas e posição aproximada dos municípios |

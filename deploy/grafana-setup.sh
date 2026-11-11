@@ -11,7 +11,7 @@
 set -uo pipefail
 
 APP=rede-tv-cultura
-ENV_FILE=/etc/$APP.env
+ENV_FILE="${REDETV_ENV_FILE:-/etc/$APP.env}"   # na instalação Docker: /opt/rede-tv-cultura-docker/.env
 G_URL="${REDETV_GRAFANA_URL:-}"; G_TOKEN="${REDETV_GRAFANA_TOKEN:-}"; G_PAINEL="${REDETV_GRAFANA_PAINEL:-}"; G_PULAR=0
 T_URL="${REDETV_TELEMETRIA_URL:-}"; T_TOKEN="${REDETV_TELEMETRIA_TOKEN:-}"; T_PAINEL=""; T_PULAR=0
 [ "${REDETV_GRAFANA:-1}" = "0" ] && G_PULAR=1
@@ -52,12 +52,14 @@ testar() { # url painel token
 }
 # chave/token que foi colado pela página do mapa (fica no banco, tabela config)
 tokenDoBanco() { # chave da config: grafana | telemetria
+  local q="SELECT coalesce(valor->>'token','') FROM config WHERE chave='$1'"
+  if [ -n "${REDETV_SQL:-}" ]; then $REDETV_SQL -tAc "$q" 2>/dev/null </dev/null | head -1 | tr -d '[:space:]'; return 0; fi  # Docker
   local db; db="$(lerEnv DATABASE_URL)"; [ -n "$db" ] && command -v psql >/dev/null || return 0
-  psql "$db" -tAc "SELECT coalesce(valor->>'token','') FROM config WHERE chave='$1'" 2>/dev/null | head -1 | tr -d '[:space:]'
+  psql "$db" -tAc "$q" 2>/dev/null | head -1 | tr -d '[:space:]'
 }
 # pergunta só se houver alguém no terminal (o "curl | sudo bash" usa o /dev/tty)
 temTTY() { [ -r /dev/tty ] && [ -w /dev/tty ] && { : </dev/tty; } 2>/dev/null; }
-REFAZER="sudo /opt/$APP/deploy/grafana-setup.sh"
+REFAZER="${REDETV_REFAZER:-sudo /opt/$APP/deploy/grafana-setup.sh}"
 
 # configurar TÍTULO PREFIXO URL_PADRÃO PAINEL_PADRÃO SLUG URL_NOVA TOKEN_NOVO PAINEL_NOVO "o que faz" "tipo de chave" CHAVE_CONFIG
 configurar() {

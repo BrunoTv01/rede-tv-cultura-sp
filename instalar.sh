@@ -5,6 +5,7 @@
 #
 # Opções podem ser passadas depois de "bash -s --", por exemplo:
 #   curl -fsSL .../instalar.sh | sudo bash -s -- --nginx
+#   curl -fsSL .../instalar.sh | sudo bash -s -- --docker      (instala em Docker; veja instalar-docker.sh)
 #
 # Se o sistema já estiver instalado, este mesmo comando atualiza para a versão mais nova
 # (com backup do banco antes), sem perder dados.
@@ -44,6 +45,12 @@ main() {
   [ -f "$SRC/deploy/install.sh" ] || fail "O arquivo baixado não tem o instalador."
   VER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$SRC/package.json")"
   ok "Versão $VER baixada"
+
+  # instalação em Docker (VM): segue pelo instalar-docker.sh do mesmo pacote
+  for a in "$@"; do if [ "$a" = "--docker" ]; then
+    [ -f "$SRC/instalar-docker.sh" ] || fail "Esta versão não tem a instalação em Docker."
+    cp -r "$SRC" "$TMP/src-docker"; REDETV_SRC="$TMP/src-docker" bash "$SRC/instalar-docker.sh" "$@" </dev/null; exit $?
+  fi; done
 
   # guarda uma cópia do código em /opt/rede-tv-cultura-src para futuras atualizações e consulta
   rm -rf /opt/rede-tv-cultura-src && cp -r "$SRC" /opt/rede-tv-cultura-src

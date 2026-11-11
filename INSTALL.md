@@ -2,6 +2,45 @@
 
 O sistema roda num servidor da rede interna, com banco de dados PostgreSQL e login por usuário e senha. Funciona em Ubuntu, Debian, Rocky, Alma, RHEL e CentOS Stream.
 
+## Instalação em Docker (VM)
+
+Num comando só, numa VM Linux (Ubuntu, Debian, Rocky…) com acesso à internet:
+
+```
+curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/instalar-docker.sh | sudo bash
+```
+
+O instalador:
+
+- instala o Docker e o Docker Compose, se faltarem;
+- coloca o sistema em `/opt/rede-tv-cultura-docker` e cria o `.env` com uma senha aleatória para o banco;
+- sobe dois contêineres: **db** (PostgreSQL 16) e **app** (o mapa, porta 3100);
+- configura os dois painéis do Grafana (endereços automáticos; pede o token do Dashboard Estações se ainda não houver);
+- no fim mostra o endereço, por exemplo `http://IP-DA-VM:3100` (primeiro acesso: admin / admin).
+
+**Atualizar:** rode o mesmo comando. Antes de trocar a versão ele faz backup do banco em `/opt/rede-tv-cultura-docker/backups` (guarda os 10 últimos). Dados, usuários e configuração continuam.
+
+**Levar os dados do Raspberry para a VM:**
+
+1. No Raspberry: `sudo -u postgres pg_dump redetv | gzip > redetv.sql.gz`
+2. Copie o arquivo para a VM (por exemplo `scp redetv.sql.gz usuario@IP-DA-VM:`).
+3. Na VM: `curl -fsSL https://raw.githubusercontent.com/BrunoTv01/rede-tv-cultura-sp/main/instalar-docker.sh | sudo bash -s -- --restaurar ~/redetv.sql.gz`
+
+Usuários, senhas, estações, nomes das áreas, divisões e a configuração do Grafana vêm juntos.
+
+**Opções:** `--porta N` (outra porta), `--restaurar ARQUIVO`, `--telemetria-token T`, `--sem-grafana`, `--sem-telemetria`.
+
+**Comandos úteis** (na pasta `/opt/rede-tv-cultura-docker`):
+
+| Para | Comando |
+|---|---|
+| Ver se está rodando | `sudo docker compose -p rede-tv-cultura ps` |
+| Ver os registros do mapa | `sudo docker compose -p rede-tv-cultura logs -f app` |
+| Reiniciar | `sudo docker compose -p rede-tv-cultura restart` |
+| Backup manual | `sudo docker compose -p rede-tv-cultura exec -T db pg_dump -U redetv redetv \| gzip > backup.sql.gz` |
+
+A rede interna do Docker usa a faixa `192.168.203.0/24`, para não bater com a rede da FPA (o Grafana da telemetria fica em 172.20.0.250). Se precisar de outra, coloque `REDETV_SUBNET=...` no `.env` e rode o instalador de novo.
+
 ## Instalar com um comando
 
 No servidor, com acesso à internet:
