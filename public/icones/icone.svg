@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14305a"/>
+      <stop offset="1" stop-color="#07101d"/>
+    </linearGradient>
+    <radialGradient id="b" cx="256" cy="168" r="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3fa9ff" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#3fa9ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#f)"/>
+  <circle cx="256" cy="168" r="200" fill="url(#b)"/>
+  <!-- ondas de sinal -->
+  <g fill="none" stroke="#3fa9ff" stroke-linecap="round">
+    <path d="M196 108 a85 85 0 0 0 0 120" stroke-width="22"/>
+    <path d="M316 108 a85 85 0 0 1 0 120" stroke-width="22"/>
+    <path d="M150 72 a140 140 0 0 0 0 192" stroke-width="20" stroke-opacity=".6"/>
+    <path d="M362 72 a140 140 0 0 1 0 192" stroke-width="20" stroke-opacity=".6"/>
+  </g>
+  <!-- torre -->
+  <g fill="none" stroke="#e6edf7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 176 L178 420 M256 176 L334 420" stroke-width="26"/>
+    <path d="M210 320 H302 M234 248 H278" stroke-width="16"/>
+    <path d="M234 248 L302 320 M278 248 L210 320 M210 320 L334 420 M302 320 L178 420" stroke-width="12" stroke-opacity=".75"/>
+    <path d="M150 420 H362" stroke-width="22"/>
+  </g>
+  <circle cx="256" cy="168" r="26" fill="#3fa9ff"/>
+  <circle cx="256" cy="168" r="11" fill="#e6edf7"/>
+</svg>

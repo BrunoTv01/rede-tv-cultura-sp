@@ -74,6 +74,9 @@ No final ele mostra o endereço de acesso, algo como:
 
 ## Primeiro acesso
 
+**Atalho como aplicativo:** o sistema tem ícone próprio (torre com sinal). No Chrome ou Edge do computador, use o menu ⋮ → **Transmitir, salvar e compartilhar → Instalar página como app** (ou o ícone de instalar na barra de endereço). No celular: Android, menu ⋮ → **Adicionar à tela inicial**; iPhone, **Compartilhar → Adicionar à Tela de Início**. Ele abre em janela própria, como um programa.
+
+
 1. Abra o endereço no navegador de qualquer computador da rede.
 2. Entre com o usuário **admin** e a senha **admin**.
 3. O sistema pede uma senha nova. Ela precisa ter 8 caracteres ou mais, com letras e números.

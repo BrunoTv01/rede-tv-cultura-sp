@@ -148,7 +148,9 @@ app.use((_req, res, next) => {
   next();
 });
 app.use(express.json({ limit: '300kb' }));
-app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html' }));
+app.get('/favicon.ico', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'icones', 'favicon-32.png')));
+app.use(express.static(path.join(__dirname, 'public'), { index: 'index.html',
+  setHeaders: (res, f) => { if (f.endsWith('.webmanifest')) res.setHeader('Content-Type', 'application/manifest+json'); } }));
 
 const { requireRole, bootstrap, audit } = auth.setup(app, pool);
 const editor = requireRole('editor');
