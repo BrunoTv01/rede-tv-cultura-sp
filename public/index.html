@@ -146,7 +146,13 @@ svg#map.mtel #gALab{display:none}
 .fp-city{fill:var(--fg)}
 .fp-lab{font-family:var(--body);fill:var(--fg);pointer-events:none;paint-order:stroke;stroke:var(--sea);stroke-linejoin:round}
 .fp-tag{font-family:var(--display);font-weight:700;letter-spacing:.04em;pointer-events:none;paint-order:stroke;stroke:var(--sea);stroke-linejoin:round}
-.mode{position:absolute;left:12px;top:12px;display:flex;background:rgba(14,24,40,.92);border:1px solid var(--line2);border-radius:8px;padding:3px;gap:2px}
+.sidetog{position:absolute;left:12px;top:12px;z-index:3;width:38px;height:38px;display:grid;place-items:center;background:rgba(14,24,40,.92);border:1px solid var(--line2);border-radius:8px;color:var(--fg);cursor:pointer}
+.sidetog:hover{border-color:var(--accent);color:var(--accent)}
+.sidetog svg{width:20px;height:20px}
+.body.noside .sidetog .arw{transform:rotate(180deg);transform-origin:12.25px 10px}
+.body.noside{grid-template-columns:minmax(0,1fr)}
+.body.noside .side{display:none}
+.mode{position:absolute;left:58px;top:12px;display:flex;background:rgba(14,24,40,.92);border:1px solid var(--line2);border-radius:8px;padding:3px;gap:2px}
 .mode button{border:0;background:transparent;color:var(--muted);font:600 12px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border-radius:6px;cursor:pointer}
 .mode button[aria-pressed="true"]{background:var(--card2);color:var(--fg)}
 .tools{position:absolute;left:12px;top:56px;display:flex;flex-direction:column;background:rgba(14,24,40,.92);border:1px solid var(--line2);border-radius:8px;overflow:hidden}
@@ -342,6 +348,7 @@ svg#map.editing .sym{pointer-events:none;opacity:.55}
         <defs id="defs"></defs>
         <g id="vp"><g id="gArea"></g><g id="gLine"></g><g id="gALab"></g><g id="gFoot"></g><g id="gLab"></g><g id="gSym"></g></g>
       </svg>
+      <button class="sidetog" id="sideTog" aria-label="Esconder painel lateral" title="Esconder painel lateral ( [ )" aria-expanded="true"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 3.5v13" stroke="currentColor" stroke-width="1.6"/><path class="arw" d="M13.5 7.5 11 10l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="mode" role="group" aria-label="Colorir por">
         <button id="mArea" aria-pressed="true">Área</button>
         <button id="mRec" aria-pressed="false">Recepção</button>
@@ -912,6 +919,16 @@ $('btnExport').onclick=async()=>{
 const lgT=$('lgT'); let lgOpen=window.matchMedia('(min-width: 821px)').matches;
 const setLg=()=>{ lgT.setAttribute('aria-expanded',lgOpen); $('legend').hidden=!lgOpen; };
 lgT.onclick=()=>{lgOpen=!lgOpen; setLg();}; setLg();
+// esconder / mostrar o painel lateral (lembra no navegador); o mapa mantém o centro e o zoom
+function ajustaAspecto(){ const r=stage.getBoundingClientRect(); if(!r.width||!r.height||!view) return; const cx=view.x+view.w/2, cy=view.y+view.h/2, ar=r.width/r.height;
+  const w=view.h*ar; view={x:cx-w/2,y:cy-view.h/2,w,h:view.h}; apply(); }
+function setSide(show){ const b=document.querySelector('.body'); b.classList.toggle('noside',!show);
+  $('sideTog').setAttribute('aria-expanded',show); $('sideTog').title=(show?'Esconder':'Mostrar')+' painel lateral ( [ )'; $('sideTog').setAttribute('aria-label',(show?'Esconder':'Mostrar')+' painel lateral');
+  try{ localStorage.setItem('tvc-side',show?'1':'0'); }catch(e){} ajustaAspecto(); }
+$('sideTog').onclick=()=>setSide(document.querySelector('.body').classList.contains('noside'));
+try{ if(localStorage.getItem('tvc-side')==='0') document.querySelector('.body').classList.add('noside'); }catch(e){}
+{ let rt; window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(ajustaAspecto,120); }); }
+document.addEventListener('keydown',e=>{ if(e.key==='['&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)&&$('sheet').hidden){ setSide(document.querySelector('.body').classList.contains('noside')); } });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!$('sheet').hidden) closeSheet(); else if(!$('menu').hidden) toggleMenu(false); else if(labMode) setLabMode(false); else if(placing) stopPlacing(); else if(sel&&!editing) closeDetail(); } });
 
 render();

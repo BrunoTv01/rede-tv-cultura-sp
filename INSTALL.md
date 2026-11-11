@@ -74,6 +74,8 @@ No final ele mostra o endereço de acesso, algo como:
 
 ## Primeiro acesso
 
+**Esconder o painel lateral:** o botão no canto superior esquerdo do mapa (ou a tecla `[`) esconde e mostra a lista de estações e os filtros; o mapa ocupa a tela toda e o navegador lembra a escolha.
+
 **Atalho como aplicativo:** o sistema tem ícone próprio (mapa do estado de São Paulo com a torre transmitindo). No Chrome ou Edge do computador, use o menu ⋮ → **Transmitir, salvar e compartilhar → Instalar página como app** (ou o ícone de instalar na barra de endereço). No celular: Android, menu ⋮ → **Adicionar à tela inicial**; iPhone, **Compartilhar → Adicionar à Tela de Início**. Ele abre em janela própria, como um programa.
 
 
