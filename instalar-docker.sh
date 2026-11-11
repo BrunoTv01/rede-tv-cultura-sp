@@ -55,7 +55,8 @@ main() {
   # ---------- Docker ----------
   if ! command -v docker >/dev/null; then
     info "Instalando o Docker (alguns minutos)"
-    curl -fsSL https://get.docker.com | sh </dev/null >/dev/null 2>&1 || {
+    GD="$(mktemp)"
+    { curl -fsSL https://get.docker.com -o "$GD" && sh "$GD" </dev/null >/dev/null 2>&1; } || {
       warn "O instalador oficial do Docker falhou; tentando pelos pacotes do sistema"
       if command -v apt-get >/dev/null; then
         DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker.io </dev/null >/dev/null
@@ -63,6 +64,7 @@ main() {
           || DEBIAN_FRONTEND=noninteractive apt-get install -y -qq docker-compose-plugin </dev/null >/dev/null 2>&1 || true
       elif command -v dnf >/dev/null; then dnf install -y -q docker docker-compose-plugin </dev/null >/dev/null || true; fi
     }
+    rm -f "$GD"
   fi
   command -v docker >/dev/null || fail "Não consegui instalar o Docker. Instale manualmente (https://docs.docker.com/engine/install/) e rode de novo."
   command -v systemctl >/dev/null && systemctl enable --now docker >/dev/null 2>&1 || true
@@ -120,8 +122,9 @@ main() {
   info "Montando e subindo os contêineres (na primeira vez demora alguns minutos)"
   # se a rede interna mudou de faixa, o compose recusa subir: derruba (sem apagar o banco) e sobe de novo
   dc up -d --build --remove-orphans db >/dev/null 2>&1 || { dc down --remove-orphans >/dev/null 2>&1 || true; dc up -d --build --remove-orphans db; }
-  for _ in $(seq 1 60); do dc exec -T db pg_isready -U redetv -d redetv >/dev/null 2>&1 && break; sleep 2; done
-  dc exec -T db pg_isready -U redetv -d redetv >/dev/null 2>&1 || fail "O banco não subiu. Veja: docker compose -p $PROJ logs db"
+  diag() { echo; warn "Situação dos contêineres:"; dc ps -a 2>&1 | sed 's/^/   /'; warn "Últimas linhas do registro do $1:"; dc logs --no-color --tail 25 "$1" 2>&1 | sed 's/^/   /'; echo; }
+  for _ in $(seq 1 90); do dc exec -T db pg_isready -U redetv -d redetv >/dev/null 2>&1 && break; sleep 2; done
+  dc exec -T db pg_isready -U redetv -d redetv >/dev/null 2>&1 || { diag db; fail "O banco não subiu. Mande as linhas acima para o suporte."; }
   ok "Banco pronto"
 
   if [ -n "$RESTAURAR" ]; then
@@ -137,7 +140,7 @@ main() {
 
   dc up -d --build --remove-orphans >/dev/null 2>&1 || dc up -d --build --remove-orphans
   for _ in $(seq 1 60); do curl -fsS "http://127.0.0.1:$PORT/api/health" >/dev/null 2>&1 && break; sleep 2; done
-  curl -fsS "http://127.0.0.1:$PORT/api/health" >/dev/null 2>&1 || fail "O mapa não respondeu na porta $PORT. Veja: docker compose -p $PROJ logs app"
+  curl -fsS "http://127.0.0.1:$PORT/api/health" >/dev/null 2>&1 || { diag app; fail "O mapa não respondeu na porta $PORT. Mande as linhas acima para o suporte."; }
   ok "Mapa no ar (versão $VER)"
 
   # ---------- Grafana ----------
